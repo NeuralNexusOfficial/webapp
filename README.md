@@ -13,14 +13,14 @@ A modern hackathon management platform built with Next.js and Supabase.
 
 - Node.js (v18 or higher)
 - Supabase Account
-- Razorpay Account (optional for testing payments)
+- Razorpay Account (will be given by Nikhil)
 
 ## Local Development Setup
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd NeuralNexus
+   git clone https://github.com/NeuralNexusOfficial/webapp.git
+   cd webapp
    ```
 
 2. **Install dependencies**:
@@ -29,15 +29,17 @@ A modern hackathon management platform built with Next.js and Supabase.
    ```
 
 3. **Environment Variables**:
-   Create a `.env.local` file in the root directory and add the following:
+   Create a `.env.local` file in the root directory and add the following: already shared the keys in group
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
    RAZORPAY_KEY_ID=your_razorpay_key_id
    RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+   RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
    ```
 
-4. **Supabase Setup**:
+4. **Supabase Setup (optional - credentials in group)**:
    - Create a new project in Supabase.
    - Run the SQL schema found in `docs/supabase_schema.md` in the Supabase SQL Editor.
    - Enable Email Auth or any other providers you wish to use.
@@ -53,4 +55,3 @@ A modern hackathon management platform built with Next.js and Supabase.
 
 - [Supabase Schema](docs/supabase_schema.md)
 - [Architecture & Safeguards](docs/architecture%20and%20safeguards.pdf)
-
