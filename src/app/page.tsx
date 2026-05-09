@@ -31,7 +31,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="absolute bottom-8 text-zinc-600 text-sm">
-        © 2026 NeuralNexus. All rights reserved.
+        © 2026 NEURALNEXUS. All rights reserved.
       </footer>
     </div>
   )
