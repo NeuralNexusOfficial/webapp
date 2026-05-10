@@ -32,12 +32,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // We allow public access by default. 
+  // For protected routes (like /dashboard/admin, /dashboard/judge), 
+  // you can add specific route checks here or in their respective layouts.
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    (request.nextUrl.pathname.startsWith('/dashboard/admin') ||
+     request.nextUrl.pathname.startsWith('/dashboard/judge'))
   ) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)

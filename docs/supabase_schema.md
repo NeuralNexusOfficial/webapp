@@ -11,9 +11,25 @@ create table profiles (
   id uuid references auth.users on delete cascade primary key,
   full_name text,
   email text unique,
+  phone text,
+  college_company text,
   role text check (role in ('USER', 'ADMIN', 'JUDGE')) default 'USER',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- Trigger to automatically create a profile for new users
+create function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, email, full_name)
+  values (new.id, new.email, new.raw_user_meta_data->>'full_name');
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 ```
 
 ### 2. Teams
