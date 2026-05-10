@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Footer from '@/components/landing/footer'
+import Stats from '@/components/landing/stats'
 
 export default function LandingPage() {
   return (
@@ -29,10 +31,8 @@ export default function LandingPage() {
           </Link>
         </div>
       </main>
-
-      <footer className="absolute bottom-8 text-zinc-600 text-sm">
-        © 2026 NEURALNEXUS. All rights reserved.
-      </footer>
+      <Stats />
+      <Footer />
     </div>
   )
 }
