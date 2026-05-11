@@ -33,25 +33,30 @@ create trigger on_auth_user_created
 ```
 
 ### 2. Teams
-Stores hackathon teams.
+Stores hackathon teams. `team_owner_id` is denormalized for fast ownership checks.
 ```sql
 create table teams (
   id uuid default gen_random_uuid() primary key,
   name text not null,
-  invite_code text unique default substr(md5(random()::text), 0, 8),
+  invite_code text unique not null,
+  team_owner_id uuid not null references profiles(id),
+  max_members int not null default 4 check (max_members between 2 and 5),
+  status text check (status in ('FORMING','LOCKED','SUBMITTED','JUDGED')) default 'FORMING',
   created_at timestamp with time zone default now()
 );
 ```
 
 ### 3. Team Members
-Links users to teams with specific roles.
+Links users to teams. `UNIQUE(user_id)` enforces **one active team per user** at the DB level.
 ```sql
 create table team_members (
   id uuid default gen_random_uuid() primary key,
   team_id uuid references teams(id) on delete cascade,
   user_id uuid references profiles(id) on delete cascade,
   role text check (role in ('LEADER', 'MEMBER')) default 'MEMBER',
-  unique(team_id, user_id)
+  joined_at timestamp with time zone default now(),
+  unique(team_id, user_id),  -- no duplicate membership
+  unique(user_id)             -- one active team per user
 );
 ```
 
