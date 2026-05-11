@@ -1,38 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+
+import Sidebar from "@/components/dashboard/sidebar";
+import TeamActions from "@/components/dashboard/team-actions";
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const getUser = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.push('/auth');
-        return;
-      }
-
-      setName(user.user_metadata.name || "User");
-    };
-
-    getUser();
-  }, [router]);
+    setName("Hello");
+  }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white p-10">
+    <main className="min-h-screen bg-[#0b0b18] flex">
 
-      <h1 className="text-5xl font-bold">
-        Welcome, {name}
-      </h1>
+      <Sidebar />
 
-    </div>
+      <section className="flex-1 p-10">
+
+        <div className="mb-10">
+
+          <h1 className="text-5xl font-bold text-white">
+            Hey, {name}!
+          </h1>
+
+          <p className="text-zinc-400 mt-3">
+            Welcome to your hackathon dashboard.
+          </p>
+
+        </div>
+
+        <TeamActions />
+
+      </section>
+    </main>
   );
 }
