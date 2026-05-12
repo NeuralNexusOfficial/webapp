@@ -11,23 +11,43 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { amount } = await req.json();
+    const body = await req.json();
+    const amount = Number(body.amount);
 
+    if (!amount || amount <= 0) {
+      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
+    }
+
+    const receipt = `nn_${user.id.slice(0, 8)}_${Date.now()}`;
+
+    // Create order in Razorpay (amount in paise: ₹500 = 50000 paise)
     const order = await razorpay.orders.create({
-      amount: amount * 100, // Razorpay expects amount in paise (e.g., ₹100 = 10000 paise)
+      amount: amount * 100,
       currency: 'INR',
-      receipt: `receipt_${Date.now()}`,
+      receipt,
     });
 
-    // Optionally: Store the order in your Supabase 'payments' table as 'PENDING'
-    await supabase.from('payments').insert({
+    // Record in Supabase with FSM initial state INITIATED
+    const { error: dbError } = await supabase.from('payments').insert({
       user_id: user.id,
       razorpay_order_id: order.id,
-      amount: amount,
-      status: 'PENDING',
+      amount,
+      receipt,
+      status: 'INITIATED',
     });
 
-    return NextResponse.json(order);
+    if (dbError) {
+      console.error('DB insert error:', dbError);
+      return NextResponse.json({ error: 'Failed to record payment' }, { status: 500 });
+    }
+
+    // Return only what the front-end checkout needs
+    return NextResponse.json({
+      order_id: order.id,
+      amount: order.amount,      // in paise
+      currency: order.currency,
+      receipt,
+    });
   } catch (error) {
     console.error('Razorpay Order Error:', error);
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });

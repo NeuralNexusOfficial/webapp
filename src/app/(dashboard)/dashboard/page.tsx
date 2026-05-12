@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import Sidebar from "@/components/dashboard/sidebar";
 import TeamActions from "@/components/dashboard/team-actions";
+import PayButton from "@/components/dashboard/pay-button";
 
 export default function DashboardPage() {
   const [name, setName] = useState("");
@@ -31,7 +32,18 @@ export default function DashboardPage() {
 
         </div>
 
-        <TeamActions />
+        <div className="space-y-10">
+          <TeamActions />
+
+          {/* ── Registration Fee ─────────────────────────────────── */}
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-3">Registration Fee</h2>
+            <p className="text-zinc-400 text-sm mb-4">
+              Pay the ₹500 hackathon registration fee to lock in your spot.
+            </p>
+            <PayButton amount={500} />
+          </div>
+        </div>
 
       </section>
     </main>

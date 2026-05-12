@@ -49,7 +49,7 @@ export async function getMyTeam(): Promise<TeamActionResult<TeamRow | null>> {
 
   return {
     success: true,
-    data: (data?.teams as TeamRow) ?? null,
+    data: (data?.teams as unknown as TeamRow) ?? null,
   }
 }
 

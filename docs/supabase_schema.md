@@ -61,17 +61,40 @@ create table team_members (
 ```
 
 ### 4. Payments
-Tracks Razorpay payments for hackathon registration or other fees.
+Tracks Razorpay payments. FSM states: `INITIATED → SUCCESS | FAILED`.
+
 ```sql
 create table payments (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references profiles(id),
   razorpay_order_id text unique,
+  razorpay_payment_id text,           -- populated by webhook on SUCCESS
+  receipt text,                        -- nn_<user_prefix>_<timestamp>
   amount int,
-  status text check (status in ('PENDING', 'SUCCESS', 'FAILED')) default 'PENDING',
+  status text check (status in ('INITIATED', 'SUCCESS', 'FAILED')) default 'INITIATED',
   created_at timestamp with time zone default now()
 );
 ```
+
+#### Migration (run in Supabase SQL Editor if table already exists)
+```sql
+-- Step 1: drop old constraint, rename state, add new columns
+alter table payments
+  drop constraint if exists payments_status_check;
+
+alter table payments
+  add column if not exists razorpay_payment_id text,
+  add column if not exists receipt text;
+
+-- rename existing PENDING rows to INITIATED
+update payments set status = 'INITIATED' where status = 'PENDING';
+
+-- Step 2: re-add constraint with new allowed values
+alter table payments
+  add constraint payments_status_check
+  check (status in ('INITIATED', 'SUCCESS', 'FAILED'));
+```
+
 
 ### 5. Submissions
 Stores project submissions for each team.

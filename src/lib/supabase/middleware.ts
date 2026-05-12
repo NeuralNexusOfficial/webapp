@@ -32,14 +32,38 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // We allow public access by default.
-  // For protected routes (like /dashboard and nested dashboard pages),
-  // redirect unauthenticated users to the auth landing page.
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth'
-    return NextResponse.redirect(url)
+  const pathname = request.nextUrl.pathname
+
+  // ── Admin & Judge routes: require login + correct DB role ──────────────────
+  const isAdminRoute = pathname.startsWith('/dashboard/admin')
+  const isJudgeRoute = pathname.startsWith('/dashboard/judge')
+
+  if (isAdminRoute || isJudgeRoute) {
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth'
+      url.searchParams.set('next', pathname)
+      return NextResponse.redirect(url)
+    }
+
+    // Fetch role from profiles table
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    const requiredRole = isAdminRoute ? 'ADMIN' : 'JUDGE'
+    if (!profile || profile.role !== requiredRole) {
+      // Redirect unauthorised users to the main dashboard
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
   }
+
+  // ── /dashboard and all other routes: fully public ─────────────────────────
+  // Session cookie is still refreshed above so server actions can read the user.
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're creating a new response object with NextResponse.next() make sure to:
   // 1. Pass the request in it, like so:
