@@ -1,26 +1,203 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+
+/* ── Design Tokens ──────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:           #000000;
+  --bg-card:      #0a0a0a;
+  --bg-card-2:    #111111;
+  --border:       rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.18);
+  --text:         #ffffff;
+  --text-muted:   #888888;
+  --text-subtle:  #555555;
+  --accent:       #ffffff;
+  --glow:         0 0 40px rgba(255,255,255,0.04);
+  --glow-hover:   0 0 60px rgba(255,255,255,0.10);
+  --radius-card:  1.25rem;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ── Reset & Base ───────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html { scroll-behavior: smooth; }
+
+html {
+  background: var(--bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  /* Transparent so the fixed BackgroundPaths layer underneath shows through */
+  background: transparent;
 }
+
+/* ── Cyber Card ─────────────────────────────────────────────────────────────── */
+/* AngelHack-style card with diagonal corner cuts */
+.card-cyber {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--glow);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  clip-path: polygon(
+    1.5rem 0%,
+    100% 0%,
+    100% calc(100% - 1.5rem),
+    calc(100% - 1.5rem) 100%,
+    0% 100%,
+    0% 1.5rem
+  );
+}
+.card-cyber:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--glow-hover);
+  transform: translateY(-2px);
+}
+
+/* ── Pill Button ────────────────────────────────────────────────────────────── */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.925rem;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-primary {
+  background: #ffffff;
+  color: #000000;
+}
+.btn-primary:hover {
+  background: #e8e8e8;
+  box-shadow: 0 0 30px rgba(255,255,255,0.25);
+}
+.btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.6);
+}
+
+/* ── Grid noise overlay (subtle texture) ───────────────────────────────────── */
+/* z-index: -1 ensures it sits BELOW the SVG paths (z-index: 0) */
+.noise-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Section label tag ──────────────────────────────────────────────────────── */
+.tag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── Gradient text ──────────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glow line divider ──────────────────────────────────────────────────────── */
+.glow-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+
+/* ── Input ──────────────────────────────────────────────────────────────────── */
+.input-nn {
+  width: 100%;
+  background: #0d0d0d;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-nn::placeholder { color: var(--text-subtle); }
+.input-nn:focus { border-color: rgba(255,255,255,0.35); }
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
+
+/* ── Selection ──────────────────────────────────────────────────────────────── */
+/* ── Selection ──────────────────────────────────────────────────────────────── */
+::selection { background: #fff; color: #000; }
+
+/* ── Simple animated background orbs (non-homepage pages) ───────────────────── */
+.simple-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.simple-orb-a {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(255,255,255,0.055) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  animation: orb-drift-a 28s ease-in-out infinite alternate;
+}
+.simple-orb-b {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+  bottom: -150px; right: -150px;
+  animation: orb-drift-b 34s ease-in-out infinite alternate;
+}
+.simple-orb-c {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: orb-drift-c 22s ease-in-out infinite alternate;
+}
+
+@keyframes orb-drift-a {
+  from { transform: translate(0px, 0px); }
+  to   { transform: translate(160px, 200px); }
+}
+@keyframes orb-drift-b {
+  from { transform: translate(0px, 0px); }
+  to   { transform: translate(-120px, -160px); }
+}
+@keyframes orb-drift-c {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to   { transform: translate(-38%, -62%) scale(1.25); }
+}
+

@@ -1,31 +1,65 @@
 export default function HowItWorks() {
   const steps = [
-    "Register",
-    "Build Team",
-    "Hack & Submit",
-    "Win Prizes",
+    {
+      num: "01",
+      title: "Register",
+      desc: "Sign up and complete your hacker profile in under 2 minutes.",
+    },
+    {
+      num: "02",
+      title: "Build Your Team",
+      desc: "Form a team of up to 5 or compete solo — your call.",
+    },
+    {
+      num: "03",
+      title: "Hack & Submit",
+      desc: "Build your project in 24 hours and submit via the dashboard.",
+    },
+    {
+      num: "04",
+      title: "Win Prizes",
+      desc: "Top projects win from a ₹5L+ prize pool across tracks.",
+    },
   ];
 
   return (
-    <section className="py-24 px-6">
+    <section id="how-it-works" className="py-28 px-6">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-5xl font-bold mb-12">
-          How It Works
-        </h2>
+        {/* Header */}
+        <div className="mb-16">
+          <div className="tag-label mb-4">Process</div>
+          <h2
+            className="text-5xl md:text-6xl font-bold text-white"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            How It Works
+          </h2>
+        </div>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        {/* Steps */}
+        <div className="grid md:grid-cols-4 gap-4">
           {steps.map((step, i) => (
-            <div
-              key={step}
-              className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8"
-            >
-              <span className="text-zinc-500">
-                0{i + 1}
-              </span>
+            <div key={step.num} className="relative group">
+              {/* Connector line */}
+              {i < steps.length - 1 && (
+                <div className="hidden md:block absolute top-8 left-full w-4 h-px bg-white/10 z-10" />
+              )}
 
-              <h3 className="text-2xl font-semibold mt-4">
-                {step}
-              </h3>
+              <div className="card-cyber p-8 h-full flex flex-col gap-4">
+                <span
+                  className="text-5xl font-bold text-white/[0.06] group-hover:text-white/10 transition-colors"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {step.num}
+                </span>
+                <h3
+                  className="text-xl font-semibold text-white"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {step.title}
+                </h3>
+                <p className="text-sm text-white/40 leading-relaxed">{step.desc}</p>
+              </div>
             </div>
           ))}
         </div>

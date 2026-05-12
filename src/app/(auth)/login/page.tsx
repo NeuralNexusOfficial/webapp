@@ -1,153 +1,128 @@
-// 'use client'
-
-// import { useState } from 'react'
-// import { createClient } from '@/lib/supabase/client'
-// import { useRouter } from 'next/navigation'
-
-// export default function LoginPage() {
-//   const [email, setEmail] = useState('')
-//   const [password, setPassword] = useState('')
-//   const [loading, setLoading] = useState(false)
-//   const [error, setError] = useState<string | null>(null)
-//   const router = useRouter()
-//   const supabase = createClient()
-
-//   const handleLogin = async (e: React.FormEvent) => {
-//     e.preventDefault()
-//     setLoading(true)
-//     setError(null)
-
-//     const { error } = await supabase.auth.signInWithPassword({
-//       email,
-//       password,
-//     })
-
-//     if (error) {
-//       setError(error.message)
-//       setLoading(false)
-//     } else {
-//       router.refresh()
-//       router.push('/dashboard')
-//     }
-//   }
-
-//   return (
-//     <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4">
-//       <div className="w-full max-w-md space-y-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 backdrop-blur-xl">
-//         <div className="text-center">
-//           <h1 className="text-3xl font-bold tracking-tight text-white">Welcome back</h1>
-//           <p className="mt-2 text-zinc-400">Sign in to your account to continue</p>
-//         </div>
-
-//         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-//           {error && (
-//             <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
-//               {error}
-//             </div>
-//           )}
-          
-//           <div className="space-y-4">
-//             <div>
-//               <label className="block text-sm font-medium text-zinc-300">Email address</label>
-//               <input
-//                 type="email"
-//                 required
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//                 className="mt-1 block w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-//                 placeholder="you@example.com"
-//               />
-//             </div>
-//             <div>
-//               <label className="block text-sm font-medium text-zinc-300">Password</label>
-//               <input
-//                 type="password"
-//                 required
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//                 className="mt-1 block w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-//                 placeholder="••••••••"
-//               />
-//             </div>
-//           </div>
-
-//           <button
-//             type="submit"
-//             disabled={loading}
-//             className="flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:opacity-50"
-//           >
-//             {loading ? 'Signing in...' : 'Sign in'}
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   )
-// }
-
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/dashboard";
   const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async () => {
-    const { data, error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      alert(error.message);
+      setError(error.message);
+      setLoading(false);
       return;
     }
 
-    router.push("/dashboard");
+    router.push(next);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-black">
+      {/* Glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)",
+        }}
+      />
 
-      <div className="w-full max-w-md bg-zinc-900 p-8 rounded-3xl">
+      <div className="relative z-10 w-full max-w-sm">
+        {/* Brand */}
+        <div className="text-center mb-10">
+          <Link href="/">
+            <span
+              className="text-2xl font-bold text-white"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Neural<span className="text-white/30">Nexus</span>
+            </span>
+          </Link>
+          <p className="text-white/40 text-sm mt-2">Sign in to continue</p>
+        </div>
 
-        <h1 className="text-3xl font-bold mb-6">
-          Login
-        </h1>
+        {/* Card */}
+        <form onSubmit={handleLogin} className="card-cyber p-8 space-y-5">
+          <div className="tag-label mb-2 w-fit">Welcome Back</div>
+          <h1
+            className="text-2xl font-bold text-white"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Log In
+          </h1>
 
-        <div className="space-y-4">
+          {error && (
+            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
 
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-3 rounded-xl bg-zinc-800"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 rounded-xl bg-zinc-800"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="space-y-3">
+            <input
+              id="login-email"
+              type="email"
+              required
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-nn"
+            />
+            <input
+              id="login-password"
+              type="password"
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-nn"
+            />
+          </div>
 
           <button
-            onClick={handleLogin}
-            className="w-full bg-white text-black py-3 rounded-xl font-semibold"
+            type="submit"
+            disabled={loading}
+            className="btn-pill btn-primary w-full justify-center"
           >
-            Login
+            {loading ? "Signing in…" : "Log In →"}
           </button>
 
-        </div>
+          <p className="text-center text-sm text-white/30">
+            No account?{" "}
+            <Link
+              href={`/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
+              className="text-white/60 hover:text-white underline underline-offset-2"
+            >
+              Sign up
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
