@@ -31,14 +31,23 @@ export interface Payment {
   created_at: string;
 }
 
+export type Track = 'AI/ML' | 'Web3' | 'HealthTech' | 'FinTech' | 'OpenInnovation';
+
+export type SubmissionStatus = 'DRAFT' | 'SUBMITTED' | 'JUDGED';
+
 export interface Submission {
   id: string;
   team_id: string;
-  project_name: string;
+  title: string;
   description: string;
-  video_link: string;
-  github_link: string;
+  track: Track;
+  repo_url: string | null;
+  demo_url: string | null;
+  file_url: string | null;
+  deadline: string;
+  submitted_at: string | null;
+  status: SubmissionStatus;
   score: number;
   judged_by: string | null;
   created_at: string;
-}
+}

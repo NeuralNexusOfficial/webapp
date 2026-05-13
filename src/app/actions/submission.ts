@@ -3,27 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export type Track = 'AI/ML' | 'Web3' | 'HealthTech' | 'FinTech' | 'OpenInnovation'
-
-export type SubmissionStatus = 'DRAFT' | 'SUBMITTED' | 'JUDGED'
-
-export interface SubmissionRow {
-  id: string
-  team_id: string
-  title: string
-  description: string
-  track: Track
-  repo_url: string | null
-  demo_url: string | null
-  file_url: string | null
-  deadline: string
-  submitted_at: string | null
-  status: SubmissionStatus
-  score: number
-  created_at: string
-}
+import { Track, SubmissionStatus, Submission } from '@/types'
 
 export type SubmissionActionResult<T = undefined> =
   | { success: true; data: T }
@@ -60,7 +40,7 @@ function isAfterDeadline(): boolean {
 /**
  * Fetches the submission for the current user's team, or null if none exists.
  */
-export async function getMySubmission(): Promise<SubmissionActionResult<SubmissionRow | null>> {
+export async function getMySubmission(): Promise<SubmissionActionResult<Submission | null>> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -86,7 +66,7 @@ export async function getMySubmission(): Promise<SubmissionActionResult<Submissi
 
   if (error) return { success: false, error: error.message }
 
-  return { success: true, data: data as SubmissionRow | null }
+  return { success: true, data: data as Submission | null }
 }
 
 // ─── Upsert Submission ────────────────────────────────────────────────────────
@@ -100,7 +80,7 @@ export async function getMySubmission(): Promise<SubmissionActionResult<Submissi
  */
 export async function upsertSubmission(
   input: UpsertSubmissionInput,
-): Promise<SubmissionActionResult<SubmissionRow>> {
+): Promise<SubmissionActionResult<Submission>> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -146,7 +126,22 @@ export async function upsertSubmission(
     return { success: false, error: `Invalid track. Must be one of: ${validTracks.join(', ')}`, code: 400 }
   }
 
-  // ── 4. Upsert (INSERT or UPDATE based on team_id uniqueness) ────────────────
+  // ── 4. Check existing status ───────────────────────────────────────────────
+  const { data: existing } = await supabase
+    .from('submissions')
+    .select('status')
+    .eq('team_id', teamId)
+    .maybeSingle()
+
+  if (existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED') {
+    return {
+      success: false,
+      error: 'Submission is locked and cannot be edited',
+      code: 403,
+    }
+  }
+
+  // ── 5. Upsert (INSERT or UPDATE based on team_id uniqueness) ────────────────
   const payload = {
     team_id: teamId,
     title: input.title.trim(),
@@ -169,5 +164,47 @@ export async function upsertSubmission(
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/dashboard/submit')
-  return { success: true, data: data as SubmissionRow }
+  return { success: true, data: data as Submission }
+}
+
+// ─── Lock Submission ──────────────────────────────────────────────────────────
+
+/**
+ * Marks the submission as SUBMITTED, making it read-only.
+ */
+export async function lockSubmission(): Promise<SubmissionActionResult<Submission>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  if (isAfterDeadline()) {
+    return { success: false, error: 'Deadline has passed', code: 403 }
+  }
+
+  // Resolve team
+  const { data: membership } = await supabase
+    .from('team_members')
+    .select('team_id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (!membership) return { success: false, error: 'Team not found', code: 404 }
+
+  const { data, error } = await supabase
+    .from('submissions')
+    .update({
+      status: 'SUBMITTED' as SubmissionStatus,
+      submitted_at: new Date().toISOString(),
+    })
+    .eq('team_id', membership.team_id)
+    .select()
+    .single()
+
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath('/dashboard/submit')
+  return { success: true, data: data as Submission }
 }
