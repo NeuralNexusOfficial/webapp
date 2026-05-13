@@ -50,6 +50,10 @@ export default function PayButton({ amount, label }: PayButtonProps) {
         body: JSON.stringify({ amount }),
       });
       if (!res.ok) {
+        if (res.status === 401) {
+          window.location.href = '/auth?next=/dashboard';
+          return;
+        }
         const err = await res.json();
         throw new Error(err.error ?? 'Order creation failed');
       }

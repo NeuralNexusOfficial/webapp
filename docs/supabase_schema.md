@@ -97,17 +97,39 @@ alter table payments
 
 
 ### 5. Submissions
-Stores project submissions for each team.
+Stores project submissions for each team. One submission per team (enforced by `UNIQUE(team_id)`).
+Deadline is enforced server-side; client never controls it.
+
 ```sql
 create table submissions (
-  id uuid default gen_random_uuid() primary key,
-  team_id uuid references teams(id) unique,
-  project_name text,
-  description text,
-  video_link text,
-  github_link text,
-  score float default 0,
-  judged_by uuid references profiles(id),
-  created_at timestamp with time zone default now()
+  id            uuid default gen_random_uuid() primary key,
+
+  -- One submission per team
+  team_id       uuid references teams(id) on delete cascade unique not null,
+
+  -- Core MVP fields
+  title         text not null,
+  description   text not null,
+  track         text not null
+    check (track in ('AI/ML', 'Web3', 'HealthTech', 'FinTech', 'OpenInnovation')),
+  repo_url      text,           -- GitHub / GitLab link
+  demo_url      text,           -- live demo or video link
+  file_url      text,           -- Supabase Storage path for uploaded file
+
+  -- Deadline & lifecycle
+  deadline      timestamptz not null,  -- set server-side from SUBMISSION_DEADLINE env var
+  submitted_at  timestamptz,           -- updated on every successful upsert
+  status        text not null
+    check (status in ('DRAFT', 'SUBMITTED', 'JUDGED'))
+    default 'DRAFT',
+
+  -- Judging (populated by admin/judge later)
+  score         float default 0,
+  judged_by     uuid references profiles(id),
+
+  created_at    timestamptz default now()
 );
 ```
+
+> **FSM**: `DRAFT → SUBMITTED → JUDGED`
+> See `/docs/submission_rules.md` for full deadline behavior, RLS policies, and migration SQL.

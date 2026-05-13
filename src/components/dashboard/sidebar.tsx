@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 const navItems = [
   { label: "Dashboard",   href: "/dashboard" },
   { label: "My Team",     href: "/dashboard/team" },
-  { label: "Submissions", href: "/dashboard/submissions" },
+  { label: "Submit Project", href: "/dashboard/submit" },
   { label: "Leaderboard", href: "/dashboard/leaderboard" },
   { label: "Resources",   href: "/dashboard/resources" },
 ];
