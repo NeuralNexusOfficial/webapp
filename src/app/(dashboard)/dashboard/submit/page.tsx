@@ -2,7 +2,10 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import Sidebar from '@/components/dashboard/sidebar';
-import { upsertSubmission, getMySubmission, type Track, type SubmissionRow } from '@/app/actions/submission';
+import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions/submission';
+import { Track, Submission } from '@/types';
+import { createClient } from '@/lib/supabase/client';
+import { useRef } from 'react';
 
 const TRACKS: { value: Track; label: string; desc: string }[] = [
   { value: 'AI/ML',          label: '🤖 AI / ML',         desc: 'Machine learning, neural networks, LLMs, computer vision' },
@@ -18,6 +21,7 @@ type FormState = {
   track: Track | '';
   repo_url: string;
   demo_url: string;
+  file_url: string;
 };
 
 export default function SubmitPage() {
@@ -27,12 +31,15 @@ export default function SubmitPage() {
     track: '',
     repo_url: '',
     demo_url: '',
+    file_url: '',
   });
-  const [existing, setExisting] = useState<SubmissionRow | null>(null);
+  const [existing, setExisting] = useState<Submission | null>(null);
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
   useEffect(() => {
@@ -46,6 +53,7 @@ export default function SubmitPage() {
           track: s.track ?? '',
           repo_url: s.repo_url ?? '',
           demo_url: s.demo_url ?? '',
+          file_url: s.file_url ?? '',
         });
         setCharCount((s.description ?? '').length);
       }
@@ -65,6 +73,7 @@ export default function SubmitPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isLocked) return;
     if (!form.track) {
       showToast('Please select a track before saving.', false);
       return;
@@ -76,6 +85,7 @@ export default function SubmitPage() {
         track: form.track as Track,
         repo_url: form.repo_url,
         demo_url: form.demo_url,
+        file_url: form.file_url,
       });
       if (res.success) {
         setExisting(res.data);
@@ -85,6 +95,59 @@ export default function SubmitPage() {
       }
     });
   }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 50 * 1024 * 1024) {
+      showToast('File size exceeds 50MB limit.', false);
+      return;
+    }
+
+    setIsUploading(true);
+    const supabase = createClient();
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `submissions/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('submission-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('submission-files')
+        .getPublicUrl(filePath);
+
+      setForm(f => ({ ...f, file_url: publicUrl }));
+      showToast('File uploaded successfully!', true);
+    } catch (error: any) {
+      showToast(error.message || 'Error uploading file', false);
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  function handleFinalize() {
+    if (!existing) return;
+    if (!window.confirm('Are you sure? Once finalized, you cannot edit your submission again.')) return;
+
+    startTransition(async () => {
+      const res = await lockSubmission();
+      if (res.success) {
+        setExisting(res.data);
+        showToast('Submission finalized and locked!', true);
+      } else {
+        showToast(res.error, false);
+      }
+    });
+  }
+
+  const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
 
   const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
     ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE).toLocaleString('en-IN', {
@@ -116,18 +179,22 @@ export default function SubmitPage() {
 
           {/* Status banner */}
           {existing && (
-            <div className="card-cyber p-5 flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg flex-shrink-0">✓</div>
+            <div className={`card-cyber p-5 flex items-start gap-4 ${isLocked ? 'border-emerald-500/30 bg-emerald-500/5' : ''}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
+                isLocked ? 'bg-emerald-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
+              }`}>
+                {isLocked ? '🔒' : '✓'}
+              </div>
               <div>
                 <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
-                  Draft Saved
+                  {isLocked ? 'Submission Finalized' : 'Draft Saved'}
                 </p>
                 <p className="text-white/40 text-sm mt-0.5">
-                  Last saved:{' '}
+                  {isLocked ? 'Finalized on' : 'Last saved'}:{' '}
                   {existing.submitted_at
                     ? new Date(existing.submitted_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
                     : '—'}
-                  {' '}· Status: <span className="text-white/60">{existing.status}</span>
+                  {' '}· Status: <span className="text-white/60 font-mono tracking-tight">{existing.status}</span>
                 </p>
               </div>
             </div>
@@ -174,6 +241,7 @@ export default function SubmitPage() {
                       placeholder="e.g. MediScan — AI-powered drug interaction checker"
                       value={form.title}
                       onChange={(e) => handleChange('title', e.target.value)}
+                      disabled={isLocked}
                       required
                       maxLength={120}
                     />
@@ -193,6 +261,7 @@ export default function SubmitPage() {
                       placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
                       value={form.description}
                       onChange={(e) => handleChange('description', e.target.value)}
+                      disabled={isLocked}
                       required
                       maxLength={1000}
                     />
@@ -214,12 +283,13 @@ export default function SubmitPage() {
                           id={`track-${t.value.toLowerCase().replace('/', '-')}`}
                           role="radio"
                           aria-checked={selected}
-                          onClick={() => handleChange('track', t.value)}
+                          onClick={() => !isLocked && handleChange('track', t.value)}
+                          disabled={isLocked}
                           className={`text-left p-4 rounded-xl border transition-all ${
                             selected
                               ? 'bg-white/10 border-white/40 text-white'
                               : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
-                          }`}
+                          } ${isLocked ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
                           <p className="font-semibold text-sm mb-0.5" style={{ fontFamily: 'var(--font-display)' }}>
                             {t.label}
@@ -243,6 +313,7 @@ export default function SubmitPage() {
                       placeholder="https://github.com/your-team/project"
                       value={form.repo_url}
                       onChange={(e) => handleChange('repo_url', e.target.value)}
+                      disabled={isLocked}
                     />
                   </label>
                   <label className="block">
@@ -254,45 +325,107 @@ export default function SubmitPage() {
                       placeholder="https://youtu.be/your-demo or https://your-live-app.vercel.app"
                       value={form.demo_url}
                       onChange={(e) => handleChange('demo_url', e.target.value)}
+                      disabled={isLocked}
                     />
                   </label>
                 </div>
 
-                {/* File upload placeholder */}
+                {/* File upload */}
                 <div className="card-cyber p-6">
                   <span className="text-xs text-white/40 uppercase tracking-widest mb-4 block">File Upload (optional)</span>
-                  <div
-                    className="border-2 border-dashed border-white/[0.12] rounded-xl p-8 flex flex-col items-center justify-center gap-3 text-center cursor-not-allowed opacity-50"
-                    aria-label="File upload — coming soon"
-                  >
-                    <div className="text-3xl">📁</div>
-                    <p className="text-white/50 text-sm font-medium">Drag & drop or click to upload</p>
-                    <p className="text-white/30 text-xs">PDF, ZIP, or any file ≤ 50 MB</p>
-                    <div className="tag-label mt-1">Coming soon</div>
-                  </div>
+                  
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept=".pdf,.zip,.rar,.7z,.jpg,.png"
+                  />
+
+                  {form.file_url ? (
+                    <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-6 flex items-center justify-between gap-4 animate-in fade-in zoom-in-95">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-2xl">📄</div>
+                        <div>
+                          <p className="text-emerald-400 font-semibold text-sm">File Uploaded</p>
+                          <a 
+                            href={form.file_url} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="text-white/40 text-xs hover:text-white transition-colors"
+                          >
+                            View uploaded file →
+                          </a>
+                        </div>
+                      </div>
+                      {!isLocked && (
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, file_url: '' }))}
+                          className="text-xs text-red-400/60 hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-400/10"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => !isLocked && !isUploading && fileInputRef.current?.click()}
+                      className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-3 text-center transition-all ${
+                        isLocked || isUploading
+                          ? 'border-white/[0.06] opacity-30 cursor-not-allowed'
+                          : 'border-white/[0.12] hover:border-white/30 cursor-pointer hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      {isUploading ? (
+                        <div className="animate-spin h-8 w-8 border-2 border-white/20 border-t-white rounded-full mb-2" />
+                      ) : (
+                        <div className="text-3xl">📁</div>
+                      )}
+                      <p className="text-white/50 text-sm font-medium">
+                        {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
+                      </p>
+                      <p className="text-white/30 text-xs">PDF, ZIP, or any file ≤ 50 MB</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit */}
-                <div className="flex items-center gap-4">
-                  <button
-                    id="save-submission-btn"
-                    type="submit"
-                    disabled={isPending}
-                    className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
-                  >
-                    {isPending ? (
-                      <>
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                        </svg>
-                        Saving…
-                      </>
-                    ) : (
-                      `${existing ? 'Update' : 'Save'} Submission →`
-                    )}
-                  </button>
-                  <p className="text-xs text-white/30">You can update anytime before the deadline.</p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  {!isLocked && (
+                    <button
+                      id="save-submission-btn"
+                      type="submit"
+                      disabled={isPending}
+                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+                    >
+                      {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
+                    </button>
+                  )}
+
+                  {existing && !isLocked && (
+                    <button
+                      id="finalize-submission-btn"
+                      type="button"
+                      onClick={handleFinalize}
+                      disabled={isPending}
+                      className="btn-pill border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                    >
+                      Finalize & Lock →
+                    </button>
+                  )}
+
+                  {isLocked && (
+                    <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                      <span>🔒 Submission Locked</span>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-white/30">
+                    {isLocked 
+                      ? "This project has been submitted and can no longer be edited."
+                      : "You can update anytime before the deadline."}
+                  </p>
                 </div>
               </form>
             )}

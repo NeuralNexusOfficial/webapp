@@ -9,9 +9,11 @@ const navItems = [
   { label: "Dashboard",   href: "/dashboard" },
   { label: "My Team",     href: "/dashboard/team" },
   { label: "Submit Project", href: "/dashboard/submit" },
-  { label: "Leaderboard", href: "/dashboard/leaderboard" },
+  { label: "Judging",     href: "/judge" },
   { label: "Resources",   href: "/dashboard/resources" },
 ];
+
+
 
 export default function Sidebar() {
   const pathname = usePathname();
