@@ -134,8 +134,11 @@ if (new Date() > SUBMISSION_DEADLINE) {
 2. **Deadline is mandatory** — the endpoint rejects requests after `SUBMISSION_DEADLINE`.
 3. **Partial saves are allowed** — only `title`, `description`, `track` are required.
    `repo_url`, `demo_url`, `file_url` are optional and can be filled later pre-deadline.
-4. **File uploads** go to Supabase Storage bucket `submission-files` and the public URL is
-   stored in `file_url`. Files > 50 MB are rejected.
+4. **File Upload Constraints**:
+   - **Storage Bucket**: Uploads go to the Supabase Storage bucket `submission-files`.
+   - **Allowed Formats**: `.pdf`, `.ppt`, `.pptx`, `.doc`, `.docx`.
+   - **Max File Size**: 20 MB.
+   - **Field**: The public URL is stored in the `file_url` column of the `submissions` table.
 5. **`submitted_at` is updated on every save** — it is the timestamp of the *last* save,
    not the first.
 
