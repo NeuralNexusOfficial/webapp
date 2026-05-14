@@ -28,7 +28,14 @@ function getDeadline(): Date {
     d.setDate(d.getDate() + 30)
     return d
   }
-  return new Date(raw)
+  const date = new Date(raw)
+  if (isNaN(date.getTime())) {
+    console.error(`Invalid SUBMISSION_DEADLINE format: ${raw}. Using fallback.`)
+    const fallback = new Date()
+    fallback.setDate(fallback.getDate() + 30)
+    return fallback
+  }
+  return date
 }
 
 function isAfterDeadline(): boolean {
