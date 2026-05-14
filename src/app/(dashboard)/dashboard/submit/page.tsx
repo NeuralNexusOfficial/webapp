@@ -100,8 +100,10 @@ export default function SubmitPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 50 * 1024 * 1024) {
-      showToast('File size exceeds 50MB limit.', false);
+    // Check deadline before upload
+    const deadline = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE) : null;
+    if (deadline && new Date() > deadline) {
+      showToast('Submission deadline has passed. Uploads are no longer allowed.', false);
       return;
     }
 
@@ -339,7 +341,7 @@ export default function SubmitPage() {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     className="hidden"
-                    accept=".pdf,.zip,.rar,.7z,.jpg,.png"
+                    accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
                   />
 
                   {form.file_url ? (
@@ -385,7 +387,7 @@ export default function SubmitPage() {
                       <p className="text-white/50 text-sm font-medium">
                         {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
                       </p>
-                      <p className="text-white/30 text-xs">PDF, ZIP, or any file ≤ 50 MB</p>
+                      <p className="text-white/30 text-xs">PDF, ZIP, PPT, DOC, or any file ≤ 50 MB</p>
                     </div>
                   )}
                 </div>
