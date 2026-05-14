@@ -86,7 +86,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
   if (state === 'success') {
     return (
       <div className="card-cyber p-6 flex items-start gap-4">
-        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg shrink-0">
           ✓
         </div>
         <div>
@@ -105,7 +105,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
     return (
       <div className="card-cyber p-6 flex flex-col gap-4">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 text-lg flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 text-lg shrink-0">
             ✕
           </div>
           <div>
