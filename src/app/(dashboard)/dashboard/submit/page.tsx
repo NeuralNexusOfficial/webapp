@@ -24,16 +24,6 @@ type FormState = {
   file_url: string;
 };
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
-
-const ALLOWED_EXTENSIONS = [
-  'pdf',
-  'ppt',
-  'pptx',
-  'doc',
-  'docx',
-];
-
 export default function SubmitPage() {
   const [form, setForm] = useState<FormState>({
     title: '',
@@ -84,44 +74,8 @@ export default function SubmitPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isLocked) return;
-    if (
-          !form.title.trim() ||
-          !form.description.trim()
-        ) {
-          showToast(
-            'Please complete all required fields.',
-            false
-          );
-
-          return;
-        }
     if (!form.track) {
       showToast('Please select a track before saving.', false);
-      return;
-    }
-    const urlRegex = /^https?:\/\/.+/;
-
-    if (
-      form.repo_url &&
-      !urlRegex.test(form.repo_url)
-    ) {
-      showToast(
-        'Invalid repository URL.',
-        false
-      );
-
-      return;
-    }
-
-    if (
-      form.demo_url &&
-      !urlRegex.test(form.demo_url)
-    ) {
-      showToast(
-        'Invalid demo URL.',
-        false
-      );
-
       return;
     }
     startTransition(async () => {
@@ -145,33 +99,6 @@ export default function SubmitPage() {
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const extension =
-    file.name
-      .split('.')
-      .pop()
-      ?.toLowerCase();
-
-  if (
-    !extension ||
-    !ALLOWED_EXTENSIONS.includes(extension)
-  ) {
-    showToast(
-      'Invalid file format.',
-      false
-    );
-
-    return;
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    showToast(
-      'File size exceeds 20MB.',
-      false
-    );
-
-    return;
-  }
 
     // Check deadline before upload
     const deadline = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE) : null;
@@ -222,12 +149,10 @@ export default function SubmitPage() {
     });
   }
 
-  const deadlineDate = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE) : null;
-  const isPastDeadline = deadlineDate ? new Date() > deadlineDate : false;
-  const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED' || isPastDeadline;
+  const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
 
-  const deadlineStr = deadlineDate
-    ? deadlineDate.toLocaleString('en-IN', {
+  const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
+    ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE).toLocaleString('en-IN', {
         dateStyle: 'long',
         timeStyle: 'short',
       })
@@ -416,8 +341,7 @@ export default function SubmitPage() {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     className="hidden"
-                    accept=".pdf,.ppt,.pptx,.doc,.docx"
-                    disabled={isLocked}
+                    accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
                   />
 
                   {form.file_url ? (
@@ -463,7 +387,7 @@ export default function SubmitPage() {
                       <p className="text-white/50 text-sm font-medium">
                         {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
                       </p>
-                      <p className="text-white/30 text-xs">PDF, PPT, or DOC files ≤ 20 MB</p>
+                      <p className="text-white/30 text-xs">PDF, ZIP, PPT, DOC, or any file ≤ 50 MB</p>
                     </div>
                   )}
                 </div>
@@ -495,7 +419,7 @@ export default function SubmitPage() {
 
                   {isLocked && (
                     <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <span>🔒 Submission Locked {isPastDeadline ? '(Deadline Passed)' : ''}</span>
+                      <span>🔒 Submission Locked</span>
                     </div>
                   )}
 
