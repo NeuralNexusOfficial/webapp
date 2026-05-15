@@ -24,6 +24,22 @@ type FormState = {
   file_url: string;
 };
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+const ALLOWED_EXTENSIONS = [
+  'pdf',
+  'zip',
+  'rar',
+  '7z',
+  'jpg',
+  'jpeg',
+  'png',
+  'ppt',
+  'pptx',
+  'doc',
+  'docx',
+];
+
 export default function SubmitPage() {
   const [form, setForm] = useState<FormState>({
     title: '',
@@ -74,8 +90,44 @@ export default function SubmitPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isLocked) return;
+    if (
+          !form.title.trim() ||
+          !form.description.trim()
+        ) {
+          showToast(
+            'Please complete all required fields.',
+            false
+          );
+
+          return;
+        }
     if (!form.track) {
       showToast('Please select a track before saving.', false);
+      return;
+    }
+    const urlRegex = /^https?:\/\/.+/;
+
+    if (
+      form.repo_url &&
+      !urlRegex.test(form.repo_url)
+    ) {
+      showToast(
+        'Invalid repository URL.',
+        false
+      );
+
+      return;
+    }
+
+    if (
+      form.demo_url &&
+      !urlRegex.test(form.demo_url)
+    ) {
+      showToast(
+        'Invalid demo URL.',
+        false
+      );
+
       return;
     }
     startTransition(async () => {
@@ -99,6 +151,33 @@ export default function SubmitPage() {
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const extension =
+    file.name
+      .split('.')
+      .pop()
+      ?.toLowerCase();
+
+  if (
+    !extension ||
+    !ALLOWED_EXTENSIONS.includes(extension)
+  ) {
+    showToast(
+      'Invalid file format.',
+      false
+    );
+
+    return;
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    showToast(
+      'File size exceeds 50MB.',
+      false
+    );
+
+    return;
+  }
 
     // Check deadline before upload
     const deadline = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE) : null;
@@ -342,6 +421,7 @@ export default function SubmitPage() {
                     onChange={handleFileUpload}
                     className="hidden"
                     accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
+                    disabled={isLocked}
                   />
 
                   {form.file_url ? (
