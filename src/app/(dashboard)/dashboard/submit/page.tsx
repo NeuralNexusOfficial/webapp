@@ -24,16 +24,10 @@ type FormState = {
   file_url: string;
 };
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 const ALLOWED_EXTENSIONS = [
   'pdf',
-  'zip',
-  'rar',
-  '7z',
-  'jpg',
-  'jpeg',
-  'png',
   'ppt',
   'pptx',
   'doc',
@@ -172,7 +166,7 @@ export default function SubmitPage() {
 
   if (file.size > MAX_FILE_SIZE) {
     showToast(
-      'File size exceeds 50MB.',
+      'File size exceeds 20MB.',
       false
     );
 
@@ -228,10 +222,12 @@ export default function SubmitPage() {
     });
   }
 
-  const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
+  const deadlineDate = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE) : null;
+  const isPastDeadline = deadlineDate ? new Date() > deadlineDate : false;
+  const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED' || isPastDeadline;
 
-  const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
-    ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE).toLocaleString('en-IN', {
+  const deadlineStr = deadlineDate
+    ? deadlineDate.toLocaleString('en-IN', {
         dateStyle: 'long',
         timeStyle: 'short',
       })
@@ -420,7 +416,7 @@ export default function SubmitPage() {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     className="hidden"
-                    accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
+                    accept=".pdf,.ppt,.pptx,.doc,.docx"
                     disabled={isLocked}
                   />
 
@@ -467,7 +463,7 @@ export default function SubmitPage() {
                       <p className="text-white/50 text-sm font-medium">
                         {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
                       </p>
-                      <p className="text-white/30 text-xs">PDF, ZIP, PPT, DOC, or any file ≤ 50 MB</p>
+                      <p className="text-white/30 text-xs">PDF, PPT, or DOC files ≤ 20 MB</p>
                     </div>
                   )}
                 </div>
@@ -499,7 +495,7 @@ export default function SubmitPage() {
 
                   {isLocked && (
                     <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <span>🔒 Submission Locked</span>
+                      <span>🔒 Submission Locked {isPastDeadline ? '(Deadline Passed)' : ''}</span>
                     </div>
                   )}
 
