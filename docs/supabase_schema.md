@@ -131,5 +131,40 @@ create table submissions (
 );
 ```
 
-> **FSM**: `DRAFT → SUBMITTED → JUDGED`
 > See `/docs/submission_rules.md` for full deadline behavior, RLS policies, and migration SQL.
+
+### 6. Judge Assignments
+Links Judges to Submissions for evaluation.
+```sql
+create table judge_assignments (
+  id uuid default gen_random_uuid() primary key,
+  submission_id uuid references submissions(id) on delete cascade not null,
+  judge_id uuid references profiles(id) on delete cascade not null,
+  created_at timestamptz default now(),
+  unique(submission_id, judge_id)
+);
+```
+
+### 7. Scores
+Stores scores given by judges for specific submissions. Replaces the single `score` column in `submissions`.
+```sql
+create table scores (
+  id uuid default gen_random_uuid() primary key,
+  submission_id uuid references submissions(id) on delete cascade not null,
+  judge_id uuid references profiles(id) on delete cascade not null,
+
+  innovation_score int not null check (innovation_score between 1 and 10),
+  technical_score int not null check (technical_score between 1 and 10),
+  ui_ux_score int not null check (ui_ux_score between 1 and 10),
+  scalability_score int not null check (scalability_score between 1 and 10),
+
+  total_score int generated always as (
+    innovation_score + technical_score + ui_ux_score + scalability_score
+  ) stored,
+
+  comments text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(submission_id, judge_id)
+);
+```

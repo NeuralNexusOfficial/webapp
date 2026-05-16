@@ -50,4 +50,25 @@ export interface Submission {
   score: number;
   judged_by: string | null;
   created_at: string;
+}
+
+export interface JudgeAssignment {
+  id: string;
+  submission_id: string;
+  judge_id: string;
+  created_at: string;
+}
+
+export interface Score {
+  id: string;
+  submission_id: string;
+  judge_id: string;
+  innovation_score: number;
+  technical_score: number;
+  ui_ux_score: number;
+  scalability_score: number;
+  total_score: number;
+  comments: string | null;
+  created_at: string;
+  updated_at: string;
 }
