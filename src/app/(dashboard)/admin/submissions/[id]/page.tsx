@@ -9,11 +9,15 @@ export default async function AdminSubmissionDetails({
 }: {
   params: { id: string };
 }) {
-  const [{ data: submission }, { data: judges }, { data: scores }] = await Promise.all([
+  const [submissionRes, judgesRes, scoresRes] = await Promise.all([
     getSubmissionById(params.id),
     getAllJudges(),
     getSubmissionScores(params.id),
   ]);
+
+  const submission = submissionRes.success ? submissionRes.data : null;
+  const judges = judgesRes.success ? judgesRes.data : [];
+  const scores = scoresRes.success ? scoresRes.data : [];
 
   if (!submission) return notFound();
 

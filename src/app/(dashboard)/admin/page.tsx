@@ -10,12 +10,16 @@ export default async function AdminPage({
 }: {
   searchParams: { track?: string; status?: string };
 }) {
-  const { data: submissions, error } = await getFilteredSubmissions(
+  const res = await getFilteredSubmissions(
     searchParams.track,
     searchParams.status
   );
+  
+  const submissions = res.success ? res.data : [];
+  const error = !res.success ? res.error : null;
 
-  const { data: judges } = await getAllJudges();
+  const judgesRes = await getAllJudges();
+  const judges = judgesRes.success ? judgesRes.data : [];
 
   return (
     <main className="min-h-screen flex">

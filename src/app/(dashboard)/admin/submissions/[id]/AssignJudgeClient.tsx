@@ -8,7 +8,7 @@ export default function AssignJudgeClient({
   judges,
 }: {
   submissionId: string;
-  judges: { id: string; full_name: string; email: string }[];
+  judges: { id: string; full_name: string | null; email: string | null }[];
 }) {
   const [selectedJudge, setSelectedJudge] = useState('');
   const [loading, setLoading] = useState(false);
