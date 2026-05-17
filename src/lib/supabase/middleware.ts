@@ -34,11 +34,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  console.log('Middleware - User:', user?.email || 'No user')
+
   const pathname = request.nextUrl.pathname
 
   // ── Admin & Judge routes: require login + correct DB role ──────────────────
-  const isAdminRoute = pathname.startsWith('/dashboard/admin')
-  const isJudgeRoute = pathname.startsWith('/dashboard/judge')
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isJudgeRoute = pathname.startsWith('/judge')
 
   if (isAdminRoute || isJudgeRoute) {
     if (!user) {

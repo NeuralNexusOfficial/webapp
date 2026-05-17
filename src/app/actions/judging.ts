@@ -87,6 +87,29 @@ export async function assignJudge(submissionId: string, judgeId: string): Promis
   return { success: true, data: undefined }
 }
 
+export async function unassignJudge(submissionId: string, judgeId: string): Promise<JudgingActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (!profile || profile.role !== 'ADMIN') {
+    return { success: false, error: 'Access denied. Admin role required.', code: 403 }
+  }
+
+  const { error } = await supabase
+    .from('judge_assignments')
+    .delete()
+    .eq('submission_id', submissionId)
+    .eq('judge_id', judgeId)
+
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath('/admin')
+  revalidatePath(`/admin/submissions/${submissionId}`)
+  return { success: true, data: undefined }
+}
+
 export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Submission & { team_name: string; is_scored: boolean })[]>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -143,6 +166,19 @@ export async function scoreSubmission(
     return { success: false, error: 'Access denied.', code: 403 }
   }
 
+  if (profile.role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await supabase
+      .from('judge_assignments')
+      .select('id')
+      .eq('submission_id', submissionId)
+      .eq('judge_id', user.id)
+      .maybeSingle()
+
+    if (assignError || !assignment) {
+      return { success: false, error: 'Access denied. You are not assigned to this submission.', code: 403 }
+    }
+  }
+
   const { data: scoreData, error: scoreError } = await supabase
     .from('scores')
     .upsert({
@@ -178,6 +214,24 @@ export async function getSubmissionScores(submissionId: string): Promise<Judging
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (!profile || (profile.role !== 'ADMIN' && profile.role !== 'JUDGE')) {
+    return { success: false, error: 'Access denied.', code: 403 }
+  }
+
+  if (profile.role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await supabase
+      .from('judge_assignments')
+      .select('id')
+      .eq('submission_id', submissionId)
+      .eq('judge_id', user.id)
+      .maybeSingle()
+
+    if (assignError || !assignment) {
+      return { success: false, error: 'Access denied. You are not assigned to this submission.', code: 403 }
+    }
+  }
+
   const { data, error } = await supabase
     .from('scores')
     .select('*, profiles(full_name, email)')
@@ -187,14 +241,32 @@ export async function getSubmissionScores(submissionId: string): Promise<Judging
   return { success: true, data }
 }
 
-export async function getSubmissionById(submissionId: string): Promise<JudgingActionResult<Submission & { team_name: string }>> {
+export async function getSubmissionById(submissionId: string): Promise<JudgingActionResult<Submission & { team_name: string; judge_assignments: any[] }>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (!profile || (profile.role !== 'ADMIN' && profile.role !== 'JUDGE')) {
+    return { success: false, error: 'Access denied.', code: 403 }
+  }
+
+  if (profile.role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await supabase
+      .from('judge_assignments')
+      .select('id')
+      .eq('submission_id', submissionId)
+      .eq('judge_id', user.id)
+      .maybeSingle()
+
+    if (assignError || !assignment) {
+      return { success: false, error: 'Access denied. You are not assigned to this submission.', code: 403 }
+    }
+  }
+
   const { data, error } = await supabase
     .from('submissions')
-    .select('*, teams(name)')
+    .select('*, teams(name), judge_assignments(judge_id, profiles(full_name, email))')
     .eq('id', submissionId)
     .single()
 

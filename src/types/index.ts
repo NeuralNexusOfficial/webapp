@@ -71,4 +71,4 @@ export interface Score {
   comments: string | null;
   created_at: string;
   updated_at: string;
-}
+}

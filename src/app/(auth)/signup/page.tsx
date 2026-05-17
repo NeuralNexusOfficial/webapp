@@ -5,6 +5,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { signup } from "@/app/actions/auth";
+
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,20 +24,18 @@ function SignupForm() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name } },
-    });
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("name", name);
+    formData.append("next", next);
 
-    if (error) {
-      setError(error.message);
+    const result = await signup(formData);
+
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
-      return;
     }
-
-    // Check email confirmation requirement — if not required, go straight to next
-    router.push(next);
   };
 
   return (

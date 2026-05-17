@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { login } from "@/app/actions/auth";
 
 function LoginForm() {
   const router = useRouter();
@@ -22,15 +23,17 @@ function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("next", next);
 
-    if (error) {
-      setError(error.message);
+    const result = await login(formData);
+
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
-      return;
     }
-
-    router.push(next);
   };
 
   return (

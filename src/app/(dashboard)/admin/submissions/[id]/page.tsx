@@ -113,7 +113,7 @@ export default async function AdminSubmissionDetails({
               </div>
             </div>
 
-            <AssignJudgeClient submissionId={submission.id} judges={judges || []} />
+            <AssignJudgeClient submissionId={submission.id} judges={judges || []} assignedJudges={submission.judge_assignments || []} />
           </div>
         </div>
       </section>
