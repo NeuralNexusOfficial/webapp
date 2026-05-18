@@ -1,10 +1,38 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
 import TeamActions from "@/components/dashboard/team-actions";
 import PayButton from "@/components/dashboard/pay-button";
 
 export default function DashboardPage() {
+  const [timeLeft, setTimeLeft] = useState("24:00:00");
+
+  useEffect(() => {
+    const deadline = new Date("2026-05-20T00:00:00Z").getTime();
+    
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = deadline - now;
+      
+      if (distance < 0) {
+        clearInterval(interval);
+        setTimeLeft("00:00:00");
+        return;
+      }
+      
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + Math.floor(distance / (1000 * 60 * 60 * 24)) * 24;
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      setTimeLeft(
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <main className="min-h-screen flex">
       <Sidebar />
@@ -49,10 +77,10 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-2 items-start md:items-end">
               <div className="text-xs text-white/30 uppercase tracking-widest">Event starts in</div>
               <div
-                className="text-3xl md:text-4xl font-bold text-white"
+                className="text-3xl md:text-4xl font-bold text-white tabular-nums"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                24:00:00
+                {timeLeft}
               </div>
             </div>
           </div>
