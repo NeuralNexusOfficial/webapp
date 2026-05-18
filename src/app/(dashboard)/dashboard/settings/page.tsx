@@ -6,7 +6,7 @@ export default function SettingsPage() {
       <h1 className="text-3xl font-bold mb-6" style={{ fontFamily: "var(--font-display)" }}>Settings</h1>
       <div className="card-cyber p-6 md:p-8 max-w-xl">
         <h2 className="text-xl font-bold mb-4">Update Profile</h2>
-        <form action={updateProfile} className="space-y-4">
+        <form action={async (formData) => { "use server"; await updateProfile(formData); }} className="space-y-4">
           <div>
             <label className="block text-sm text-white/70 mb-1">Full Name</label>
             <input type="text" name="fullName" className="input-nn w-full" required />
