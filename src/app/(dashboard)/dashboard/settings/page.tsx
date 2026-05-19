@@ -12,6 +12,11 @@ export default function SettingsPage() {
 
   const [isSaving, setIsSaving] = useState(false);
 
+  const [toast, setToast] = useState<{
+    msg: string;
+    ok: boolean;
+  } | null>(null);
+
   function validateForm(formData: FormData) {
     const newErrors = {
       fullName: '',
@@ -99,13 +104,28 @@ export default function SettingsPage() {
 
       await updateProfile(formData);
 
-      alert('Profile updated successfully!');
+      setToast({
+        msg: 'Profile updated successfully!',
+        ok: true,
+      });
+
+      setTimeout(() => {
+        setToast(null);
+      }, 4000);
+
     } catch (error) {
       console.error(error);
 
-      alert(
-        'Something went wrong while updating profile.'
-      );
+      setToast({
+        msg:
+          'Something went wrong while updating profile.',
+        ok: false,
+      });
+
+      setTimeout(() => {
+        setToast(null);
+      }, 4000);
+
     } finally {
       setIsSaving(false);
     }
@@ -122,6 +142,20 @@ export default function SettingsPage() {
       >
         Settings
       </h1>
+
+      {/* TOAST */}
+
+      {toast && (
+        <div
+          className={`mb-6 px-5 py-4 rounded-xl text-sm font-medium border transition-all duration-300 ${
+            toast.ok
+              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+              : 'bg-red-500/10 border-red-500/20 text-red-400'
+          }`}
+        >
+          {toast.msg}
+        </div>
+      )}
 
       <div className="card-cyber p-6 md:p-8 max-w-xl">
         <h2 className="text-xl font-bold mb-4">
