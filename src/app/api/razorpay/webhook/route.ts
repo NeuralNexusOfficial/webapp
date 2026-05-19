@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 // Razorpay sends the raw body as-is; we must NOT parse it with req.json()
 // before computing the HMAC — it must be verified against the exact raw bytes.
@@ -40,7 +40,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing order_id in payload' }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  // Use service-role client — webhook has no user session, so anon key + RLS won't work
+  const supabase = createAdminClient();
 
   // ── 3. FSM transition ───────────────────────────────────────────────────────
   // INITIATED → SUCCESS  (payment.captured)

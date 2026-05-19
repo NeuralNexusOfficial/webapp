@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createTeam, joinTeam } from "@/app/actions/team";
+import { useRouter } from "next/navigation";
+import { createTeam, joinTeam, goSolo } from "@/app/actions/team";
 
 export default function TeamActions() {
+  const router = useRouter();
   const [teamName, setTeamName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
@@ -14,6 +16,18 @@ export default function TeamActions() {
     setTimeout(() => setToast(null), 4000);
   }
 
+  function handleSolo() {
+    startTransition(async () => {
+      const res = await goSolo();
+      if (res.success) {
+        showToast("You're registered as a solo participant!", true);
+        router.push("/dashboard/team");
+      } else {
+        showToast(res.error, false);
+      }
+    });
+  }
+
   function handleCreate() {
     if (!teamName.trim()) return showToast("Enter a team name", false);
     startTransition(async () => {
@@ -21,6 +35,7 @@ export default function TeamActions() {
       if (res.success) {
         showToast(`Team "${res.data.name}" created! Invite code: ${res.data.invite_code}`, true);
         setTeamName("");
+        router.push("/dashboard/team");
       } else {
         showToast(res.error, false);
       }
@@ -83,10 +98,12 @@ export default function TeamActions() {
             </p>
           </div>
           <button
+            id="continue-solo-btn"
+            onClick={handleSolo}
             disabled={isPending}
             className="btn-pill btn-outline text-sm py-2.5 w-full justify-center mt-auto"
           >
-            Continue Solo
+            {isPending ? "Setting up…" : "Continue Solo"}
           </button>
         </div>
 

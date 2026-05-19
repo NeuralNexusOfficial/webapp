@@ -58,7 +58,10 @@ export async function updateSession(request: NextRequest) {
       .single()
 
     const requiredRole = isAdminRoute ? 'ADMIN' : 'JUDGE'
-    if (!profile || profile.role !== requiredRole) {
+    // ADMIN can access both /admin and /judge routes
+    const hasAccess =
+      profile?.role === 'ADMIN' || profile?.role === requiredRole
+    if (!profile || !hasAccess) {
       // Redirect unauthorised users to the main dashboard
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard'

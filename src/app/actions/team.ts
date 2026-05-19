@@ -53,6 +53,79 @@ export async function getMyTeam(): Promise<TeamActionResult<TeamRow | null>> {
   }
 }
 
+// ─── Go Solo ──────────────────────────────────────────────────────────────────
+
+/**
+ * Creates a 1-person "solo" team for the current user.
+ * Equivalent to creating a team with max_members = 1.
+ */
+export async function goSolo(): Promise<TeamActionResult<TeamRow>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  // Check if user already belongs to a team
+  const { data: existingMember } = await supabase
+    .from('team_members')
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (existingMember) {
+    return {
+      success: false,
+      error: 'You already belong to a team. Leave it before going solo.',
+      code: 409,
+    }
+  }
+
+  const inviteCode = generateInviteCode()
+  const soloName = `Solo – ${user.email?.split('@')[0] ?? user.id.slice(0, 8)}`
+
+  // Insert solo team — use min allowed max_members (2) and LOCK immediately
+  // so no one can join via the invite code
+  const { data: team, error: teamError } = await supabase
+    .from('teams')
+    .insert({
+      name: soloName,
+      invite_code: inviteCode,
+      team_owner_id: user.id,
+      max_members: 2,
+      status: 'LOCKED',
+    })
+    .select()
+    .single()
+
+  if (teamError) return { success: false, error: teamError.message }
+
+  // Insert user as sole LEADER
+  const { error: memberError } = await supabase.from('team_members').insert({
+    team_id: team.id,
+    user_id: user.id,
+    role: 'LEADER',
+  })
+
+  if (memberError) {
+    // Roll back team creation
+    await supabase.from('teams').delete().eq('id', team.id)
+    if (memberError.code === '23505') {
+      return {
+        success: false,
+        error: 'You already belong to a team.',
+        code: 409,
+      }
+    }
+    return { success: false, error: memberError.message }
+  }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/team')
+  return { success: true, data: team as TeamRow }
+}
+
 // ─── Create Team ──────────────────────────────────────────────────────────────
 
 export interface CreateTeamInput {
@@ -121,6 +194,14 @@ export async function createTeam(
   if (memberError) {
     // Roll back team creation to keep DB clean
     await supabase.from('teams').delete().eq('id', team.id)
+    // Handle unique violation: user already belongs to a team
+    if (memberError.code === '23505') {
+      return {
+        success: false,
+        error: 'You already belong to an active team. Leave it before creating a new one.',
+        code: 409,
+      }
+    }
     return { success: false, error: memberError.message }
   }
 
