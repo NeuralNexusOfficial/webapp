@@ -42,7 +42,7 @@ export default function Sidebar() {
       <aside
         className={`
           fixed top-0 left-0 h-full z-40 flex flex-col justify-between
-          w-64 border-r border-white/[0.06] bg-black/80 backdrop-blur-sm
+          w-64 border-r border-white/6 bg-black/80 backdrop-blur-sm
           transform transition-transform duration-300 ease-in-out
           md:static md:translate-x-0 md:flex
           ${open ? "translate-x-0" : "-translate-x-full"}
@@ -50,7 +50,7 @@ export default function Sidebar() {
       >
         {/* Brand */}
         <div>
-          <div className="px-6 py-5 border-b border-white/[0.06]">
+          <div className="px-6 py-5 border-b border-white/6">
             <Link href="/" onClick={() => setOpen(false)}>
               <span
                 className="text-xl font-bold tracking-tight text-white"
@@ -74,7 +74,7 @@ export default function Sidebar() {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     active
                       ? "bg-white text-black"
-                      : "text-white/50 hover:text-white hover:bg-white/[0.05]"
+                      : "text-white/50 hover:text-white hover:bg-white/5"
                   }`}
                 >
                   {item.label}
@@ -85,18 +85,18 @@ export default function Sidebar() {
         </div>
 
         {/* Bottom */}
-        <div className="p-4 border-t border-white/[0.06] space-y-1">
+        <div className="p-4 border-t border-white/6 space-y-1">
           <Link
             href="/dashboard/settings"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/[0.05] transition-all"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all"
           >
             Settings
           </Link>
           <Link
             href="/auth"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500/70 hover:text-red-400 hover:bg-red-500/[0.06] transition-all"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-500/70 hover:text-red-400 hover:bg-red-500/6 transition-all"
           >
             Sign Out
           </Link>
