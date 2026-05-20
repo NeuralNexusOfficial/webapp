@@ -225,6 +225,21 @@ export async function joinTeam(
 
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
+  // Check if user already belongs to a team before doing anything else
+  const { data: existingMember } = await supabase
+    .from('team_members')
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (existingMember) {
+    return {
+      success: false,
+      error: 'You already belong to an active team',
+      code: 409,
+    }
+  }
+
   // Resolve invite code → team
   const { data: team, error: teamError } = await supabase
     .from('teams')
@@ -244,7 +259,7 @@ export async function joinTeam(
     }
   }
 
-  // Count current members
+  // Count current members (pre-check)
   const { count, error: countError } = await supabase
     .from('team_members')
     .select('*', { count: 'exact', head: true })
@@ -257,11 +272,15 @@ export async function joinTeam(
   }
 
   // Insert member — UNIQUE(user_id) will reject if they're already on a team
-  const { error: memberError } = await supabase.from('team_members').insert({
-    team_id: team.id,
-    user_id: user.id,
-    role: 'MEMBER',
-  })
+  const { data: insertedMember, error: memberError } = await supabase
+    .from('team_members')
+    .insert({
+      team_id: team.id,
+      user_id: user.id,
+      role: 'MEMBER',
+    })
+    .select('id')
+    .single()
 
   if (memberError) {
     // Postgres unique violation code
@@ -273,6 +292,27 @@ export async function joinTeam(
       }
     }
     return { success: false, error: memberError.message }
+  }
+
+  // ── Post-insert race-condition guard ─────────────────────────────────────
+  // Re-count members AFTER the insert. If a concurrent request also inserted
+  // between our pre-check and our insert, the team may now exceed max_members.
+  // In that case, roll back our insert.
+  const { count: postCount, error: postCountError } = await supabase
+    .from('team_members')
+    .select('*', { count: 'exact', head: true })
+    .eq('team_id', team.id)
+
+  if (postCountError) {
+    // If we can't verify, roll back to be safe
+    await supabase.from('team_members').delete().eq('id', insertedMember.id)
+    return { success: false, error: 'Failed to verify team capacity' }
+  }
+
+  if ((postCount ?? 0) > team.max_members) {
+    // Over capacity due to race — roll back our insert
+    await supabase.from('team_members').delete().eq('id', insertedMember.id)
+    return { success: false, error: 'Team is full', code: 422 }
   }
 
   revalidatePath('/dashboard/team')
