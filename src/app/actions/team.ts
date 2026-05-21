@@ -20,6 +20,18 @@ export interface TeamRow {
   created_at: string
 }
 
+export interface TeamMember {
+  id: string
+  user_id: string
+  role: 'LEADER' | 'MEMBER'
+  full_name: string | null
+  email: string | null
+}
+
+export interface TeamWithMembers extends TeamRow {
+  members: TeamMember[]
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /** Generates a cryptographically random 8-char hex invite code. */
@@ -53,7 +65,55 @@ export async function getMyTeam(): Promise<TeamActionResult<TeamRow | null>> {
   }
 }
 
-// ─── Go Solo ──────────────────────────────────────────────────────────────────
+/**
+ * Returns the team the current user belongs to WITH a list of all members
+ * (joined with profiles for name + email).
+ */
+export async function getMyTeamWithMembers(): Promise<TeamActionResult<TeamWithMembers | null>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  // Get team membership row
+  const { data: membership, error: membershipError } = await supabase
+    .from('team_members')
+    .select('teams(*)')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (membershipError) return { success: false, error: membershipError.message }
+  if (!membership?.teams) return { success: true, data: null }
+
+  const team = membership.teams as unknown as TeamRow
+
+  // Fetch all members of this team with their profiles
+  const { data: membersData, error: membersError } = await supabase
+    .from('team_members')
+    .select('id, user_id, role, profiles(full_name, email)')
+    .eq('team_id', team.id)
+
+  if (membersError) return { success: false, error: membersError.message }
+
+  // Supabase type-infers joined 1:1 relations as arrays; cast via unknown[] to handle this
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const members: TeamMember[] = ((membersData ?? []) as unknown as any[]).map((m) => ({
+    id: m.id as string,
+    user_id: m.user_id as string,
+    role: m.role as 'LEADER' | 'MEMBER',
+    full_name: (Array.isArray(m.profiles) ? m.profiles[0]?.full_name : m.profiles?.full_name) ?? null,
+    email: (Array.isArray(m.profiles) ? m.profiles[0]?.email : m.profiles?.email) ?? null,
+  }))
+
+  return {
+    success: true,
+    data: { ...team, members },
+  }
+}
+
+
 
 /**
  * Creates a 1-person "solo" team for the current user.

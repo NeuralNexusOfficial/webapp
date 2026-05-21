@@ -2,6 +2,8 @@ import Navbar from "@/components/landing/navbar";
 import Hero from "@/components/landing/hero";
 import Stats from "@/components/landing/stats";
 import HowItWorks from "@/components/landing/how-it-works";
+import Tracks from "@/components/landing/tracks";
+import Sponsors from "@/components/landing/sponsors";
 import Footer from "@/components/landing/footer";
 import { BackgroundPaths } from "@/components/ui/background-paths";
 
@@ -14,6 +16,8 @@ export default function LandingPage() {
       <Hero />
       <Stats />
       <HowItWorks />
+      <Tracks />
+      <Sponsors />
       <Footer />
     </div>
   );

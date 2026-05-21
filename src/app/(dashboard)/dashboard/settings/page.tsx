@@ -112,6 +112,8 @@ export default function SettingsPage() {
       setErrors(prev => ({ ...prev, collegeCompany: 'College / Company is required' }));
     } else if (val.trim().length < 2) {
       setErrors(prev => ({ ...prev, collegeCompany: 'Must be at least 2 characters' }));
+    } else if (!/^[a-zA-Z\s.,'\/&()-]+$/.test(val.trim())) {
+      setErrors(prev => ({ ...prev, collegeCompany: 'Only letters and standard punctuation allowed (no numbers)' }));
     } else {
       setErrors(prev => ({ ...prev, collegeCompany: '' }));
     }
@@ -143,7 +145,8 @@ export default function SettingsPage() {
     !!(errors.fullName || errors.phone || errors.collegeCompany) ||
     !fullName.trim() || fullName.trim().length < 3 || !/^[a-zA-Z\s]+$/.test(fullName) ||
     !phone || phone.length !== 10 ||
-    !collegeCompany.trim() || collegeCompany.trim().length < 2;
+    !collegeCompany.trim() || collegeCompany.trim().length < 2 ||
+    !/^[a-zA-Z\s.,'\/&()-]+$/.test(collegeCompany.trim());
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

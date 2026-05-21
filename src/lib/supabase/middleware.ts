@@ -81,7 +81,14 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // ── All other routes (e.g. landing page): fully public ───────────────────
+  // ── Auth routes: redirect logged-in users to dashboard ───────────────────────
+  const isAuthRoute = pathname === '/login' || pathname === '/signup' || pathname === '/auth'
+
+  if (isAuthRoute && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
   // Session cookie is still refreshed above so server actions can read the user.
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're creating a new response object with NextResponse.next() make sure to:
