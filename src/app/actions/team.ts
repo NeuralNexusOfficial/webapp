@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { randomBytes } from 'crypto'
 
@@ -71,6 +72,7 @@ export async function getMyTeam(): Promise<TeamActionResult<TeamRow | null>> {
  */
 export async function getMyTeamWithMembers(): Promise<TeamActionResult<TeamWithMembers | null>> {
   const supabase = await createClient()
+  const adminClient = createAdminClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -89,23 +91,40 @@ export async function getMyTeamWithMembers(): Promise<TeamActionResult<TeamWithM
 
   const team = membership.teams as unknown as TeamRow
 
-  // Fetch all members of this team with their profiles
-  const { data: membersData, error: membersError } = await supabase
+  // Fetch all members of this team (just IDs and roles)
+  const { data: teamMembersData, error: teamMembersError } = await supabase
     .from('team_members')
-    .select('id, user_id, role, profiles(full_name, email)')
+    .select('id, user_id, role')
     .eq('team_id', team.id)
 
-  if (membersError) return { success: false, error: membersError.message }
+  if (teamMembersError) return { success: false, error: teamMembersError.message }
 
-  // Supabase type-infers joined 1:1 relations as arrays; cast via unknown[] to handle this
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const members: TeamMember[] = ((membersData ?? []) as unknown as any[]).map((m) => ({
-    id: m.id as string,
-    user_id: m.user_id as string,
-    role: m.role as 'LEADER' | 'MEMBER',
-    full_name: (Array.isArray(m.profiles) ? m.profiles[0]?.full_name : m.profiles?.full_name) ?? null,
-    email: (Array.isArray(m.profiles) ? m.profiles[0]?.email : m.profiles?.email) ?? null,
-  }))
+  // Use admin client to fetch full profile data (bypasses RLS)
+  const userIds = (teamMembersData ?? []).map(m => m.user_id)
+  
+  const { data: profilesData, error: profilesError } = await adminClient
+    .from('profiles')
+    .select('id, full_name, email')
+    .in('id', userIds)
+
+  if (profilesError) return { success: false, error: profilesError.message }
+
+  // Map profiles by user_id for quick lookup
+  const profilesMap = new Map(
+    (profilesData ?? []).map(p => [p.id, p])
+  )
+
+  // Combine team members with their profiles
+  const members: TeamMember[] = (teamMembersData ?? []).map((m) => {
+    const profile = profilesMap.get(m.user_id)
+    return {
+      id: m.id as string,
+      user_id: m.user_id as string,
+      role: m.role as 'LEADER' | 'MEMBER',
+      full_name: profile?.full_name ?? null,
+      email: profile?.email ?? null,
+    }
+  })
 
   return {
     success: true,

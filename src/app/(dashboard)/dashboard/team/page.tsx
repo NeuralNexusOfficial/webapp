@@ -1,6 +1,6 @@
 import TeamActions from "@/components/dashboard/team-actions";
 import { getMyTeamWithMembers } from "@/app/actions/team";
-import { Crown, User } from "lucide-react";
+import { Crown } from "lucide-react";
 
 export default async function TeamPage() {
   const teamRes = await getMyTeamWithMembers();
@@ -69,19 +69,17 @@ export default async function TeamPage() {
                     >
                       {/* Avatar */}
                       <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0">
-                        {member.full_name ? (
+                        {member.full_name && (
                           <span className="text-sm font-bold text-white/70">
                             {member.full_name.trim()[0].toUpperCase()}
                           </span>
-                        ) : (
-                          <User size={16} className="text-white/40" />
                         )}
                       </div>
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-white/90 truncate">
-                          {member.full_name ?? "Hacker"}
+                          {member.full_name}
                         </p>
                         {member.email && (
                           <p className="text-xs text-white/30 truncate">
