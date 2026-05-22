@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Sidebar from '@/components/dashboard/sidebar';
 import { getProfile, updateProfile } from '@/app/actions/profile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -193,9 +194,11 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-8 text-white min-h-screen">
-      <div className="max-w-xl mx-auto">
-        <h1
+    <main className="min-h-screen flex bg-black text-white">
+      <Sidebar />
+      <section className="flex-1 overflow-y-auto min-w-0 p-8">
+        <div className="max-w-xl mx-auto">
+          <h1
           className="text-3xl font-bold mb-6 tracking-wide"
           style={{ fontFamily: 'var(--font-display)' }}
         >
@@ -473,6 +476,7 @@ export default function SettingsPage() {
           </AnimatePresence>
         </div>
       </div>
-    </div>
+      </section>
+    </main>
   );
 }

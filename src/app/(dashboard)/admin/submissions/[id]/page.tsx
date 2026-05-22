@@ -7,12 +7,13 @@ import { notFound } from 'next/navigation';
 export default async function AdminSubmissionDetails({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = await params;
   const [submissionRes, judgesRes, scoresRes] = await Promise.all([
-    getSubmissionById(params.id),
+    getSubmissionById(resolvedParams.id),
     getAllJudges(),
-    getSubmissionScores(params.id),
+    getSubmissionScores(resolvedParams.id),
   ]);
 
   const submission = submissionRes.success ? submissionRes.data : null;

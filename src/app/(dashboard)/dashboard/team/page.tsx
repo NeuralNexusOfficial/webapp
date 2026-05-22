@@ -1,4 +1,5 @@
 import TeamActions from "@/components/dashboard/team-actions";
+import Sidebar from "@/components/dashboard/sidebar";
 import { getMyTeamWithMembers } from "@/app/actions/team";
 import { Crown } from "lucide-react";
 
@@ -7,11 +8,13 @@ export default async function TeamPage() {
   const team = teamRes.success ? teamRes.data : null;
 
   return (
-    <div className="p-8 text-white min-h-screen">
-      {team ? (
-        <div className="max-w-2xl">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
+    <main className="min-h-screen flex bg-black text-white">
+      <Sidebar />
+      <section className="flex-1 overflow-y-auto min-w-0 p-8">
+        {team ? (
+          <div className="max-w-2xl">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
             <div className="tag-label">My Team</div>
             <h1
               className="text-2xl font-bold text-white"
@@ -111,6 +114,7 @@ export default async function TeamPage() {
       ) : (
         <TeamActions />
       )}
-    </div>
+      </section>
+    </main>
   );
 }

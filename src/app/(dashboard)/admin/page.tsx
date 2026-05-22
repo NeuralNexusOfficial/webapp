@@ -8,11 +8,12 @@ export const dynamic = 'force-dynamic';
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { track?: string; status?: string };
+  searchParams: Promise<{ track?: string; status?: string }>;
 }) {
+  const resolvedParams = await searchParams;
   const res = await getFilteredSubmissions(
-    searchParams.track,
-    searchParams.status
+    resolvedParams.track,
+    resolvedParams.status
   );
   
   const submissions = res.success ? res.data : [];
@@ -43,7 +44,7 @@ export default async function AdminPage({
           </div>
         )}
 
-        <AdminFilters initialTrack={searchParams.track} initialStatus={searchParams.status} />
+        <AdminFilters initialTrack={resolvedParams.track} initialStatus={resolvedParams.status} />
 
         <div className="space-y-5 mt-8">
           {submissions?.length === 0 ? (

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { createAdminClient } from './admin'
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -40,7 +41,7 @@ export async function updateSession(request: NextRequest) {
 
   // ── Admin & Judge routes: require login + correct DB role ──────────────────
   const isAdminRoute = pathname.startsWith('/admin')
-  const isJudgeRoute = pathname.startsWith('/judge')
+  const isJudgeRoute = pathname.startsWith('/judge') || pathname.startsWith('/panel')
 
   if (isAdminRoute || isJudgeRoute) {
     if (!user) {
@@ -50,8 +51,9 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    // Fetch role from profiles table
-    const { data: profile } = await supabase
+    // Fetch role from profiles table using admin client to bypass RLS
+    const adminSupabase = createAdminClient()
+    const { data: profile } = await adminSupabase
       .from('profiles')
       .select('role')
       .eq('id', user.id)
@@ -61,6 +63,9 @@ export async function updateSession(request: NextRequest) {
     // ADMIN can access both /admin and /judge routes
     const hasAccess =
       profile?.role === 'ADMIN' || profile?.role === requiredRole
+
+    console.log(`Middleware - Profile Role:`, profile?.role, `Required:`, requiredRole, `HasAccess:`, hasAccess)
+
     if (!profile || !hasAccess) {
       // Redirect unauthorised users to the main dashboard
       const url = request.nextUrl.clone()
