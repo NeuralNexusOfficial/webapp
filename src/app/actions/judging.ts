@@ -1,6 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getUserRole } from '@/lib/auth/roles'
 import { revalidatePath } from 'next/cache'
 import { Submission, SubmissionStatus, Profile, Score } from '@/types'
 
@@ -16,12 +18,13 @@ export async function getFilteredSubmissions(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied. Admin role required.', code: 403 }
   }
 
-  let query = supabase
+  const adminSupabase = createAdminClient()
+  let query = adminSupabase
     .from('submissions')
     .select('*, teams(name), judge_assignments(judge_id, profiles(full_name, email))')
     .order('created_at', { ascending: false })
@@ -49,12 +52,13 @@ export async function getAllJudges(): Promise<JudgingActionResult<Profile[]>> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied. Admin role required.', code: 403 }
   }
 
-  const { data, error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { data, error } = await adminSupabase
     .from('profiles')
     .select('*')
     .eq('role', 'JUDGE')
@@ -68,12 +72,13 @@ export async function assignJudge(submissionId: string, judgeId: string): Promis
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied. Admin role required.', code: 403 }
   }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { error } = await adminSupabase
     .from('judge_assignments')
     .insert({ submission_id: submissionId, judge_id: judgeId })
 
@@ -92,12 +97,13 @@ export async function unassignJudge(submissionId: string, judgeId: string): Prom
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied. Admin role required.', code: 403 }
   }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { error } = await adminSupabase
     .from('judge_assignments')
     .delete()
     .eq('submission_id', submissionId)
@@ -115,13 +121,14 @@ export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Sub
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || profile.role !== 'JUDGE') {
+  const role = await getUserRole(user.id)
+  if (role !== 'JUDGE' && role !== 'ADMIN') {
     return { success: false, error: 'Access denied. Judge role required.', code: 403 }
   }
 
+  const adminSupabase = createAdminClient()
   // Get assignments
-  const { data: assignments, error: assignError } = await supabase
+  const { data: assignments, error: assignError } = await adminSupabase
     .from('judge_assignments')
     .select('submission_id')
     .eq('judge_id', user.id)
@@ -132,7 +139,7 @@ export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Sub
   if (submissionIds.length === 0) return { success: true, data: [] }
 
   // Get submissions
-  const { data: submissions, error: subError } = await supabase
+  const { data: submissions, error: subError } = await adminSupabase
     .from('submissions')
     .select('*, teams(name), scores(judge_id)')
     .in('id', submissionIds)
@@ -161,13 +168,14 @@ export async function scoreSubmission(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || (profile.role !== 'JUDGE' && profile.role !== 'ADMIN')) {
+  const role = await getUserRole(user.id)
+  if (role !== 'JUDGE' && role !== 'ADMIN') {
     return { success: false, error: 'Access denied.', code: 403 }
   }
 
-  if (profile.role === 'JUDGE') {
-    const { data: assignment, error: assignError } = await supabase
+  const adminSupabase = createAdminClient()
+  if (role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await adminSupabase
       .from('judge_assignments')
       .select('id')
       .eq('submission_id', submissionId)
@@ -179,7 +187,7 @@ export async function scoreSubmission(
     }
   }
 
-  const { data: scoreData, error: scoreError } = await supabase
+  const { data: scoreData, error: scoreError } = await adminSupabase
     .from('scores')
     .upsert({
       submission_id: submissionId,
@@ -196,7 +204,7 @@ export async function scoreSubmission(
   if (scoreError) return { success: false, error: scoreError.message }
 
   // Update submission status to JUDGED
-  const { error: subError } = await supabase
+  const { error: subError } = await adminSupabase
     .from('submissions')
     .update({ status: 'JUDGED' as SubmissionStatus })
     .eq('id', submissionId)
@@ -214,13 +222,14 @@ export async function getSubmissionScores(submissionId: string): Promise<Judging
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || (profile.role !== 'ADMIN' && profile.role !== 'JUDGE')) {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN' && role !== 'JUDGE') {
     return { success: false, error: 'Access denied.', code: 403 }
   }
 
-  if (profile.role === 'JUDGE') {
-    const { data: assignment, error: assignError } = await supabase
+  const adminSupabase = createAdminClient()
+  if (role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await adminSupabase
       .from('judge_assignments')
       .select('id')
       .eq('submission_id', submissionId)
@@ -232,7 +241,7 @@ export async function getSubmissionScores(submissionId: string): Promise<Judging
     }
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await adminSupabase
     .from('scores')
     .select('*, profiles(full_name, email)')
     .eq('submission_id', submissionId)
@@ -246,13 +255,14 @@ export async function getSubmissionById(submissionId: string): Promise<JudgingAc
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || (profile.role !== 'ADMIN' && profile.role !== 'JUDGE')) {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN' && role !== 'JUDGE') {
     return { success: false, error: 'Access denied.', code: 403 }
   }
 
-  if (profile.role === 'JUDGE') {
-    const { data: assignment, error: assignError } = await supabase
+  const adminSupabase = createAdminClient()
+  if (role === 'JUDGE') {
+    const { data: assignment, error: assignError } = await adminSupabase
       .from('judge_assignments')
       .select('id')
       .eq('submission_id', submissionId)
@@ -264,7 +274,7 @@ export async function getSubmissionById(submissionId: string): Promise<JudgingAc
     }
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await adminSupabase
     .from('submissions')
     .select('*, teams(name), judge_assignments(judge_id, profiles(full_name, email))')
     .eq('id', submissionId)

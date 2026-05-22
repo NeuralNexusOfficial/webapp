@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 import { Track, SubmissionStatus, Submission } from '@/types'
+import { validateSubmissionTextFields } from '@/lib/validation/submission-text'
 
 export type SubmissionActionResult<T = undefined> =
   | { success: true; data: T }
@@ -124,8 +125,16 @@ export async function upsertSubmission(
   const deadline = getDeadline().toISOString()
 
   // ── 3. Validate required fields ─────────────────────────────────────────────
-  if (!input.title?.trim()) return { success: false, error: 'Title is required', code: 400 }
-  if (!input.description?.trim()) return { success: false, error: 'Description is required', code: 400 }
+  const textErrors = validateSubmissionTextFields(
+    input.title ?? '',
+    input.description ?? '',
+  )
+  if (textErrors.title) {
+    return { success: false, error: textErrors.title, code: 400 }
+  }
+  if (textErrors.description) {
+    return { success: false, error: textErrors.description, code: 400 }
+  }
   if (!input.track) return { success: false, error: 'Track is required', code: 400 }
 
   const validTracks: Track[] = ['AI/ML', 'Web3', 'HealthTech', 'FinTech', 'OpenInnovation']

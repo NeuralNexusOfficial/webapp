@@ -6,6 +6,12 @@ import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions
 import { Track, Submission } from '@/types';
 import { createClient } from '@/lib/supabase/client';
 import { useRef } from 'react';
+import {
+  sanitizeTitleInput,
+  sanitizeDescriptionInput,
+  validateTitle,
+  validateDescription,
+} from '@/lib/validation/submission-text';
 
 const TRACKS: { value: Track; label: string; desc: string }[] = [
   { value: 'AI/ML',          label: '🤖 AI / ML',         desc: 'Machine learning, neural networks, LLMs, computer vision' },
@@ -39,6 +45,8 @@ export default function SubmitPage() {
   const [isPending, startTransition] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<{ title?: string; description?: string }>({});
+  const [touched, setTouched] = useState<{ title?: boolean; description?: boolean }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
@@ -47,15 +55,17 @@ export default function SubmitPage() {
       if (res.success && res.data) {
         const s = res.data;
         setExisting(s);
+        const title = sanitizeTitleInput(s.title ?? '');
+        const description = sanitizeDescriptionInput(s.description ?? '');
         setForm({
-          title: s.title ?? '',
-          description: s.description ?? '',
+          title,
+          description,
           track: s.track ?? '',
           repo_url: s.repo_url ?? '',
           demo_url: s.demo_url ?? '',
           file_url: s.file_url ?? '',
         });
-        setCharCount((s.description ?? '').length);
+        setCharCount(description.length);
       }
       setLoadingExisting(false);
     });
@@ -66,14 +76,56 @@ export default function SubmitPage() {
     setTimeout(() => setToast(null), 5000);
   }
 
+  function handleTitleChange(raw: string) {
+    const value = sanitizeTitleInput(raw);
+    setForm((f) => ({ ...f, title: value }));
+    if (touched.title) {
+      setFieldErrors((e) => ({ ...e, title: validateTitle(value) ?? undefined }));
+    }
+  }
+
+  function handleDescriptionChange(raw: string) {
+    const value = sanitizeDescriptionInput(raw);
+    setForm((f) => ({ ...f, description: value }));
+    setCharCount(value.length);
+    if (touched.description) {
+      setFieldErrors((e) => ({
+        ...e,
+        description: validateDescription(value) ?? undefined,
+      }));
+    }
+  }
+
   function handleChange<K extends keyof FormState>(key: K, value: FormState[K]) {
+    if (key === 'title') {
+      handleTitleChange(value as string);
+      return;
+    }
+    if (key === 'description') {
+      handleDescriptionChange(value as string);
+      return;
+    }
     setForm((f) => ({ ...f, [key]: value }));
-    if (key === 'description') setCharCount((value as string).length);
+  }
+
+  function validateForm(): boolean {
+    const titleError = validateTitle(form.title);
+    const descriptionError = validateDescription(form.description);
+    const errors: { title?: string; description?: string } = {};
+    if (titleError) errors.title = titleError;
+    if (descriptionError) errors.description = descriptionError;
+    setFieldErrors(errors);
+    setTouched({ title: true, description: true });
+    return !titleError && !descriptionError;
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isLocked) return;
+    if (!validateForm()) {
+      showToast('Please fix the errors in Project Title and Description.', false);
+      return;
+    }
     if (!form.track) {
       showToast('Please select a track before saving.', false);
       return;
@@ -136,6 +188,10 @@ export default function SubmitPage() {
 
   function handleFinalize() {
     if (!existing) return;
+    if (!validateForm()) {
+      showToast('Please fix the errors in Project Title and Description before finalizing.', false);
+      return;
+    }
     if (!window.confirm('Are you sure? Once finalized, you cannot edit your submission again.')) return;
 
     startTransition(async () => {
@@ -239,14 +295,35 @@ export default function SubmitPage() {
                     <input
                       id="submit-title"
                       type="text"
-                      className="input-nn"
+                      inputMode="text"
+                      autoComplete="off"
+                      spellCheck
+                      className={`input-nn ${fieldErrors.title ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
                       placeholder="e.g. MediScan — AI-powered drug interaction checker"
                       value={form.title}
-                      onChange={(e) => handleChange('title', e.target.value)}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      onBlur={() => {
+                        setTouched((t) => ({ ...t, title: true }));
+                        setFieldErrors((err) => ({
+                          ...err,
+                          title: validateTitle(form.title) ?? undefined,
+                        }));
+                      }}
                       disabled={isLocked}
                       required
+                      minLength={3}
                       maxLength={120}
+                      aria-invalid={!!fieldErrors.title}
+                      aria-describedby={fieldErrors.title ? 'submit-title-error' : 'submit-title-hint'}
                     />
+                    <p id="submit-title-hint" className="text-[11px] text-white/25 mt-1.5">
+                      Letters, numbers, spaces, and . , &apos; - ( ) &amp; only
+                    </p>
+                    {fieldErrors.title && (
+                      <p id="submit-title-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                        {fieldErrors.title}
+                      </p>
+                    )}
                   </label>
 
                   {/* Description */}
@@ -259,14 +336,35 @@ export default function SubmitPage() {
                     </span>
                     <textarea
                       id="submit-description"
-                      className="input-nn min-h-[140px] resize-y"
+                      inputMode="text"
+                      autoComplete="off"
+                      spellCheck
+                      className={`input-nn min-h-[140px] resize-y ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
                       placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
                       value={form.description}
-                      onChange={(e) => handleChange('description', e.target.value)}
+                      onChange={(e) => handleDescriptionChange(e.target.value)}
+                      onBlur={() => {
+                        setTouched((t) => ({ ...t, description: true }));
+                        setFieldErrors((err) => ({
+                          ...err,
+                          description: validateDescription(form.description) ?? undefined,
+                        }));
+                      }}
                       disabled={isLocked}
                       required
+                      minLength={10}
                       maxLength={1000}
+                      aria-invalid={!!fieldErrors.description}
+                      aria-describedby={fieldErrors.description ? 'submit-description-error' : 'submit-description-hint'}
                     />
+                    <p id="submit-description-hint" className="text-[11px] text-white/25 mt-1.5">
+                      Plain text only — no URLs, emails, or special symbols like @ # $ %
+                    </p>
+                    {fieldErrors.description && (
+                      <p id="submit-description-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                        {fieldErrors.description}
+                      </p>
+                    )}
                   </label>
                 </div>
 
