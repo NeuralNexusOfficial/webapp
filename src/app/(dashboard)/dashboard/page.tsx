@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
 import TeamActions from "@/components/dashboard/team-actions";
 import PayButton from "@/components/dashboard/pay-button";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export default function DashboardPage() {
   const [timeLeft, setTimeLeft] = useState("24:00:00");
@@ -34,7 +35,10 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex relative">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <BackgroundPaths />
+      </div>
       <Sidebar />
 
       {/* Main content — offset on mobile to account for fixed sidebar toggle */}

@@ -5,13 +5,12 @@ import HowItWorks from "@/components/landing/how-it-works";
 import Tracks from "@/components/landing/tracks";
 import Sponsors from "@/components/landing/sponsors";
 import Footer from "@/components/landing/footer";
-import { BackgroundPaths } from "@/components/ui/background-paths";
+import SplashCursor from "@/components/ui/splash-cursor";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col text-white">
-      {/* Flowing SVG path animation — homepage only */}
-      <BackgroundPaths />
+      <SplashCursor />
       <Navbar />
       <Hero />
       <Stats />
