@@ -5,6 +5,8 @@ import Sidebar from '@/components/dashboard/sidebar';
 import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions/submission';
 import { Track, Submission } from '@/types';
 import { createClient } from '@/lib/supabase/client';
+import { getPaymentStatus } from '@/app/actions/payment';
+import PaymentSection from '@/components/dashboard/payment-section';
 import { useRef } from 'react';
 import {
   sanitizeTitleInput,
@@ -14,11 +16,11 @@ import {
 } from '@/lib/validation/submission-text';
 
 const TRACKS: { value: Track; label: string; desc: string }[] = [
-  { value: 'AI/ML',          label: '🤖 AI / ML',         desc: 'Machine learning, neural networks, LLMs, computer vision' },
-  { value: 'Web3',           label: '⛓️ Web3',             desc: 'Blockchain, DeFi, NFTs, decentralised apps' },
-  { value: 'HealthTech',     label: '🏥 HealthTech',       desc: 'Digital health, medtech, mental wellness, biotech' },
-  { value: 'FinTech',        label: '💰 FinTech',          desc: 'Payments, banking, insurance, personal finance' },
-  { value: 'OpenInnovation', label: '🚀 Open Innovation',  desc: 'Anything that doesn\'t fit the above — surprise us!' },
+  { value: 'SaaS',         label: '☁️ SaaS',         desc: 'Software as a Service, productivity tools, enterprise solutions' },
+  { value: 'Animation',    label: '🎬 Animation',    desc: '2D/3D animation, motion graphics, interactive web animations' },
+  { value: 'Storytelling', label: '📖 Storytelling', desc: 'Interactive narratives, digital storytelling, immersive experiences' },
+  { value: 'Gaming',       label: '🎮 Gaming',       desc: 'Browser games, indie titles, gamified applications' },
+  { value: 'AI',           label: '🤖 AI',           desc: 'Machine learning, LLMs, computer vision, AI agents' },
 ];
 
 type FormState = {
@@ -47,11 +49,27 @@ export default function SubmitPage() {
   const [charCount, setCharCount] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<{ title?: string; description?: string }>({});
   const [touched, setTouched] = useState<{ title?: boolean; description?: boolean }>({});
+  const [role, setRole] = useState<string>('loading');
+  const [paymentStatus, setPaymentStatus] = useState<string>('loading');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
   useEffect(() => {
-    getMySubmission().then((res) => {
+    async function loadData() {
+      // 1. Fetch user role
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+        if (profile) setRole(profile.role);
+      }
+
+      // 2. Fetch payment status
+      const pStatus = await getPaymentStatus();
+      setPaymentStatus(pStatus.status);
+
+      // 3. Fetch submission
+      const res = await getMySubmission();
       if (res.success && res.data) {
         const s = res.data;
         setExisting(s);
@@ -68,7 +86,8 @@ export default function SubmitPage() {
         setCharCount(description.length);
       }
       setLoadingExisting(false);
-    });
+    }
+    loadData();
   }, []);
 
   function showToast(msg: string, ok: boolean) {
@@ -235,7 +254,22 @@ export default function SubmitPage() {
 
         <div className="p-5 md:p-10 space-y-8 max-w-3xl">
 
-          {/* Status banner */}
+          {role === 'ADMIN' || role === 'JUDGE' ? (
+            <div className="card-cyber p-8 text-center border-red-500/30">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                ⚠️
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                Access Restricted
+              </h2>
+              <p className="text-white/60">
+                You are currently logged in as an <span className="font-bold text-white">{role}</span>. 
+                Admins and Judges cannot participate in the hackathon or submit projects.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Status banner */}
           {existing && (
             <div className={`card-cyber p-5 flex items-start gap-4 ${isLocked ? 'border-emerald-500/30 bg-emerald-500/5' : ''}`}>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
@@ -490,14 +524,27 @@ export default function SubmitPage() {
                   )}
                 </div>
 
+                {/* Payment Section (Render after track selection, if not paid) */}
+                {form.track && paymentStatus !== 'SUCCESS' && (
+                  <div className="mt-8 border-t border-white/10 pt-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="tag-label">Registration</div>
+                      <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                        Complete Registration
+                      </h2>
+                    </div>
+                    <PaymentSection selectedDomain={form.track as Track} />
+                  </div>
+                )}
+
                 {/* Submit */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-white/10 pt-8 mt-8">
                   {!isLocked && (
                     <button
                       id="save-submission-btn"
                       type="submit"
-                      disabled={isPending}
-                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+                      disabled={isPending || paymentStatus !== 'SUCCESS'}
+                      className={`btn-pill ${(isPending || paymentStatus !== 'SUCCESS') ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
                     >
                       {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
                     </button>
@@ -508,8 +555,8 @@ export default function SubmitPage() {
                       id="finalize-submission-btn"
                       type="button"
                       onClick={handleFinalize}
-                      disabled={isPending}
-                      className="btn-pill border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                      disabled={isPending || paymentStatus !== 'SUCCESS'}
+                      className={`btn-pill ${(isPending || paymentStatus !== 'SUCCESS') ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
                     >
                       Finalize & Lock →
                     </button>
@@ -530,8 +577,10 @@ export default function SubmitPage() {
               </form>
             )}
           </div>
-        </div>
-      </section>
-    </main>
-  );
+        </>
+      )}
+      </div>
+    </section>
+  </main>
+);
 }

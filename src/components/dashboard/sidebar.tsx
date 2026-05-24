@@ -20,6 +20,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [role, setRole] = useState<string>('USER');
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Load user identity on mount
@@ -30,12 +31,16 @@ export default function Sidebar() {
       if (!user) return;
       setEmail(user.email ?? null);
 
-      // Try profile for full name
+      // Try profile for full name and role
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, role")
         .eq("id", user.id)
         .maybeSingle();
+
+      if (profile?.role) {
+        setRole(profile.role);
+      }
 
       if (profile?.full_name) {
         setFirstName(profile.full_name.trim().split(" ")[0]);
@@ -100,6 +105,12 @@ export default function Sidebar() {
           {/* Nav */}
           <nav className="p-4 space-y-1">
             {navItems.map((item) => {
+              if (item.label === 'Judging' && role !== 'JUDGE' && role !== 'ADMIN') {
+                return null;
+              }
+              if (role === 'JUDGE' && item.label !== 'Judging') {
+                return null;
+              }
               const active = pathname === item.href;
               return (
                 <Link
@@ -116,6 +127,19 @@ export default function Sidebar() {
                 </Link>
               );
             })}
+            {role === 'ADMIN' && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  pathname.startsWith("/admin")
+                    ? "bg-white text-black"
+                    : "text-white/50 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                Admin Panel
+              </Link>
+            )}
           </nav>
         </div>
 

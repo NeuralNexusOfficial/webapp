@@ -87,6 +87,12 @@ export default function Navbar() {
           <Link href="/#sponsors" className="hover:text-white transition-colors">
             Sponsors
           </Link>
+          <Link href="/rules" className="hover:text-white transition-colors">
+            Rules
+          </Link>
+          <Link href="/faq" className="hover:text-white transition-colors">
+            FAQs
+          </Link>
           <Link href="/dashboard" className="hover:text-white transition-colors">
             Dashboard
           </Link>
@@ -159,6 +165,20 @@ export default function Navbar() {
             className="block text-sm text-white/60 hover:text-white transition-colors py-2"
           >
             Sponsors
+          </Link>
+          <Link
+            href="/rules"
+            onClick={() => setMenuOpen(false)}
+            className="block text-sm text-white/60 hover:text-white transition-colors py-2"
+          >
+            Rules
+          </Link>
+          <Link
+            href="/faq"
+            onClick={() => setMenuOpen(false)}
+            className="block text-sm text-white/60 hover:text-white transition-colors py-2"
+          >
+            FAQs
           </Link>
           <Link
             href="/dashboard"

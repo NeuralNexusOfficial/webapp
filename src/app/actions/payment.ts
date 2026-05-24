@@ -16,6 +16,34 @@ export async function getPaymentStatus(): Promise<{
 
   if (!user) return { status: 'NONE' }
 
+  // Check if user is in a team and if any team member paid
+  const { data: teamMember } = await supabase
+    .from('team_members')
+    .select('team_id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (teamMember) {
+    const { data: teamMembers } = await supabase
+      .from('team_members')
+      .select('user_id')
+      .eq('team_id', teamMember.team_id)
+
+    if (teamMembers && teamMembers.length > 0) {
+      const userIds = teamMembers.map(m => m.user_id)
+      const { data: teamPayments } = await supabase
+        .from('payments')
+        .select('status')
+        .in('user_id', userIds)
+        .eq('status', 'SUCCESS')
+        .limit(1)
+
+      if (teamPayments && teamPayments.length > 0) {
+        return { status: 'SUCCESS' }
+      }
+    }
+  }
+
   // Get the latest payment for this user, ordered by most recent
   const { data, error } = await supabase
     .from('payments')

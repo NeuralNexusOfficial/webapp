@@ -3,14 +3,13 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
 import TeamActions from "@/components/dashboard/team-actions";
-import PayButton from "@/components/dashboard/pay-button";
 import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export default function DashboardPage() {
   const [timeLeft, setTimeLeft] = useState("24:00:00");
 
   useEffect(() => {
-    const deadline = new Date("2026-05-20T00:00:00Z").getTime();
+    const deadline = new Date("2026-10-21T00:00:00Z").getTime();
     
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -91,30 +90,6 @@ export default function DashboardPage() {
 
           {/* Team setup */}
           <TeamActions />
-
-          {/* Registration fee */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="tag-label">Payment</div>
-              <h2
-                className="text-xl md:text-2xl font-bold text-white"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Registration Fee
-              </h2>
-            </div>
-            <div className="card-cyber p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div>
-                <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  ₹500
-                </p>
-                <p className="text-sm text-white/40">
-                  One-time fee · Includes swag kit, meals, and access to all tracks
-                </p>
-              </div>
-              <PayButton amount={500} />
-            </div>
-          </div>
 
         </div>
       </section>

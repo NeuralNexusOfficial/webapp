@@ -137,7 +137,7 @@ export async function upsertSubmission(
   }
   if (!input.track) return { success: false, error: 'Track is required', code: 400 }
 
-  const validTracks: Track[] = ['AI/ML', 'Web3', 'HealthTech', 'FinTech', 'OpenInnovation']
+  const validTracks: Track[] = ['SaaS', 'Animation', 'Storytelling', 'Gaming', 'AI']
   if (!validTracks.includes(input.track)) {
     return { success: false, error: `Invalid track. Must be one of: ${validTracks.join(', ')}`, code: 400 }
   }
