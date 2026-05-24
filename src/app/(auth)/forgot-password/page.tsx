@@ -2,39 +2,33 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { login } from "@/app/actions/auth";
+import { resetPassword } from "@/app/actions/auth";
 import SplashCursor from "@/components/ui/splash-cursor";
 
-function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/dashboard";
-  const supabase = createClient();
-
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     const formData = new FormData();
     formData.append("email", email);
-    formData.append("password", password);
-    formData.append("next", next);
 
-    const result = await login(formData);
+    const result = await resetPassword(formData);
 
     if (result?.error) {
       setError(result.error);
-      setLoading(false);
+    } else {
+      setSuccess(true);
     }
+    
+    setLoading(false);
   };
 
   return (
@@ -61,17 +55,17 @@ function LoginForm() {
               Neural<span className="text-white/30">Nexus</span>
             </span>
           </Link>
-          <p className="text-white/40 text-sm mt-2">Sign in to continue</p>
+          <p className="text-white/40 text-sm mt-2">Reset your password</p>
         </div>
 
         {/* Card */}
-        <form onSubmit={handleLogin} className="card-cyber p-8 space-y-5">
-          <div className="tag-label mb-2 w-fit">Welcome Back</div>
+        <form onSubmit={handleSubmit} className="card-cyber p-8 space-y-5">
+          <div className="tag-label mb-2 w-fit">Account Recovery</div>
           <h1
             className="text-2xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Log In
+            Forgot Password
           </h1>
 
           {error && (
@@ -80,9 +74,15 @@ function LoginForm() {
             </div>
           )}
 
+          {success && (
+            <div className="rounded-xl bg-green-500/10 border border-green-500/20 px-4 py-3 text-sm text-green-400">
+              Check your email for a password reset link.
+            </div>
+          )}
+
           <div className="space-y-3">
             <input
-              id="login-email"
+              id="reset-email"
               type="email"
               required
               placeholder="Email"
@@ -90,54 +90,27 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="input-nn"
             />
-            <div className="space-y-1">
-              <input
-                id="login-password"
-                type="password"
-                required
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-nn"
-              />
-              <div className="flex justify-end">
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-white/40 hover:text-white transition-colors"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-            </div>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="btn-pill btn-primary w-full justify-center"
+            disabled={loading || success}
+            className="btn-pill btn-primary w-full justify-center disabled:opacity-50"
           >
-            {loading ? "Signing in…" : "Log In →"}
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
 
           <p className="text-center text-sm text-white/30">
-            No account?{" "}
+            Remember your password?{" "}
             <Link
-              href={`/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
+              href="/login"
               className="text-white/60 hover:text-white underline underline-offset-2"
             >
-              Sign up
+              Log in
             </Link>
           </p>
         </form>
       </div>
     </div>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
   );
 }

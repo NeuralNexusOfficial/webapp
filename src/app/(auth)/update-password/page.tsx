@@ -1,37 +1,24 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { updatePassword } from "@/app/actions/auth";
 import SplashCursor from "@/components/ui/splash-cursor";
 
-import { signup } from "@/app/actions/auth";
-
-function SignupForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/dashboard";
-  const supabase = createClient();
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     const formData = new FormData();
-    formData.append("email", email);
     formData.append("password", password);
-    formData.append("name", name);
-    formData.append("next", next);
 
-    const result = await signup(formData);
+    const result = await updatePassword(formData);
 
     if (result?.error) {
       setError(result.error);
@@ -63,17 +50,17 @@ function SignupForm() {
               Neural<span className="text-white/30">Nexus</span>
             </span>
           </Link>
-          <p className="text-white/40 text-sm mt-2">Create your hacker account</p>
+          <p className="text-white/40 text-sm mt-2">Enter your new password</p>
         </div>
 
         {/* Card */}
-        <form onSubmit={handleSignup} className="card-cyber p-8 space-y-5">
-          <div className="tag-label mb-2 w-fit">New Account</div>
+        <form onSubmit={handleSubmit} className="card-cyber p-8 space-y-5">
+          <div className="tag-label mb-2 w-fit">Update Password</div>
           <h1
             className="text-2xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Sign Up
+            New Password
           </h1>
 
           {error && (
@@ -84,28 +71,10 @@ function SignupForm() {
 
           <div className="space-y-3">
             <input
-              id="signup-name"
-              type="text"
-              required
-              placeholder="Full name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input-nn"
-            />
-            <input
-              id="signup-email"
-              type="email"
-              required
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input-nn"
-            />
-            <input
-              id="signup-password"
+              id="update-password"
               type="password"
               required
-              placeholder="Password (8+ chars)"
+              placeholder="New password (8+ chars)"
               minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -118,28 +87,10 @@ function SignupForm() {
             disabled={loading}
             className="btn-pill btn-primary w-full justify-center"
           >
-            {loading ? "Creating account…" : "Create Account →"}
+            {loading ? "Updating..." : "Update Password"}
           </button>
-
-          <p className="text-center text-sm text-white/30">
-            Already have one?{" "}
-            <Link
-              href={`/login${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
-              className="text-white/60 hover:text-white underline underline-offset-2"
-            >
-              Log in
-            </Link>
-          </p>
         </form>
       </div>
     </div>
-  );
-}
-
-export default function SignupPage() {
-  return (
-    <Suspense>
-      <SignupForm />
-    </Suspense>
   );
 }

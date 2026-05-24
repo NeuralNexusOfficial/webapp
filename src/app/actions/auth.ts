@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 export async function login(formData: FormData) {
   const email = formData.get('email') as string
@@ -52,4 +53,43 @@ export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/')
+}
+
+export async function resetPassword(formData: FormData) {
+  const email = formData.get('email') as string
+  const supabase = await createClient()
+
+  const headersList = await headers()
+  const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000'
+  const protocol = headersList.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https')
+  const origin = `${protocol}://${host}`
+
+  console.log("Attempting to send reset email to:", email)
+  console.log("Redirect URL being used:", `${origin}/auth/callback?next=/update-password`)
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/update-password`,
+  })
+
+  if (error) {
+    console.error("Supabase Reset Password Error:", error)
+    return { error: error.message }
+  }
+  
+  return { success: true }
+}
+
+export async function updatePassword(formData: FormData) {
+  const password = formData.get('password') as string
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  redirect('/dashboard')
 }
