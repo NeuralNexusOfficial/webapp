@@ -1,9 +1,11 @@
+import { AnimatedNumber } from "@/components/ui/animated-number";
+
 export default function Stats() {
   const stats = [
-    { value: "5,000+", label: "Hackers Worldwide" },
-    { value: "100+",   label: "Projects Submitted" },
-    { value: "24 hrs", label: "Non-Stop Hacking" },
-    { value: "₹5L+",  label: "Prize Pool" },
+    { value: 5000, suffix: "+", label: "Hackers Worldwide" },
+    { value: 100, suffix: "+", label: "Projects Submitted" },
+    { value: 24, suffix: " hrs", label: "Non-Stop Hacking" },
+    { value: 5, prefix: "₹", suffix: "L+", label: "Prize Pool" },
   ];
 
   return (
@@ -21,7 +23,11 @@ export default function Stats() {
                 className="text-4xl md:text-5xl font-bold mb-2 text-white"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {item.value}
+                <AnimatedNumber 
+                  value={item.value} 
+                  prefix={item.prefix} 
+                  suffix={item.suffix} 
+                />
               </p>
               <p className="text-xs uppercase tracking-widest text-white/40 font-medium">
                 {item.label}
