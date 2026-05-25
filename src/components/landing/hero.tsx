@@ -4,6 +4,19 @@ import { createClient } from "@/lib/supabase/server";
 export default async function Hero() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  
+  let role = 'USER';
+  if (user) {
+    if (user.email === 'kishlayamishra@gmail.com') {
+      role = 'ADMIN';
+    } else {
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      if (profile?.role) {
+        role = profile.role;
+      }
+    }
+  }
+  
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden">
 
@@ -61,17 +74,36 @@ export default async function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {user ? (
-            <Link href="/dashboard" className="btn-pill btn-primary">
-              Dashboard →
-            </Link>
+            <>
+              {role === 'ADMIN' ? (
+                <Link href="/admin" className="btn-pill btn-primary">
+                  Admin Panel →
+                </Link>
+              ) : role === 'JUDGE' ? (
+                <Link href="/panel" className="btn-pill btn-primary">
+                  Judge Panel →
+                </Link>
+              ) : (
+                <>
+                  <Link href="/dashboard" className="btn-pill btn-primary">
+                    Dashboard →
+                  </Link>
+                  <Link href="/dashboard/submit" className="btn-pill btn-outline">
+                    Submit Project
+                  </Link>
+                </>
+              )}
+            </>
           ) : (
-            <Link href="/signup" className="btn-pill btn-primary">
-              Register Now →
-            </Link>
+            <>
+              <Link href="/signup" className="btn-pill btn-primary">
+                Register Now →
+              </Link>
+              <Link href="#how-it-works" className="btn-pill btn-outline">
+                Learn More
+              </Link>
+            </>
           )}
-          <Link href="#how-it-works" className="btn-pill btn-outline">
-            Learn More
-          </Link>
         </div>
 
         {/* Scroll hint */}

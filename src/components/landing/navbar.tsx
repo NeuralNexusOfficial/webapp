@@ -11,6 +11,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [role, setRole] = useState<string>('USER');
   const [authLoaded, setAuthLoaded] = useState(false);
 
   useEffect(() => {
@@ -30,10 +31,12 @@ export default function Navbar() {
         // Try to get first name from profile
         supabase
           .from("profiles")
-          .select("full_name")
+          .select("full_name, role")
           .eq("id", user.id)
           .maybeSingle()
           .then(({ data }) => {
+            if (user.email === 'kishlayamishra@gmail.com') setRole('ADMIN');
+            else if (data?.role) setRole(data.role);
             if (data?.full_name) {
               setFirstName(data.full_name.trim().split(" ")[0]);
             } else {
@@ -99,9 +102,6 @@ export default function Navbar() {
           <Link href="/faq" className="hover:text-white transition-colors">
             FAQs
           </Link>
-          <Link href="/dashboard" className="hover:text-white transition-colors">
-            Dashboard
-          </Link>
         </div>
 
         {/* Desktop CTA — auth-aware */}
@@ -113,7 +113,7 @@ export default function Navbar() {
             // Logged-in state
             <>
               <Link
-                href="/dashboard"
+                href={role === 'ADMIN' ? '/admin' : role === 'JUDGE' ? '/panel' : '/dashboard'}
                 className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/20 text-sm text-white/70 hover:text-white transition-all duration-200"
               >
                 <span className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-xs font-bold text-white/70">
@@ -121,8 +121,8 @@ export default function Navbar() {
                 </span>
                 {firstName ?? "Account"}
               </Link>
-              <Link href="/dashboard" className="btn-pill btn-primary text-sm py-2 px-5">
-                Dashboard →
+              <Link href={role === 'ADMIN' ? '/admin' : role === 'JUDGE' ? '/panel' : '/dashboard'} className="btn-pill btn-primary text-sm py-2 px-5">
+                {role === 'ADMIN' ? 'Admin Panel →' : role === 'JUDGE' ? 'Judge Panel →' : 'Dashboard →'}
               </Link>
             </>
           ) : (
@@ -186,22 +186,15 @@ export default function Navbar() {
           >
             FAQs
           </Link>
-          <Link
-            href="/dashboard"
-            onClick={() => setMenuOpen(false)}
-            className="block text-sm text-white/60 hover:text-white transition-colors py-2"
-          >
-            Dashboard
-          </Link>
           <div className="pt-2 flex flex-col gap-3">
             {user ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href={role === 'ADMIN' ? '/admin' : role === 'JUDGE' ? '/panel' : '/dashboard'}
                   onClick={() => setMenuOpen(false)}
                   className="btn-pill btn-primary text-sm py-2.5 w-full justify-center text-center"
                 >
-                  Go to Dashboard →
+                  {role === 'ADMIN' ? 'Go to Admin Panel →' : role === 'JUDGE' ? 'Go to Judge Panel →' : 'Go to Dashboard →'}
                 </Link>
               </>
             ) : (

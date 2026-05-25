@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { Suspense } from "react";
 import { login } from "@/app/actions/auth";
 import SplashCursor from "@/components/ui/splash-cursor";
@@ -16,6 +16,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,15 +92,24 @@ function LoginForm() {
               className="input-nn"
             />
             <div className="space-y-1">
-              <input
-                id="login-password"
-                type="password"
-                required
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-nn"
-              />
+              <div className="relative">
+                <input
+                  id="login-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-nn pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
               <div className="flex justify-end">
                 <Link
                   href="/forgot-password"

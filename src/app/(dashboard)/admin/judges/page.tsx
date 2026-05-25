@@ -27,9 +27,10 @@ export default async function AdminJudgesPage() {
             Judge Management
           </h1>
           
-          <div className="flex gap-4 border-b border-white/10 pb-4">
-            <Link href="/admin" className="text-white/50 hover:text-white transition">Submissions</Link>
+          <div className="flex gap-6 border-b border-white/10 pb-4">
+            <Link href="/admin" className="text-white/50 hover:text-white transition font-medium">Submissions</Link>
             <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px]">Judges</span>
+            <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium">Users</Link>
           </div>
         </div>
 

@@ -7,12 +7,21 @@ import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/actions/auth";
 
-const navItems = [
+const userItems = [
   { label: "Dashboard",      href: "/dashboard" },
   { label: "My Team",        href: "/dashboard/team" },
   { label: "Submit Project", href: "/dashboard/submit" },
-  { label: "Judging",        href: "/panel" },
   { label: "Resources",      href: "/dashboard/resources" },
+];
+
+const adminItems = [
+  { label: "Admin Panel",    href: "/admin", match: (p: string) => p === "/admin" || p.startsWith("/admin/submissions") || p.startsWith("/admin/judges") },
+  { label: "Manage Users",   href: "/admin/users", match: (p: string) => p.startsWith("/admin/users") },
+  { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
+];
+
+const judgeItems = [
+  { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
 ];
 
 export default function Sidebar() {
@@ -38,7 +47,9 @@ export default function Sidebar() {
         .eq("id", user.id)
         .maybeSingle();
 
-      if (profile?.role) {
+      if (user.email === 'kishlayamishra@gmail.com') {
+        setRole('ADMIN');
+      } else if (profile?.role) {
         setRole(profile.role);
       }
 
@@ -104,42 +115,29 @@ export default function Sidebar() {
 
           {/* Nav */}
           <nav className="p-4 space-y-1">
-            {navItems.map((item) => {
-              if (item.label === 'Judging' && role !== 'JUDGE' && role !== 'ADMIN') {
-                return null;
-              }
-              if (role === 'JUDGE' && item.label !== 'Judging') {
-                return null;
-              }
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                    active
-                      ? "bg-white text-black"
-                      : "text-white/50 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            {role === 'ADMIN' && (
-              <Link
-                href="/admin"
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  pathname.startsWith("/admin")
-                    ? "bg-white text-black"
-                    : "text-white/50 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                Admin Panel
-              </Link>
-            )}
+            {(() => {
+              let itemsToRender = userItems;
+              if (role === 'ADMIN') itemsToRender = adminItems;
+              else if (role === 'JUDGE') itemsToRender = judgeItems;
+
+              return itemsToRender.map((item) => {
+                const active = item.match ? item.match(pathname) : pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                      active
+                        ? "bg-white text-black"
+                        : "text-white/50 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              });
+            })()}
           </nav>
         </div>
 

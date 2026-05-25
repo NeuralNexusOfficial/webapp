@@ -80,11 +80,16 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-col gap-2 items-start md:items-end">
               <div className="text-xs text-white/30 uppercase tracking-widest">Event starts in</div>
-              <div
-                className="text-3xl md:text-4xl font-bold text-white tabular-nums"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {timeLeft}
+              <div className="flex gap-4 md:gap-6 text-center tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
+                {timeLeft.split(':').map((val, idx) => {
+                  const labels = ['Days', 'Hours', 'Mins', 'Secs'];
+                  return (
+                    <div key={idx} className="flex flex-col items-center">
+                      <div className="text-3xl md:text-4xl font-bold text-white leading-none">{val}</div>
+                      <div className="text-[10px] text-white/40 uppercase tracking-widest mt-1 font-sans font-medium">{labels[idx]}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

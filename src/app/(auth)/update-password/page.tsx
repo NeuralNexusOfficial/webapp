@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { updatePassword } from "@/app/actions/auth";
+import { Eye, EyeOff } from "lucide-react";
 import SplashCursor from "@/components/ui/splash-cursor";
 
 export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,16 +72,25 @@ export default function UpdatePasswordPage() {
           )}
 
           <div className="space-y-3">
-            <input
-              id="update-password"
-              type="password"
-              required
-              placeholder="New password (8+ chars)"
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-nn"
-            />
+            <div className="relative">
+              <input
+                id="update-password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="New password (8+ chars)"
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-nn pr-10 w-full"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <button

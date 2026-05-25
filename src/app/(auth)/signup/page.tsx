@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import SplashCursor from "@/components/ui/splash-cursor";
 
 import { signup } from "@/app/actions/auth";
@@ -17,6 +18,7 @@ function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -101,16 +103,25 @@ function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="input-nn"
             />
-            <input
-              id="signup-password"
-              type="password"
-              required
-              placeholder="Password (8+ chars)"
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-nn"
-            />
+            <div className="relative">
+              <input
+                id="signup-password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="Password (8+ chars)"
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-nn pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <button

@@ -36,9 +36,10 @@ export default async function AdminPage({
           >
             Submission Review
           </h1>
-          <div className="flex gap-4 border-b border-white/10 pb-4">
+          <div className="flex gap-6 border-b border-white/10 pb-4">
             <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px]">Submissions</span>
-            <Link href="/admin/judges" className="text-white/50 hover:text-white transition">Judges</Link>
+            <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium">Judges</Link>
+            <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium">Users</Link>
           </div>
         </div>
 

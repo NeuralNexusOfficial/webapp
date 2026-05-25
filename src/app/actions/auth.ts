@@ -11,7 +11,7 @@ export async function login(formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -20,7 +20,26 @@ export async function login(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect(next)
+  let redirectUrl = next
+  if (data.user) {
+    if (email === 'kishlayamishra@gmail.com') {
+      redirectUrl = '/admin'
+    } else {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single()
+
+      if (profile?.role === 'ADMIN') {
+        redirectUrl = '/admin'
+      } else if (profile?.role === 'JUDGE') {
+        redirectUrl = '/panel'
+      }
+    }
+  }
+
+  redirect(redirectUrl)
 }
 
 export async function signup(formData: FormData) {
@@ -31,7 +50,7 @@ export async function signup(formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -46,7 +65,22 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect(next)
+  let redirectUrl = next
+  if (data.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .maybeSingle()
+
+    if (profile?.role === 'ADMIN') {
+      redirectUrl = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      redirectUrl = '/panel'
+    }
+  }
+
+  redirect(redirectUrl)
 }
 
 export async function signOut() {

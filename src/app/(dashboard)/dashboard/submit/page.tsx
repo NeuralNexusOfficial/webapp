@@ -3,10 +3,9 @@
 import { useState, useTransition, useEffect } from 'react';
 import Sidebar from '@/components/dashboard/sidebar';
 import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions/submission';
+import { getMyTeam } from '@/app/actions/team';
 import { Track, Submission } from '@/types';
 import { createClient } from '@/lib/supabase/client';
-import { getPaymentStatus } from '@/app/actions/payment';
-import PaymentSection from '@/components/dashboard/payment-section';
 import { useRef } from 'react';
 import {
   sanitizeTitleInput,
@@ -50,7 +49,7 @@ export default function SubmitPage() {
   const [fieldErrors, setFieldErrors] = useState<{ title?: string; description?: string }>({});
   const [touched, setTouched] = useState<{ title?: boolean; description?: boolean }>({});
   const [role, setRole] = useState<string>('loading');
-  const [paymentStatus, setPaymentStatus] = useState<string>('loading');
+  const [isTeam, setIsTeam] = useState<boolean | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
@@ -64,9 +63,10 @@ export default function SubmitPage() {
         if (profile) setRole(profile.role);
       }
 
-      // 2. Fetch payment status
-      const pStatus = await getPaymentStatus();
-      setPaymentStatus(pStatus.status);
+      // 2. Fetch team status
+      const teamRes = await getMyTeam();
+      const hasTeam = teamRes.success && !!teamRes.data;
+      setIsTeam(hasTeam);
 
       // 3. Fetch submission
       const res = await getMySubmission();
@@ -265,6 +265,18 @@ export default function SubmitPage() {
               <p className="text-white/60">
                 You are currently logged in as an <span className="font-bold text-white">{role}</span>. 
                 Admins and Judges cannot participate in the hackathon or submit projects.
+              </p>
+            </div>
+          ) : isTeam === false ? (
+            <div className="card-cyber p-8 text-center border-red-500/30">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                ⚠️
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                Access Restricted
+              </h2>
+              <p className="text-white/60">
+                Sorry, You need to be part of any team to access it.
               </p>
             </div>
           ) : (
@@ -524,27 +536,14 @@ export default function SubmitPage() {
                   )}
                 </div>
 
-                {/* Payment Section (Render after track selection, if not paid) */}
-                {form.track && paymentStatus !== 'SUCCESS' && (
-                  <div className="mt-8 border-t border-white/10 pt-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="tag-label">Registration</div>
-                      <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                        Complete Registration
-                      </h2>
-                    </div>
-                    <PaymentSection selectedDomain={form.track as Track} />
-                  </div>
-                )}
-
                 {/* Submit */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-white/10 pt-8 mt-8">
                   {!isLocked && (
                     <button
                       id="save-submission-btn"
                       type="submit"
-                      disabled={isPending || paymentStatus !== 'SUCCESS'}
-                      className={`btn-pill ${(isPending || paymentStatus !== 'SUCCESS') ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+                      disabled={isPending}
+                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
                     >
                       {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
                     </button>
@@ -555,8 +554,8 @@ export default function SubmitPage() {
                       id="finalize-submission-btn"
                       type="button"
                       onClick={handleFinalize}
-                      disabled={isPending || paymentStatus !== 'SUCCESS'}
-                      className={`btn-pill ${(isPending || paymentStatus !== 'SUCCESS') ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
+                      disabled={isPending}
+                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
                     >
                       Finalize & Lock →
                     </button>

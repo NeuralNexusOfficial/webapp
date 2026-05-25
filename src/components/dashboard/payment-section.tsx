@@ -6,14 +6,23 @@ import { getMyTeamWithMembers } from '@/app/actions/team';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
 
-export default function PaymentSection({ selectedDomain }: { selectedDomain?: Track | '' }) {
+export default function PaymentSection({ 
+  selectedDomain,
+  registrationType
+}: { 
+  selectedDomain?: Track | '';
+  registrationType?: 'solo' | 'team';
+}) {
   const [internalDomain, setInternalDomain] = useState<Track | ''>('');
   
   // Use prop if provided, otherwise use internal state
   const domain = selectedDomain !== undefined ? selectedDomain : internalDomain;
   
-  const [isTeam, setIsTeam] = useState(false);
+  const [dbIsTeam, setDbIsTeam] = useState(false);
   const [teamSize, setTeamSize] = useState(0);
+  
+  // If registrationType is explicitly passed, use it. Otherwise, fallback to DB state.
+  const isTeam = registrationType !== undefined ? registrationType === 'team' : dbIsTeam;
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState('loading');
 
@@ -23,10 +32,10 @@ export default function PaymentSection({ selectedDomain }: { selectedDomain?: Tr
         const pStatus = await getPaymentStatus();
         setPaymentStatus(pStatus.status);
 
-        if (pStatus.status !== 'SUCCESS') {
+        if (pStatus.status !== 'SUCCESS' && registrationType === undefined) {
           const teamRes = await getMyTeamWithMembers();
           if (teamRes.success && teamRes.data) {
-            setIsTeam(true);
+            setDbIsTeam(true);
             setTeamSize(teamRes.data.members.length);
           }
         }
@@ -108,7 +117,7 @@ export default function PaymentSection({ selectedDomain }: { selectedDomain?: Tr
           )}
           <p className="text-[11px] text-white/30 mt-2">
             {isTeam 
-              ? `You are paying for a team of ${teamSize}.`
+              ? (registrationType === 'team' ? "You are paying for a team." : `You are paying for a team of ${teamSize}.`)
               : "You are paying as an individual."}
           </p>
         </div>
