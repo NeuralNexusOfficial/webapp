@@ -3,9 +3,9 @@ import "./globals.css";
 import { SimpleBackground } from "@/components/ui/simple-background";
 
 export const metadata: Metadata = {
-  title: "AOT Hackathon — Architects of Tomorrow",
+  title: "AOT Hackathon | Architects of Tomorrow",
   description:
-    "Join developers, designers and innovators at AOT Hackathon — Architects of Tomorrow, the next-generation hackathon platform built for scale.",
+    "Join developers, designers and innovators at AOT Hackathon — Architects of Tomorrow.",
 };
 
 export default function RootLayout({

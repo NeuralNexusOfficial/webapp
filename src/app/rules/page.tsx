@@ -14,7 +14,7 @@ export default function RulesPage() {
           <section className="card-cyber p-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Eligibility</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>AOT Hackathon is open to all developers, designers, and innovators worldwide.</li>
+              <li>NeuralNexus is open to all developers, designers, and innovators worldwide.</li>
               <li>Participants must be at least 18 years old or have parental consent.</li>
               <li>Teams can consist of 1 to 4 members. Individual participation is also allowed.</li>
             </ul>

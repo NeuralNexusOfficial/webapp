@@ -9,7 +9,7 @@ export default function Footer() {
             className="text-lg font-bold text-white/80"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            AOT <span className="text-white/30">Hackathon</span>
+            AOT<span className="text-white/30">Hackathon</span>
           </p>
           <p className="text-xs text-white/30 mt-1">© 2026 AOT Hackathon. All rights reserved.</p>
         </div>

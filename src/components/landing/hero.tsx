@@ -47,9 +47,9 @@ export default async function Hero() {
           className="text-6xl md:text-8xl font-bold leading-[1.02] tracking-tight mb-6 text-gradient"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          AOT Hackathon
+          Build. Compete.
           <br />
-          <span className="text-3xl md:text-5xl text-white/70 font-medium tracking-normal mt-4 block">Architects of Tomorrow</span>
+          Change The Future.
         </h1>
 
         {/* Sub */}

@@ -244,7 +244,7 @@ export default function SubmitPage() {
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Submit Project
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
           </div>
           <div className="hidden sm:flex items-center gap-2 text-xs text-white/40">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />

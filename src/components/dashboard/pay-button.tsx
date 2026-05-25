@@ -93,7 +93,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
       order_id: orderData.order_id,
       amount: orderData.amount,
       currency: orderData.currency,
-      name: 'AOT Hackathon',
+      name: 'NeuralNexus Hackathon',
       description: 'Hackathon Registration Fee',
       theme: { color: '#ffffff', backdrop_color: '#000000' },
       handler: () => setState('success'),
