@@ -4,7 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-import { Suspense } from "react";
+import { useState, Suspense } from "react";
 import { login } from "@/app/actions/auth";
 import SplashCursor from "@/components/ui/splash-cursor";
 

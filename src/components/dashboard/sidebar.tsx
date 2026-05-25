@@ -7,20 +7,26 @@ import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/actions/auth";
 
-const userItems = [
+type NavItem = {
+  label: string;
+  href: string;
+  match?: (p: string) => boolean;
+};
+
+const userItems: NavItem[] = [
   { label: "Dashboard",      href: "/dashboard" },
   { label: "My Team",        href: "/dashboard/team" },
   { label: "Submit Project", href: "/dashboard/submit" },
   { label: "Resources",      href: "/dashboard/resources" },
 ];
 
-const adminItems = [
+const adminItems: NavItem[] = [
   { label: "Admin Panel",    href: "/admin", match: (p: string) => p === "/admin" || p.startsWith("/admin/submissions") || p.startsWith("/admin/judges") },
   { label: "Manage Users",   href: "/admin/users", match: (p: string) => p.startsWith("/admin/users") },
   { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
 ];
 
-const judgeItems = [
+const judgeItems: NavItem[] = [
   { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
 ];
 
