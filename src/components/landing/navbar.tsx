@@ -77,7 +77,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm text-white/60">
           <Link href="/#how-it-works" className="hover:text-white transition-colors">
             How It Works
           </Link>
@@ -99,7 +99,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA — auth-aware */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           {!authLoaded ? (
             // Skeleton placeholder while loading auth
             <div className="w-28 h-9 rounded-full bg-white/5 animate-pulse" />
@@ -134,7 +134,7 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-white/10 text-white/70 hover:text-white transition-colors"
+          className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-white/10 text-white/70 hover:text-white transition-colors"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -144,7 +144,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/[0.06] bg-black/95 backdrop-blur-xl px-6 py-5 space-y-4">
+        <div className="lg:hidden border-t border-white/[0.06] bg-black/95 backdrop-blur-xl px-6 py-5 space-y-4">
           <Link
             href="/#how-it-works"
             onClick={() => setMenuOpen(false)}

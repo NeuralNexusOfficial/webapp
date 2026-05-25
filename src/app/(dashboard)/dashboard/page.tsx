@@ -6,7 +6,7 @@ import TeamActions from "@/components/dashboard/team-actions";
 import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export default function DashboardPage() {
-  const [timeLeft, setTimeLeft] = useState("24:00:00");
+  const [timeLeft, setTimeLeft] = useState("00:00:00:00");
 
   useEffect(() => {
     const deadline = new Date("2026-10-21T00:00:00Z").getTime();
@@ -17,16 +17,17 @@ export default function DashboardPage() {
       
       if (distance < 0) {
         clearInterval(interval);
-        setTimeLeft("00:00:00");
+        setTimeLeft("00:00:00:00");
         return;
       }
       
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + Math.floor(distance / (1000 * 60 * 60 * 24)) * 24;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
       setTimeLeft(
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
       );
     }, 1000);
     
