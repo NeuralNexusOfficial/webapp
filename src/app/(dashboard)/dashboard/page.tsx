@@ -53,7 +53,7 @@ export default function DashboardPage() {
             >
               Dashboard
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
           <div className="tag-label hidden sm:inline-flex">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />

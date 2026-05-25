@@ -156,7 +156,7 @@ export default function ResourcesPage() {
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Resources & Problem Statements
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
         </div>
 

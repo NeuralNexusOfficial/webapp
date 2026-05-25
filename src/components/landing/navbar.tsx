@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu, X, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -68,11 +69,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
+          <Image src="/logo.png" alt="AOT Logo" width={32} height={32} className="object-contain" />
           <span
             className="text-xl font-bold tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Neural<span className="text-white/40">Nexus</span>
+            AOT <span className="text-white/40">Hackathon</span>
           </span>
         </Link>
 
