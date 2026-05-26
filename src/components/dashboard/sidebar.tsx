@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { signOut } from "@/app/actions/auth";
+import { signOut, getCurrentUserRole } from "@/app/actions/auth";
 
 type NavItem = {
   label: string;
@@ -46,20 +46,20 @@ export default function Sidebar() {
       if (!user) return;
       setEmail(user.email ?? null);
 
-      // Try profile for full name and role
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name, role")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (user.email === 'kishlayamishra@gmail.com') {
-        setRole('ADMIN');
-      } else if (profile?.role) {
-        setRole(profile.role);
+      // Fetch role via server action (bypasses RLS issues)
+      const roleRes = await getCurrentUserRole();
+      if (roleRes.role) {
+        setRole(roleRes.role);
       } else {
         setRole('USER');
       }
+
+      // Try profile for full name (client-side)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
 
       if (profile?.full_name) {
         setFirstName(profile.full_name.trim().split(" ")[0]);

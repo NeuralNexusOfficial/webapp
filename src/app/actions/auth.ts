@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 
@@ -40,6 +41,26 @@ export async function login(formData: FormData) {
   }
 
   redirect(redirectUrl)
+}
+
+export async function getCurrentUserRole(): Promise<{ role: string | null }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { role: null }
+
+  const adminSupabase = createAdminClient()
+  const { data: profile } = await adminSupabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (user.email === 'kishlayamishra@gmail.com') {
+    return { role: 'ADMIN' }
+  }
+
+  return { role: profile?.role ?? 'USER' }
 }
 
 export async function signup(formData: FormData) {
