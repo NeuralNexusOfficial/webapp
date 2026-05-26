@@ -4,6 +4,7 @@ import Stats from "@/components/landing/stats";
 import HowItWorks from "@/components/landing/how-it-works";
 import Footer from "@/components/landing/footer";
 import { BackgroundPaths } from "@/components/ui/background-paths";
+import Chatbot from "@/components/landing/chatbot";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <Stats />
       <HowItWorks />
       <Footer />
+      <Chatbot />
     </div>
   );
 }
