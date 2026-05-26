@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { updatePassword } from "@/app/actions/auth";
 import { Eye, EyeOff } from "lucide-react";
-import SplashCursor from "@/components/ui/splash-cursor";
 
 export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
@@ -30,7 +29,6 @@ export default function UpdatePasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-black">
-      <SplashCursor />
       {/* Glow */}
       <div
         aria-hidden

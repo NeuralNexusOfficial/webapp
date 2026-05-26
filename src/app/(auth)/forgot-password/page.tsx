@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { resetPassword } from "@/app/actions/auth";
-import SplashCursor from "@/components/ui/splash-cursor";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -33,7 +32,6 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-black">
-      <SplashCursor />
       {/* Glow */}
       <div
         aria-hidden
