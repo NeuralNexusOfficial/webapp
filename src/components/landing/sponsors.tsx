@@ -120,11 +120,11 @@ export default function Sponsors() {
               Become a Sponsor
             </p>
             <p className="text-white/40 text-sm mt-1">
-              Reach 1000+ developers and showcase your brand at NeuralNexus 2026.
+              Reach 1000+ developers and showcase your brand at AOT Hackathon 2026.
             </p>
           </div>
           <a
-            href="mailto:sponsors@neuralnexus.dev"
+            href="mailto:kishlayamishra@gmail.com"
             className="btn-pill btn-outline text-sm py-2.5 px-6 whitespace-nowrap"
           >
             Get In Touch →

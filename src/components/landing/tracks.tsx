@@ -1,7 +1,9 @@
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot } from "lucide-react";
+
 export default function Tracks() {
   const tracks = [
     {
-      icon: "☁️",
+      icon: <Cloud className="w-8 h-8 text-sky-400" />,
       tag: "Track 01",
       title: "SaaS",
       desc: "Software as a Service. Build productivity tools, enterprise solutions, or consumer SaaS that solves real problems efficiently.",
@@ -10,7 +12,7 @@ export default function Tracks() {
       tagColor: "text-sky-400",
     },
     {
-      icon: "🎬",
+      icon: <Clapperboard className="w-8 h-8 text-amber-400" />,
       tag: "Track 02",
       title: "Animation",
       desc: "Bring ideas to life. 2D/3D animation, motion graphics, interactive web animations, or cinematic experiences.",
@@ -19,7 +21,7 @@ export default function Tracks() {
       tagColor: "text-amber-400",
     },
     {
-      icon: "📖",
+      icon: <BookOpen className="w-8 h-8 text-emerald-400" />,
       tag: "Track 03",
       title: "Storytelling",
       desc: "Craft interactive narratives, digital storytelling platforms, and immersive experiences that captivate users.",
@@ -28,7 +30,7 @@ export default function Tracks() {
       tagColor: "text-emerald-400",
     },
     {
-      icon: "🎮",
+      icon: <Gamepad2 className="w-8 h-8 text-violet-400" />,
       tag: "Track 04",
       title: "Gaming",
       desc: "Create browser games, indie titles, or gamified applications. Push the limits of web-based or native entertainment.",
@@ -37,7 +39,7 @@ export default function Tracks() {
       tagColor: "text-violet-400",
     },
     {
-      icon: "🤖",
+      icon: <Bot className="w-8 h-8 text-rose-400" />,
       tag: "Track 05",
       title: "AI",
       desc: "Machine learning, neural networks, LLMs, computer vision, AI agents — if it thinks and learns, it belongs here.",
@@ -73,7 +75,7 @@ export default function Tracks() {
               className={`relative group card-cyber p-7 flex flex-col gap-4 bg-gradient-to-br ${track.color} border ${track.border} transition-all duration-300`}
             >
               {/* Icon */}
-              <div className="text-4xl">{track.icon}</div>
+              <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">{track.icon}</div>
 
               {/* Tag */}
               <p

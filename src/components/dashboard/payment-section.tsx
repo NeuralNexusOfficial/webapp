@@ -5,6 +5,7 @@ import PayButton from './pay-button';
 import { getMyTeamWithMembers } from '@/app/actions/team';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
+import { Check } from 'lucide-react';
 
 export default function PaymentSection({ 
   selectedDomain,
@@ -60,7 +61,7 @@ export default function PaymentSection({
     return (
       <div className="card-cyber p-6 flex items-start gap-4">
         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg shrink-0">
-          ✓
+          <Check className="w-5 h-5" />
         </div>
         <div>
           <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>

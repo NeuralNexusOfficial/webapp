@@ -18,7 +18,7 @@ export default function Footer() {
           <Link href="/dashboard" className="hover:text-white/70 transition-colors">
             Dashboard
           </Link>
-          <Link href="/auth" className="hover:text-white/70 transition-colors">
+          <Link href="/login" className="hover:text-white/70 transition-colors">
             Sign In
           </Link>
           <span className="text-white/10">|</span>

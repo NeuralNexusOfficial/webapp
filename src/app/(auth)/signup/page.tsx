@@ -2,18 +2,15 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import SplashCursor from "@/components/ui/splash-cursor";
 
 import { signup } from "@/app/actions/auth";
 
 function SignupForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
-  const supabase = createClient();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,7 +59,7 @@ function SignupForm() {
               className="text-2xl font-bold text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Neural<span className="text-white/30">Nexus</span>
+              AOT<span className="text-white/30">Hackathon</span>
             </span>
           </Link>
           <p className="text-white/40 text-sm mt-2">Create your hacker account</p>

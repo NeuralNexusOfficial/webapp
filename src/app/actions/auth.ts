@@ -98,15 +98,14 @@ export async function resetPassword(formData: FormData) {
   const protocol = headersList.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https')
   const origin = `${protocol}://${host}`
 
-  console.log("Attempting to send reset email to:", email)
-  console.log("Redirect URL being used:", `${origin}/auth/callback?next=/update-password`)
+
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/update-password`,
   })
 
   if (error) {
-    console.error("Supabase Reset Password Error:", error)
+
     return { error: error.message }
   }
   

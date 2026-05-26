@@ -13,13 +13,14 @@ import {
   validateTitle,
   validateDescription,
 } from '@/lib/validation/submission-text';
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen } from 'lucide-react';
 
-const TRACKS: { value: Track; label: string; desc: string }[] = [
-  { value: 'SaaS',         label: '☁️ SaaS',         desc: 'Software as a Service, productivity tools, enterprise solutions' },
-  { value: 'Animation',    label: '🎬 Animation',    desc: '2D/3D animation, motion graphics, interactive web animations' },
-  { value: 'Storytelling', label: '📖 Storytelling', desc: 'Interactive narratives, digital storytelling, immersive experiences' },
-  { value: 'Gaming',       label: '🎮 Gaming',       desc: 'Browser games, indie titles, gamified applications' },
-  { value: 'AI',           label: '🤖 AI',           desc: 'Machine learning, LLMs, computer vision, AI agents' },
+const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
+  { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
+  { value: 'Animation',    label: 'Animation',    icon: <Clapperboard size={16} />,  desc: '2D/3D animation, motion graphics, interactive web animations' },
+  { value: 'Storytelling', label: 'Storytelling', icon: <BookOpen size={16} />,       desc: 'Interactive narratives, digital storytelling, immersive experiences' },
+  { value: 'Gaming',       label: 'Gaming',       icon: <Gamepad2 size={16} />,      desc: 'Browser games, indie titles, gamified applications' },
+  { value: 'AI',           label: 'AI',           icon: <Bot size={16} />,           desc: 'Machine learning, LLMs, computer vision, AI agents' },
 ];
 
 type FormState = {
@@ -244,7 +245,7 @@ export default function SubmitPage() {
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Submit Project
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
           <div className="hidden sm:flex items-center gap-2 text-xs text-white/40">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />
@@ -257,7 +258,7 @@ export default function SubmitPage() {
           {role === 'ADMIN' || role === 'JUDGE' ? (
             <div className="card-cyber p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
-                ⚠️
+                <AlertTriangle className="w-6 h-6 text-red-400" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
                 Access Restricted
@@ -270,7 +271,7 @@ export default function SubmitPage() {
           ) : isTeam === false ? (
             <div className="card-cyber p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
-                ⚠️
+                <AlertTriangle className="w-6 h-6 text-red-400" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
                 Access Restricted
@@ -287,7 +288,7 @@ export default function SubmitPage() {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
                 isLocked ? 'bg-emerald-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
               }`}>
-                {isLocked ? '🔒' : '✓'}
+                {isLocked ? <Lock className="w-5 h-5" /> : <Check className="w-5 h-5" />}
               </div>
               <div>
                 <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
@@ -437,8 +438,8 @@ export default function SubmitPage() {
                               : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
                           } ${isLocked ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
-                          <p className="font-semibold text-sm mb-0.5" style={{ fontFamily: 'var(--font-display)' }}>
-                            {t.label}
+                          <p className="font-semibold text-sm mb-0.5 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
+                            {t.icon} {t.label}
                           </p>
                           <p className="text-xs opacity-70 leading-relaxed">{t.desc}</p>
                         </button>
@@ -491,7 +492,7 @@ export default function SubmitPage() {
                   {form.file_url ? (
                     <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-6 flex items-center justify-between gap-4 animate-in fade-in zoom-in-95">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-2xl">📄</div>
+                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><FileText className="w-6 h-6 text-emerald-400" /></div>
                         <div>
                           <p className="text-emerald-400 font-semibold text-sm">File Uploaded</p>
                           <a 
@@ -526,7 +527,7 @@ export default function SubmitPage() {
                       {isUploading ? (
                         <div className="animate-spin h-8 w-8 border-2 border-white/20 border-t-white rounded-full mb-2" />
                       ) : (
-                        <div className="text-3xl">📁</div>
+                        <FolderOpen className="w-8 h-8 text-white/40" />
                       )}
                       <p className="text-white/50 text-sm font-medium">
                         {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
@@ -563,7 +564,7 @@ export default function SubmitPage() {
 
                   {isLocked && (
                     <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <span>🔒 Submission Locked</span>
+                      <span className="flex items-center gap-1.5"><Lock size={14} /> Submission Locked</span>
                     </div>
                   )}
 

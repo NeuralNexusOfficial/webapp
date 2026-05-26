@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log('Middleware - User:', user?.email || 'No user')
+
 
   const pathname = request.nextUrl.pathname
 
@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
   if (isAdminRoute || isJudgeRoute) {
     if (!user) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth'
+      url.pathname = '/login'
       url.searchParams.set('next', pathname)
       return NextResponse.redirect(url)
     }
@@ -64,7 +64,7 @@ export async function updateSession(request: NextRequest) {
     const hasAccess =
       profile?.role === 'ADMIN' || profile?.role === requiredRole
 
-    console.log(`Middleware - Profile Role:`, profile?.role, `Required:`, requiredRole, `HasAccess:`, hasAccess)
+
 
     if (!profile || !hasAccess) {
       // Redirect unauthorised users to the main dashboard
@@ -80,7 +80,7 @@ export async function updateSession(request: NextRequest) {
   if (isDashboardRoute && !isAdminRoute && !isJudgeRoute) {
     if (!user) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth'
+      url.pathname = '/login'
       url.searchParams.set('next', pathname)
       return NextResponse.redirect(url)
     }

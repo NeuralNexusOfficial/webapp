@@ -106,17 +106,20 @@ export default function Sidebar() {
         {/* ── Top section: brand + nav ────────────────────────────── */}
         <div>
           <div className="px-6 py-5 border-b border-white/6">
-            <Link href="/" onClick={() => setOpen(false)}>
-              <span
-                className="text-xl font-bold tracking-tight text-white"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Neural<span className="text-white/30">Nexus</span>
-              </span>
+            <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
+              <img src="/logo_blue-removebg.png" alt="AOT Logo" className="h-7 w-auto object-contain" />
+              <div className="flex flex-col">
+                <span
+                  className="text-xl font-bold tracking-tight text-white leading-none"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  AOT<span className="text-white/30">Hackathon</span>
+                </span>
+                <span className="text-[10px] text-white/30 mt-1 uppercase tracking-widest leading-none">
+                  Architects of Tomorrow
+                </span>
+              </div>
             </Link>
-            <p className="text-xs text-white/30 mt-1 uppercase tracking-widest">
-              Hackathon Hub
-            </p>
           </div>
 
           {/* Nav */}

@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
               className="text-2xl font-bold text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Neural<span className="text-white/30">Nexus</span>
+              AOT<span className="text-white/30">Hackathon</span>
             </span>
           </Link>
           <p className="text-white/40 text-sm mt-2">Reset your password</p>

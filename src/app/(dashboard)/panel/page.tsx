@@ -7,6 +7,7 @@ import {
   scoreSubmission,
 } from '@/app/actions/judging';
 import { Submission } from '@/types';
+import { Inbox, X } from 'lucide-react';
 
 type SubmissionWithExtras = Submission & {
   team_name: string;
@@ -206,7 +207,7 @@ export default function JudgeDashboard() {
           ) : submissions.length === 0 ? (
             <div className="card-cyber p-20 flex flex-col items-center justify-center text-center text-white/30">
               <span className="text-5xl mb-4">
-                📭
+                <Inbox className="w-12 h-12 text-white/20" />
               </span>
 
               <p>
@@ -363,7 +364,7 @@ export default function JudgeDashboard() {
                   }
                   className="w-9 h-9 rounded-full hover:bg-white/5"
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
 
               </div>
