@@ -162,29 +162,27 @@ export default function Sidebar() {
         {/* ── Bottom section: user chip + settings + sign out ─────── */}
         <div className="p-4 border-t border-white/6 space-y-1">
           {/* User identity chip */}
-          {(firstName || email) && (
-            <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-              {/* Avatar initial */}
-              <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0">
-                {firstName ? (
-                  <span className="text-sm font-bold text-white/70">
-                    {firstName[0].toUpperCase()}
-                  </span>
-                ) : (
-                  <User size={14} className="text-white/40" />
-                )}
-              </div>
-              {/* Name + email */}
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-white/80 truncate">
-                  {firstName ?? "Hacker"}
-                </p>
-                {email && (
-                  <p className="text-[10px] text-white/30 truncate">{email}</p>
-                )}
-              </div>
+          <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            {/* Avatar initial */}
+            <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0">
+              {firstName ? (
+                <span className="text-sm font-bold text-white/70">
+                  {firstName[0].toUpperCase()}
+                </span>
+              ) : (
+                <User size={14} className="text-white/40" />
+              )}
             </div>
-          )}
+            {/* Name + email */}
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-white/80 truncate">
+                {firstName ?? "Hacker"}
+              </p>
+              <p className="text-[10px] text-white/30 truncate">
+                {email ?? "…"}
+              </p>
+            </div>
+          </div>
 
           <Link
             href="/dashboard/settings"
