@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useState, Suspense } from "react";
 import { login } from "@/app/actions/auth";
-import SplashCursor from "@/components/ui/splash-cursor";
 
 function LoginForm() {
   const router = useRouter();
@@ -40,7 +39,6 @@ function LoginForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-black">
-      <SplashCursor />
       {/* Glow */}
       <div
         aria-hidden

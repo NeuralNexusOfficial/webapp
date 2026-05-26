@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-import SplashCursor from "@/components/ui/splash-cursor";
 
 import { signup } from "@/app/actions/auth";
 
@@ -43,7 +42,6 @@ function SignupForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-black">
-      <SplashCursor />
       {/* Glow */}
       <div
         aria-hidden
