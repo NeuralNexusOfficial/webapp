@@ -98,7 +98,7 @@ export default function Sidebar() {
       {/* ── Sidebar panel ──────────────────────────────────────────── */}
       <aside
         className={`
-          fixed top-0 left-0 h-full z-40 flex flex-col justify-between
+          fixed top-0 left-0 min-h-screen z-40 flex flex-col justify-between
           w-64 border-r border-white/17 bg-black/80 backdrop-blur-sm
           transform transition-transform duration-300 ease-in-out
           md:static md:translate-x-0 md:flex
