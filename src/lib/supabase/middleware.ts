@@ -86,12 +86,26 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // ── Auth routes: redirect logged-in users to dashboard ───────────────────────
+  // ── Auth routes: redirect logged-in users to their correct dashboard ─────────
   const isAuthRoute = pathname === '/login' || pathname === '/signup' || pathname === '/auth'
 
   if (isAuthRoute && user) {
+    const adminSupabase = createAdminClient()
+    const { data: profile } = await adminSupabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    let targetPath = '/dashboard'
+    if (profile?.role === 'ADMIN' || user.email === 'kishlayamishra@gmail.com') {
+      targetPath = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      targetPath = '/panel'
+    }
+
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = targetPath
     return NextResponse.redirect(url)
   }
   // Session cookie is still refreshed above so server actions can read the user.

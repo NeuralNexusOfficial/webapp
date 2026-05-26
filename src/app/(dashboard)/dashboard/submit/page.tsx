@@ -4,6 +4,7 @@ import { useState, useTransition, useEffect } from 'react';
 import Sidebar from '@/components/dashboard/sidebar';
 import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions/submission';
 import { getMyTeam } from '@/app/actions/team';
+import { getPaymentStatus } from '@/app/actions/payment';
 import { Track, Submission } from '@/types';
 import { createClient } from '@/lib/supabase/client';
 import { useRef } from 'react';
@@ -51,6 +52,7 @@ export default function SubmitPage() {
   const [touched, setTouched] = useState<{ title?: boolean; description?: boolean }>({});
   const [role, setRole] = useState<string>('loading');
   const [isTeam, setIsTeam] = useState<boolean | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
@@ -69,7 +71,11 @@ export default function SubmitPage() {
       const hasTeam = teamRes.success && !!teamRes.data;
       setIsTeam(hasTeam);
 
-      // 3. Fetch submission
+      // 3. Fetch payment status
+      const paymentRes = await getPaymentStatus();
+      setPaymentStatus(paymentRes.status);
+
+      // 4. Fetch submission
       const res = await getMySubmission();
       if (res.success && res.data) {
         const s = res.data;
@@ -268,7 +274,7 @@ export default function SubmitPage() {
                 Admins and Judges cannot participate in the hackathon or submit projects.
               </p>
             </div>
-          ) : isTeam === false ? (
+          ) : isTeam === false || (paymentStatus !== null && paymentStatus !== 'SUCCESS') ? (
             <div className="card-cyber p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-400" />

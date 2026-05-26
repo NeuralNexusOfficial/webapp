@@ -124,5 +124,22 @@ export async function updatePassword(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect('/dashboard')
+  // Check role and redirect to the appropriate dashboard
+  const { data: { user } } = await supabase.auth.getUser()
+  let redirectUrl = '/dashboard'
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (profile?.role === 'ADMIN' || user.email === 'kishlayamishra@gmail.com') {
+      redirectUrl = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      redirectUrl = '/panel'
+    }
+  }
+
+  redirect(redirectUrl)
 }

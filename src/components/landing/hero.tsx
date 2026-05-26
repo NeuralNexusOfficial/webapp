@@ -84,14 +84,9 @@ export default async function Hero() {
                   Judge Panel →
                 </Link>
               ) : (
-                <>
-                  <Link href="/dashboard" className="btn-pill btn-primary">
-                    Dashboard →
-                  </Link>
-                  <Link href="/dashboard/submit" className="btn-pill btn-outline">
-                    Submit Project
-                  </Link>
-                </>
+                <Link href="/dashboard/submit" className="btn-pill btn-primary">
+                  Submit Project →
+                </Link>
               )}
             </>
           ) : (

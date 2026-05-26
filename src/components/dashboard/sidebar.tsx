@@ -35,7 +35,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [role, setRole] = useState<string>('USER');
+  const [role, setRole] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Load user identity on mount
@@ -57,6 +57,8 @@ export default function Sidebar() {
         setRole('ADMIN');
       } else if (profile?.role) {
         setRole(profile.role);
+      } else {
+        setRole('USER');
       }
 
       if (profile?.full_name) {
@@ -124,7 +126,14 @@ export default function Sidebar() {
 
           {/* Nav */}
           <nav className="p-4 space-y-1">
-            {(() => {
+            {role === null ? (
+              // Loading skeleton for nav items
+              <div className="space-y-2">
+                <div className="h-10 rounded-xl bg-white/5 animate-pulse" />
+                <div className="h-10 rounded-xl bg-white/5 animate-pulse" />
+                <div className="h-10 rounded-xl bg-white/5 animate-pulse" />
+              </div>
+            ) : (() => {
               let itemsToRender = userItems;
               if (role === 'ADMIN') itemsToRender = adminItems;
               else if (role === 'JUDGE') itemsToRender = judgeItems;

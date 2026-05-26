@@ -15,9 +15,6 @@ export default function Footer() {
         </div>
 
         <div className="flex items-center gap-6 text-xs text-white/40">
-          <Link href="/dashboard" className="hover:text-white/70 transition-colors">
-            Dashboard
-          </Link>
           <Link href="/login" className="hover:text-white/70 transition-colors">
             Sign In
           </Link>
