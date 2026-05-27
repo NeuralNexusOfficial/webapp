@@ -1,6 +1,22 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Hero() {
+export default async function Hero() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  let role = 'USER';
+  if (user) {
+    if (user.email === 'kishlayamishra@gmail.com') {
+      role = 'ADMIN';
+    } else {
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      if (profile?.role) {
+        role = profile.role;
+      }
+    }
+  }
+  
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden">
 
@@ -36,7 +52,7 @@ export default function Hero() {
         {/* Label */}
         <div className="tag-label mx-auto mb-8 w-fit">
           <span className="w-1.5 h-1.5 rounded-full bg-white/60 inline-block" />
-          Global Hackathon · May 2026
+          Global Hackathon · Oct 2026
         </div>
 
         {/* Headline */}
@@ -52,17 +68,37 @@ export default function Hero() {
         {/* Sub */}
         <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
           Join 5,000+ developers, designers and innovators to solve
-          real-world challenges — 24 hours, ₹5L+ in prizes.
+          real-world challenges — Aug 21 to Oct 21, ₹5L+ in prizes.
         </p>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/signup" className="btn-pill btn-primary">
-            Register Now →
-          </Link>
-          <Link href="#how-it-works" className="btn-pill btn-outline">
-            Learn More
-          </Link>
+          {user ? (
+            <>
+              {role === 'ADMIN' ? (
+                <Link href="/admin" className="btn-pill btn-primary">
+                  Admin Panel →
+                </Link>
+              ) : role === 'JUDGE' ? (
+                <Link href="/panel" className="btn-pill btn-primary">
+                  Judge Panel →
+                </Link>
+              ) : (
+                <Link href="/dashboard/submit" className="btn-pill btn-primary">
+                  Submit Project →
+                </Link>
+              )}
+            </>
+          ) : (
+            <>
+              <Link href="/signup" className="btn-pill btn-primary">
+                Register Now →
+              </Link>
+              <Link href="#how-it-works" className="btn-pill btn-outline">
+                Learn More
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Scroll hint */}

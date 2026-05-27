@@ -1,20 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { useState, Suspense } from "react";
 import { login } from "@/app/actions/auth";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
-  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +54,7 @@ function LoginForm() {
               className="text-2xl font-bold text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Neural<span className="text-white/30">Nexus</span>
+              AOT<span className="text-white/30">Hackathon</span>
             </span>
           </Link>
           <p className="text-white/40 text-sm mt-2">Sign in to continue</p>
@@ -88,15 +86,34 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="input-nn"
             />
-            <input
-              id="login-password"
-              type="password"
-              required
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-nn"
-            />
+            <div className="space-y-1">
+              <div className="relative">
+                <input
+                  id="login-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-nn pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-white/40 hover:text-white transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
           </div>
 
           <button

@@ -2,11 +2,12 @@
 
 import Sidebar from '@/components/dashboard/sidebar';
 import Link from 'next/link';
+import { Bot, Link as LinkIcon, HeartPulse, Wallet, Rocket, ClipboardList, Trophy, HelpCircle, MessageCircle, Medal, Award, Star } from 'lucide-react';
 
 const TRACKS = [
   {
     id: 'ai-ml',
-    icon: '🤖',
+    icon: <Bot className="w-5 h-5 text-violet-400" />,
     label: 'AI / ML',
     color: 'from-violet-500/10 to-purple-500/5',
     border: 'border-violet-500/20',
@@ -20,7 +21,7 @@ const TRACKS = [
   },
   {
     id: 'web3',
-    icon: '⛓️',
+    icon: <LinkIcon className="w-5 h-5 text-amber-400" />,
     label: 'Web3',
     color: 'from-amber-500/10 to-orange-500/5',
     border: 'border-amber-500/20',
@@ -34,7 +35,7 @@ const TRACKS = [
   },
   {
     id: 'healthtech',
-    icon: '🏥',
+    icon: <HeartPulse className="w-5 h-5 text-emerald-400" />,
     label: 'HealthTech',
     color: 'from-emerald-500/10 to-teal-500/5',
     border: 'border-emerald-500/20',
@@ -48,7 +49,7 @@ const TRACKS = [
   },
   {
     id: 'fintech',
-    icon: '💰',
+    icon: <Wallet className="w-5 h-5 text-sky-400" />,
     label: 'FinTech',
     color: 'from-sky-500/10 to-blue-500/5',
     border: 'border-sky-500/20',
@@ -62,7 +63,7 @@ const TRACKS = [
   },
   {
     id: 'open-innovation',
-    icon: '🚀',
+    icon: <Rocket className="w-5 h-5 text-rose-400" />,
     label: 'Open Innovation',
     color: 'from-rose-500/10 to-pink-500/5',
     border: 'border-rose-500/20',
@@ -78,28 +79,28 @@ const TRACKS = [
 
 const GENERAL_RESOURCES = [
   {
-    icon: '📋',
+    icon: <ClipboardList className="w-5 h-5 text-white/60" />,
     label: 'Submission Rules',
     desc: 'Deadline, required fields, and submission process',
     href: '#rules',
   },
   {
-    icon: '🏆',
+    icon: <Trophy className="w-5 h-5 text-amber-400" />,
     label: 'Prizes & Judging',
     desc: 'Prize pool breakdown and judging criteria',
     href: '#prizes',
   },
   {
-    icon: '❓',
+    icon: <HelpCircle className="w-5 h-5 text-white/60" />,
     label: 'FAQs',
     desc: 'Common questions answered',
     href: '#faqs',
   },
   {
-    icon: '💬',
+    icon: <MessageCircle className="w-5 h-5 text-white/60" />,
     label: 'Discord Community',
-    desc: 'Ask questions, find teammates, get updates',
-    href: 'https://discord.gg/neuralnexus',
+    desc: 'Ask questions, find teammates, get updates — Coming Soon!',
+    href: '#',
   },
 ];
 
@@ -114,11 +115,11 @@ const RULES = [
 ];
 
 const PRIZES = [
-  { place: '🥇', label: '1st Place', reward: '₹50,000 + Swag + Internship Interviews' },
-  { place: '🥈', label: '2nd Place', reward: '₹25,000 + Swag' },
-  { place: '🥉', label: '3rd Place', reward: '₹10,000 + Swag' },
-  { place: '🌟', label: 'Best AI/ML Project', reward: '₹15,000 + Cloud Credits' },
-  { place: '⛓️', label: 'Best Web3 Project', reward: '₹15,000 + Blockchain Tools' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: '1st Place', reward: '₹50,000 + Swag + Internship Interviews' },
+  { place: <Medal className="w-6 h-6 text-gray-300" />, label: '2nd Place', reward: '₹25,000 + Swag' },
+  { place: <Medal className="w-6 h-6 text-amber-700" />, label: '3rd Place', reward: '₹10,000 + Swag' },
+  { place: <Star className="w-6 h-6 text-violet-400" />, label: 'Best AI/ML Project', reward: '₹15,000 + Cloud Credits' },
+  { place: <LinkIcon className="w-6 h-6 text-amber-400" />, label: 'Best Web3 Project', reward: '₹15,000 + Blockchain Tools' },
 ];
 
 const FAQS = [
@@ -156,7 +157,7 @@ export default function ResourcesPage() {
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Resources & Problem Statements
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
         </div>
 
@@ -177,7 +178,7 @@ export default function ResourcesPage() {
                   rel="noopener noreferrer"
                   className="card-cyber p-5 flex flex-col gap-2 group no-underline"
                 >
-                  <div className="text-2xl">{r.icon}</div>
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">{r.icon}</div>
                   <p className="font-semibold text-white text-sm group-hover:text-white transition-colors" style={{ fontFamily: 'var(--font-display)' }}>
                     {r.label}
                   </p>
@@ -197,7 +198,7 @@ export default function ResourcesPage() {
               {TRACKS.map((track) => (
                 <div key={track.id} className={`card-cyber p-6 border ${track.border}`}>
                   <div className={`inline-flex bg-gradient-to-r ${track.color} rounded-xl px-4 py-2 mb-4 items-center gap-2`}>
-                    <span className="text-xl">{track.icon}</span>
+                    <span className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">{track.icon}</span>
                     <span className="font-bold text-white text-sm" style={{ fontFamily: 'var(--font-display)' }}>
                       {track.label}
                     </span>
@@ -233,7 +234,7 @@ export default function ResourcesPage() {
             <div className="card-cyber divide-y divide-white/[0.06]">
               {PRIZES.map((p) => (
                 <div key={p.label} className="flex items-center gap-4 p-5">
-                  <div className="text-2xl w-10 text-center flex-shrink-0">{p.place}</div>
+                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">{p.place}</div>
                   <div>
                     <p className="font-semibold text-white text-sm" style={{ fontFamily: 'var(--font-display)' }}>{p.label}</p>
                     <p className="text-white/50 text-xs mt-0.5">{p.reward}</p>

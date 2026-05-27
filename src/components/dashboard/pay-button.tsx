@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getPaymentStatus } from '@/app/actions/payment';
+import { Check, X } from 'lucide-react';
 
-type PaymentState = 'idle' | 'pending' | 'success' | 'failed';
+type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed';
 
 interface PayButtonProps {
   amount: number;
@@ -28,8 +30,31 @@ function loadRazorpayScript(): Promise<boolean> {
 }
 
 export default function PayButton({ amount, label }: PayButtonProps) {
-  const [state, setState] = useState<PaymentState>('idle');
+  const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // ── Check existing payment status from DB on mount ─────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { status } = await getPaymentStatus();
+        if (cancelled) return;
+        if (status === 'SUCCESS') {
+          setState('success');
+        } else if (status === 'INITIATED') {
+          // Payment was initiated but not yet confirmed — treat as pending/idle
+          // so they can retry or wait for webhook
+          setState('idle');
+        } else {
+          setState('idle');
+        }
+      } catch {
+        if (!cancelled) setState('idle');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   async function handlePay() {
     setState('pending');
@@ -69,7 +94,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
       order_id: orderData.order_id,
       amount: orderData.amount,
       currency: orderData.currency,
-      name: 'NeuralNexus Hackathon',
+      name: 'AOT Hackathon',
       description: 'Hackathon Registration Fee',
       theme: { color: '#ffffff', backdrop_color: '#000000' },
       handler: () => setState('success'),
@@ -83,11 +108,24 @@ export default function PayButton({ amount, label }: PayButtonProps) {
     rzp.open();
   }
 
+  // ── Loading state ──────────────────────────────────────────────────────────
+  if (state === 'loading') {
+    return (
+      <div className="btn-pill btn-outline opacity-60 cursor-default">
+        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+        </svg>
+        Checking payment…
+      </div>
+    );
+  }
+
   if (state === 'success') {
     return (
       <div className="card-cyber p-6 flex items-start gap-4">
         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg shrink-0">
-          ✓
+          <Check className="w-5 h-5" />
         </div>
         <div>
           <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
@@ -106,7 +144,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
       <div className="card-cyber p-6 flex flex-col gap-4">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 text-lg shrink-0">
-            ✕
+            <X className="w-5 h-5" />
           </div>
           <div>
             <p className="text-red-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>

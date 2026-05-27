@@ -1,7 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 export async function login(formData: FormData) {
   const email = formData.get('email') as string
@@ -10,7 +12,7 @@ export async function login(formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -19,7 +21,46 @@ export async function login(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect(next)
+  let redirectUrl = next
+  if (data.user) {
+    if (email === 'kishlayamishra@gmail.com') {
+      redirectUrl = '/admin'
+    } else {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single()
+
+      if (profile?.role === 'ADMIN') {
+        redirectUrl = '/admin'
+      } else if (profile?.role === 'JUDGE') {
+        redirectUrl = '/panel'
+      }
+    }
+  }
+
+  redirect(redirectUrl)
+}
+
+export async function getCurrentUserRole(): Promise<{ role: string | null }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { role: null }
+
+  const adminSupabase = createAdminClient()
+  const { data: profile } = await adminSupabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (user.email === 'kishlayamishra@gmail.com') {
+    return { role: 'ADMIN' }
+  }
+
+  return { role: profile?.role ?? 'USER' }
 }
 
 export async function signup(formData: FormData) {
@@ -30,7 +71,7 @@ export async function signup(formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -45,11 +86,81 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  redirect(next)
+  let redirectUrl = next
+  if (data.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .maybeSingle()
+
+    if (profile?.role === 'ADMIN') {
+      redirectUrl = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      redirectUrl = '/panel'
+    }
+  }
+
+  redirect(redirectUrl)
 }
 
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/')
+}
+
+export async function resetPassword(formData: FormData) {
+  const email = formData.get('email') as string
+  const supabase = await createClient()
+
+  const headersList = await headers()
+  const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000'
+  const protocol = headersList.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https')
+  const origin = `${protocol}://${host}`
+
+
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/update-password`,
+  })
+
+  if (error) {
+
+    return { error: error.message }
+  }
+  
+  return { success: true }
+}
+
+export async function updatePassword(formData: FormData) {
+  const password = formData.get('password') as string
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // Check role and redirect to the appropriate dashboard
+  const { data: { user } } = await supabase.auth.getUser()
+  let redirectUrl = '/dashboard'
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (profile?.role === 'ADMIN' || user.email === 'kishlayamishra@gmail.com') {
+      redirectUrl = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      redirectUrl = '/panel'
+    }
+  }
+
+  redirect(redirectUrl)
 }

@@ -31,7 +31,7 @@ export interface Payment {
   created_at: string;
 }
 
-export type Track = 'AI/ML' | 'Web3' | 'HealthTech' | 'FinTech' | 'OpenInnovation';
+export type Track = 'SaaS' | 'Animation' | 'Storytelling' | 'Gaming' | 'AI';
 
 export type SubmissionStatus = 'DRAFT' | 'SUBMITTED' | 'JUDGED';
 

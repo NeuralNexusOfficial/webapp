@@ -1,6 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getUserRole } from '@/lib/auth/roles'
 import { revalidatePath } from 'next/cache'
 import { Profile, JudgeAssignment } from '@/types'
 
@@ -17,18 +19,13 @@ export async function getJudges(): Promise<AdminActionResult<Profile[]>> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated' }
 
-  // Verify Admin role
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied' }
   }
 
-  const { data, error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { data, error } = await adminSupabase
     .from('profiles')
     .select('*')
     .eq('role', 'JUDGE')
@@ -47,17 +44,13 @@ export async function assignJudge(submissionId: string, judgeId: string): Promis
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated' }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied' }
   }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { error } = await adminSupabase
     .from('judge_assignments')
     .upsert({
       submission_id: submissionId,
@@ -80,17 +73,13 @@ export async function unassignJudge(submissionId: string, judgeId: string): Prom
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated' }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || profile.role !== 'ADMIN') {
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
     return { success: false, error: 'Access denied' }
   }
 
-  const { error } = await supabase
+  const adminSupabase = createAdminClient()
+  const { error } = await adminSupabase
     .from('judge_assignments')
     .delete()
     .eq('submission_id', submissionId)
@@ -130,4 +119,66 @@ export async function getAllAssignments(): Promise<AdminActionResult<JudgeAssign
 
   if (error) return { success: false, error: error.message }
   return { success: true, data: data as JudgeAssignment[] }
+}
+
+/**
+ * Gets all users (profiles).
+ */
+export async function getAllUsers(): Promise<AdminActionResult<Profile[]>> {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
+    return { success: false, error: 'Access denied' }
+  }
+
+  const adminSupabase = createAdminClient()
+  const { data, error } = await adminSupabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) return { success: false, error: error.message }
+  return { success: true, data: data as Profile[] }
+}
+
+/**
+ * Updates a user's role.
+ */
+export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN' | 'JUDGE'): Promise<AdminActionResult> {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
+    return { success: false, error: 'Access denied' }
+  }
+
+  const adminSupabase = createAdminClient()
+
+  // Prevent modifying the super admin
+  const { data: targetUser } = await adminSupabase
+    .from('profiles')
+    .select('email')
+    .eq('id', userId)
+    .single()
+
+  if (targetUser?.email === 'kishlayamishra@gmail.com') {
+    return { success: false, error: 'Cannot modify the Super Admin role.' }
+  }
+
+  const { error } = await adminSupabase
+    .from('profiles')
+    .update({ role: newRole })
+    .eq('id', userId)
+
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath('/admin/users')
+  return { success: true, data: undefined }
 }

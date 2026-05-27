@@ -2,20 +2,19 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 import { signup } from "@/app/actions/auth";
 
 function SignupForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
-  const supabase = createClient();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +57,7 @@ function SignupForm() {
               className="text-2xl font-bold text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Neural<span className="text-white/30">Nexus</span>
+              AOT<span className="text-white/30">Hackathon</span>
             </span>
           </Link>
           <p className="text-white/40 text-sm mt-2">Create your hacker account</p>
@@ -99,16 +98,25 @@ function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="input-nn"
             />
-            <input
-              id="signup-password"
-              type="password"
-              required
-              placeholder="Password (8+ chars)"
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-nn"
-            />
+            <div className="relative">
+              <input
+                id="signup-password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="Password (8+ chars)"
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-nn pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <button

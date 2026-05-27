@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { createAdminClient } from './admin'
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -34,24 +35,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log('Middleware - User:', user?.email || 'No user')
+
 
   const pathname = request.nextUrl.pathname
 
   // ── Admin & Judge routes: require login + correct DB role ──────────────────
   const isAdminRoute = pathname.startsWith('/admin')
-  const isJudgeRoute = pathname.startsWith('/judge')
+  const isJudgeRoute = pathname.startsWith('/judge') || pathname.startsWith('/panel')
 
   if (isAdminRoute || isJudgeRoute) {
     if (!user) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth'
+      url.pathname = '/login'
       url.searchParams.set('next', pathname)
       return NextResponse.redirect(url)
     }
 
-    // Fetch role from profiles table
-    const { data: profile } = await supabase
+    // Fetch role from profiles table using admin client to bypass RLS
+    const adminSupabase = createAdminClient()
+    const { data: profile } = await adminSupabase
       .from('profiles')
       .select('role')
       .eq('id', user.id)
@@ -61,6 +63,9 @@ export async function updateSession(request: NextRequest) {
     // ADMIN can access both /admin and /judge routes
     const hasAccess =
       profile?.role === 'ADMIN' || profile?.role === requiredRole
+
+
+
     if (!profile || !hasAccess) {
       // Redirect unauthorised users to the main dashboard
       const url = request.nextUrl.clone()
@@ -75,13 +80,34 @@ export async function updateSession(request: NextRequest) {
   if (isDashboardRoute && !isAdminRoute && !isJudgeRoute) {
     if (!user) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth'
+      url.pathname = '/login'
       url.searchParams.set('next', pathname)
       return NextResponse.redirect(url)
     }
   }
 
-  // ── All other routes (e.g. landing page): fully public ───────────────────
+  // ── Auth routes: redirect logged-in users to their correct dashboard ─────────
+  const isAuthRoute = pathname === '/login' || pathname === '/signup' || pathname === '/auth'
+
+  if (isAuthRoute && user) {
+    const adminSupabase = createAdminClient()
+    const { data: profile } = await adminSupabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    let targetPath = '/dashboard'
+    if (profile?.role === 'ADMIN' || user.email === 'kishlayamishra@gmail.com') {
+      targetPath = '/admin'
+    } else if (profile?.role === 'JUDGE') {
+      targetPath = '/panel'
+    }
+
+    const url = request.nextUrl.clone()
+    url.pathname = targetPath
+    return NextResponse.redirect(url)
+  }
   // Session cookie is still refreshed above so server actions can read the user.
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're creating a new response object with NextResponse.next() make sure to:

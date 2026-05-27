@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
 import TeamActions from "@/components/dashboard/team-actions";
-import PayButton from "@/components/dashboard/pay-button";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export default function DashboardPage() {
-  const [timeLeft, setTimeLeft] = useState("24:00:00");
+  const [timeLeft, setTimeLeft] = useState("00:00:00:00");
 
   useEffect(() => {
-    const deadline = new Date("2026-05-20T00:00:00Z").getTime();
+    const deadline = new Date("2026-10-21T00:00:00Z").getTime();
     
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -17,16 +17,17 @@ export default function DashboardPage() {
       
       if (distance < 0) {
         clearInterval(interval);
-        setTimeLeft("00:00:00");
+        setTimeLeft("00:00:00:00");
         return;
       }
       
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + Math.floor(distance / (1000 * 60 * 60 * 24)) * 24;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
       setTimeLeft(
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
       );
     }, 1000);
     
@@ -34,7 +35,10 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex relative">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <BackgroundPaths />
+      </div>
       <Sidebar />
 
       {/* Main content — offset on mobile to account for fixed sidebar toggle */}
@@ -49,7 +53,7 @@ export default function DashboardPage() {
             >
               Dashboard
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
           <div className="tag-label hidden sm:inline-flex">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
@@ -76,41 +80,22 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-col gap-2 items-start md:items-end">
               <div className="text-xs text-white/30 uppercase tracking-widest">Event starts in</div>
-              <div
-                className="text-3xl md:text-4xl font-bold text-white tabular-nums"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {timeLeft}
+              <div className="flex gap-4 md:gap-6 text-center tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
+                {timeLeft.split(':').map((val, idx) => {
+                  const labels = ['Days', 'Hours', 'Mins', 'Secs'];
+                  return (
+                    <div key={idx} className="flex flex-col items-center">
+                      <div className="text-3xl md:text-4xl font-bold text-white leading-none">{val}</div>
+                      <div className="text-[10px] text-white/40 uppercase tracking-widest mt-1 font-sans font-medium">{labels[idx]}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
 
           {/* Team setup */}
           <TeamActions />
-
-          {/* Registration fee */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="tag-label">Payment</div>
-              <h2
-                className="text-xl md:text-2xl font-bold text-white"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                Registration Fee
-              </h2>
-            </div>
-            <div className="card-cyber p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div>
-                <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  ₹500
-                </p>
-                <p className="text-sm text-white/40">
-                  One-time fee · Includes swag kit, meals, and access to all tracks
-                </p>
-              </div>
-              <PayButton amount={500} />
-            </div>
-          </div>
 
         </div>
       </section>

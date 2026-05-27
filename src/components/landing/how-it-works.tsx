@@ -47,7 +47,7 @@ export default function HowItWorks() {
 
               <div className="card-cyber p-8 h-full flex flex-col gap-4">
                 <span
-                  className="text-5xl font-bold text-white/[0.06] group-hover:text-white/10 transition-colors"
+                  className="text-5xl font-bold text-white/[0.4] group-hover:text-white/60 transition-colors"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {step.num}

@@ -3,13 +3,23 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createTeam, joinTeam, goSolo } from "@/app/actions/team";
+import { getPaymentStatus } from "@/app/actions/payment";
+import PaymentSection from "./payment-section";
+import { useEffect } from "react";
 
 export default function TeamActions() {
   const router = useRouter();
   const [teamName, setTeamName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+  const [activeAction, setActiveAction] = useState<"solo" | "create" | "join" | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [paymentStatus, setPaymentStatus] = useState<string>("loading");
+  const [pendingRegType, setPendingRegType] = useState<"solo" | "team" | null>(null);
+
+  useEffect(() => {
+    getPaymentStatus().then((res) => setPaymentStatus(res.status));
+  }, []);
 
   function showToast(msg: string, ok: boolean) {
     setToast({ msg, ok });
@@ -17,6 +27,11 @@ export default function TeamActions() {
   }
 
   function handleSolo() {
+    if (paymentStatus !== "SUCCESS") {
+      setPendingRegType("solo");
+      return;
+    }
+    setActiveAction("solo");
     startTransition(async () => {
       const res = await goSolo();
       if (res.success) {
@@ -25,11 +40,17 @@ export default function TeamActions() {
       } else {
         showToast(res.error, false);
       }
+      setActiveAction(null);
     });
   }
 
   function handleCreate() {
     if (!teamName.trim()) return showToast("Enter a team name", false);
+    if (paymentStatus !== "SUCCESS") {
+      setPendingRegType("team");
+      return;
+    }
+    setActiveAction("create");
     startTransition(async () => {
       const res = await createTeam({ name: teamName.trim() });
       if (res.success) {
@@ -39,11 +60,13 @@ export default function TeamActions() {
       } else {
         showToast(res.error, false);
       }
+      setActiveAction(null);
     });
   }
 
   function handleJoin() {
     if (!inviteCode.trim()) return showToast("Enter an invite code", false);
+    setActiveAction("join");
     startTransition(async () => {
       const res = await joinTeam({ invite_code: inviteCode.trim() });
       if (res.success) {
@@ -81,7 +104,28 @@ export default function TeamActions() {
         </div>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      {/* Main UI or Payment UI */}
+      {pendingRegType ? (
+        <div className="card-cyber p-7 border border-emerald-500/20">
+          <button
+            onClick={() => setPendingRegType(null)}
+            className="text-xs text-white/40 hover:text-white mb-4 uppercase tracking-widest flex items-center gap-1"
+          >
+            ← Back to Options
+          </button>
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold text-white mb-2" style={{ fontFamily: "var(--font-display)" }}>
+              Complete Registration
+            </h3>
+            <p className="text-sm text-white/40">
+              Please select your track and complete payment to finalize your registration.
+              {pendingRegType === 'team' ? " As a team creator, you will pay for the entire team." : ""}
+            </p>
+          </div>
+          <PaymentSection registrationType={pendingRegType} />
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-3 gap-4">
 
         {/* Solo */}
         <div className="card-cyber p-7 flex flex-col gap-4">
@@ -103,7 +147,7 @@ export default function TeamActions() {
             disabled={isPending}
             className="btn-pill btn-outline text-sm py-2.5 w-full justify-center mt-auto"
           >
-            {isPending ? "Setting up…" : "Continue Solo"}
+            {isPending && activeAction === "solo" ? "Setting up…" : "Continue Solo"}
           </button>
         </div>
 
@@ -136,7 +180,7 @@ export default function TeamActions() {
             disabled={isPending}
             className="btn-pill btn-primary text-sm py-2.5 w-full justify-center"
           >
-            {isPending ? "Creating…" : "Create Team →"}
+            {isPending && activeAction === "create" ? "Creating…" : "Create Team →"}
           </button>
         </div>
 
@@ -169,11 +213,12 @@ export default function TeamActions() {
             disabled={isPending}
             className="btn-pill btn-outline text-sm py-2.5 w-full justify-center"
           >
-            {isPending ? "Joining…" : "Join Team →"}
+            {isPending && activeAction === "join" ? "Joining…" : "Join Team →"}
           </button>
         </div>
 
       </div>
+      )}
     </div>
   );
 }

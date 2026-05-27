@@ -3,16 +3,25 @@
 import { useState, useTransition, useEffect } from 'react';
 import Sidebar from '@/components/dashboard/sidebar';
 import { upsertSubmission, getMySubmission, lockSubmission } from '@/app/actions/submission';
+import { getMyTeam } from '@/app/actions/team';
+import { getPaymentStatus } from '@/app/actions/payment';
 import { Track, Submission } from '@/types';
 import { createClient } from '@/lib/supabase/client';
 import { useRef } from 'react';
+import {
+  sanitizeTitleInput,
+  sanitizeDescriptionInput,
+  validateTitle,
+  validateDescription,
+} from '@/lib/validation/submission-text';
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen } from 'lucide-react';
 
-const TRACKS: { value: Track; label: string; desc: string }[] = [
-  { value: 'AI/ML',          label: '🤖 AI / ML',         desc: 'Machine learning, neural networks, LLMs, computer vision' },
-  { value: 'Web3',           label: '⛓️ Web3',             desc: 'Blockchain, DeFi, NFTs, decentralised apps' },
-  { value: 'HealthTech',     label: '🏥 HealthTech',       desc: 'Digital health, medtech, mental wellness, biotech' },
-  { value: 'FinTech',        label: '💰 FinTech',          desc: 'Payments, banking, insurance, personal finance' },
-  { value: 'OpenInnovation', label: '🚀 Open Innovation',  desc: 'Anything that doesn\'t fit the above — surprise us!' },
+const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
+  { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
+  { value: 'Animation',    label: 'Animation',    icon: <Clapperboard size={16} />,  desc: '2D/3D animation, motion graphics, interactive web animations' },
+  { value: 'Storytelling', label: 'Storytelling', icon: <BookOpen size={16} />,       desc: 'Interactive narratives, digital storytelling, immersive experiences' },
+  { value: 'Gaming',       label: 'Gaming',       icon: <Gamepad2 size={16} />,      desc: 'Browser games, indie titles, gamified applications' },
+  { value: 'AI',           label: 'AI',           icon: <Bot size={16} />,           desc: 'Machine learning, LLMs, computer vision, AI agents' },
 ];
 
 type FormState = {
@@ -39,26 +48,53 @@ export default function SubmitPage() {
   const [isPending, startTransition] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<{ title?: string; description?: string }>({});
+  const [touched, setTouched] = useState<{ title?: boolean; description?: boolean }>({});
+  const [role, setRole] = useState<string>('loading');
+  const [isTeam, setIsTeam] = useState<boolean | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
   useEffect(() => {
-    getMySubmission().then((res) => {
+    async function loadData() {
+      // 1. Fetch user role
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+        if (profile) setRole(profile.role);
+      }
+
+      // 2. Fetch team status
+      const teamRes = await getMyTeam();
+      const hasTeam = teamRes.success && !!teamRes.data;
+      setIsTeam(hasTeam);
+
+      // 3. Fetch payment status
+      const paymentRes = await getPaymentStatus();
+      setPaymentStatus(paymentRes.status);
+
+      // 4. Fetch submission
+      const res = await getMySubmission();
       if (res.success && res.data) {
         const s = res.data;
         setExisting(s);
+        const title = sanitizeTitleInput(s.title ?? '');
+        const description = sanitizeDescriptionInput(s.description ?? '');
         setForm({
-          title: s.title ?? '',
-          description: s.description ?? '',
+          title,
+          description,
           track: s.track ?? '',
           repo_url: s.repo_url ?? '',
           demo_url: s.demo_url ?? '',
           file_url: s.file_url ?? '',
         });
-        setCharCount((s.description ?? '').length);
+        setCharCount(description.length);
       }
       setLoadingExisting(false);
-    });
+    }
+    loadData();
   }, []);
 
   function showToast(msg: string, ok: boolean) {
@@ -66,14 +102,56 @@ export default function SubmitPage() {
     setTimeout(() => setToast(null), 5000);
   }
 
+  function handleTitleChange(raw: string) {
+    const value = sanitizeTitleInput(raw);
+    setForm((f) => ({ ...f, title: value }));
+    if (touched.title) {
+      setFieldErrors((e) => ({ ...e, title: validateTitle(value) ?? undefined }));
+    }
+  }
+
+  function handleDescriptionChange(raw: string) {
+    const value = sanitizeDescriptionInput(raw);
+    setForm((f) => ({ ...f, description: value }));
+    setCharCount(value.length);
+    if (touched.description) {
+      setFieldErrors((e) => ({
+        ...e,
+        description: validateDescription(value) ?? undefined,
+      }));
+    }
+  }
+
   function handleChange<K extends keyof FormState>(key: K, value: FormState[K]) {
+    if (key === 'title') {
+      handleTitleChange(value as string);
+      return;
+    }
+    if (key === 'description') {
+      handleDescriptionChange(value as string);
+      return;
+    }
     setForm((f) => ({ ...f, [key]: value }));
-    if (key === 'description') setCharCount((value as string).length);
+  }
+
+  function validateForm(): boolean {
+    const titleError = validateTitle(form.title);
+    const descriptionError = validateDescription(form.description);
+    const errors: { title?: string; description?: string } = {};
+    if (titleError) errors.title = titleError;
+    if (descriptionError) errors.description = descriptionError;
+    setFieldErrors(errors);
+    setTouched({ title: true, description: true });
+    return !titleError && !descriptionError;
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isLocked) return;
+    if (!validateForm()) {
+      showToast('Please fix the errors in Project Title and Description.', false);
+      return;
+    }
     if (!form.track) {
       showToast('Please select a track before saving.', false);
       return;
@@ -136,6 +214,10 @@ export default function SubmitPage() {
 
   function handleFinalize() {
     if (!existing) return;
+    if (!validateForm()) {
+      showToast('Please fix the errors in Project Title and Description before finalizing.', false);
+      return;
+    }
     if (!window.confirm('Are you sure? Once finalized, you cannot edit your submission again.')) return;
 
     startTransition(async () => {
@@ -169,7 +251,7 @@ export default function SubmitPage() {
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Submit Project
             </h1>
-            <p className="text-xs md:text-sm text-white/30 mt-0.5">NeuralNexus Hackathon 2026</p>
+            <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
           <div className="hidden sm:flex items-center gap-2 text-xs text-white/40">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />
@@ -179,13 +261,40 @@ export default function SubmitPage() {
 
         <div className="p-5 md:p-10 space-y-8 max-w-3xl">
 
-          {/* Status banner */}
+          {role === 'ADMIN' || role === 'JUDGE' ? (
+            <div className="card-cyber p-8 text-center border-red-500/30">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                Access Restricted
+              </h2>
+              <p className="text-white/60">
+                You are currently logged in as an <span className="font-bold text-white">{role}</span>. 
+                Admins and Judges cannot participate in the hackathon or submit projects.
+              </p>
+            </div>
+          ) : isTeam === false || (paymentStatus !== null && paymentStatus !== 'SUCCESS') ? (
+            <div className="card-cyber p-8 text-center border-red-500/30">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                Access Restricted
+              </h2>
+              <p className="text-white/60">
+                Sorry, You need to be part of any team to access it.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Status banner */}
           {existing && (
             <div className={`card-cyber p-5 flex items-start gap-4 ${isLocked ? 'border-emerald-500/30 bg-emerald-500/5' : ''}`}>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
                 isLocked ? 'bg-emerald-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
               }`}>
-                {isLocked ? '🔒' : '✓'}
+                {isLocked ? <Lock className="w-5 h-5" /> : <Check className="w-5 h-5" />}
               </div>
               <div>
                 <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
@@ -239,14 +348,35 @@ export default function SubmitPage() {
                     <input
                       id="submit-title"
                       type="text"
-                      className="input-nn"
+                      inputMode="text"
+                      autoComplete="off"
+                      spellCheck
+                      className={`input-nn ${fieldErrors.title ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
                       placeholder="e.g. MediScan — AI-powered drug interaction checker"
                       value={form.title}
-                      onChange={(e) => handleChange('title', e.target.value)}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      onBlur={() => {
+                        setTouched((t) => ({ ...t, title: true }));
+                        setFieldErrors((err) => ({
+                          ...err,
+                          title: validateTitle(form.title) ?? undefined,
+                        }));
+                      }}
                       disabled={isLocked}
                       required
+                      minLength={3}
                       maxLength={120}
+                      aria-invalid={!!fieldErrors.title}
+                      aria-describedby={fieldErrors.title ? 'submit-title-error' : 'submit-title-hint'}
                     />
+                    <p id="submit-title-hint" className="text-[11px] text-white/25 mt-1.5">
+                      Letters, numbers, spaces, and . , &apos; - ( ) &amp; only
+                    </p>
+                    {fieldErrors.title && (
+                      <p id="submit-title-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                        {fieldErrors.title}
+                      </p>
+                    )}
                   </label>
 
                   {/* Description */}
@@ -259,14 +389,35 @@ export default function SubmitPage() {
                     </span>
                     <textarea
                       id="submit-description"
-                      className="input-nn min-h-[140px] resize-y"
+                      inputMode="text"
+                      autoComplete="off"
+                      spellCheck
+                      className={`input-nn min-h-[140px] resize-y ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
                       placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
                       value={form.description}
-                      onChange={(e) => handleChange('description', e.target.value)}
+                      onChange={(e) => handleDescriptionChange(e.target.value)}
+                      onBlur={() => {
+                        setTouched((t) => ({ ...t, description: true }));
+                        setFieldErrors((err) => ({
+                          ...err,
+                          description: validateDescription(form.description) ?? undefined,
+                        }));
+                      }}
                       disabled={isLocked}
                       required
+                      minLength={10}
                       maxLength={1000}
+                      aria-invalid={!!fieldErrors.description}
+                      aria-describedby={fieldErrors.description ? 'submit-description-error' : 'submit-description-hint'}
                     />
+                    <p id="submit-description-hint" className="text-[11px] text-white/25 mt-1.5">
+                      Plain text only — no URLs, emails, or special symbols like @ # $ %
+                    </p>
+                    {fieldErrors.description && (
+                      <p id="submit-description-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                        {fieldErrors.description}
+                      </p>
+                    )}
                   </label>
                 </div>
 
@@ -293,8 +444,8 @@ export default function SubmitPage() {
                               : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
                           } ${isLocked ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
-                          <p className="font-semibold text-sm mb-0.5" style={{ fontFamily: 'var(--font-display)' }}>
-                            {t.label}
+                          <p className="font-semibold text-sm mb-0.5 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
+                            {t.icon} {t.label}
                           </p>
                           <p className="text-xs opacity-70 leading-relaxed">{t.desc}</p>
                         </button>
@@ -347,7 +498,7 @@ export default function SubmitPage() {
                   {form.file_url ? (
                     <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-6 flex items-center justify-between gap-4 animate-in fade-in zoom-in-95">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-2xl">📄</div>
+                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><FileText className="w-6 h-6 text-emerald-400" /></div>
                         <div>
                           <p className="text-emerald-400 font-semibold text-sm">File Uploaded</p>
                           <a 
@@ -382,7 +533,7 @@ export default function SubmitPage() {
                       {isUploading ? (
                         <div className="animate-spin h-8 w-8 border-2 border-white/20 border-t-white rounded-full mb-2" />
                       ) : (
-                        <div className="text-3xl">📁</div>
+                        <FolderOpen className="w-8 h-8 text-white/40" />
                       )}
                       <p className="text-white/50 text-sm font-medium">
                         {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
@@ -393,7 +544,7 @@ export default function SubmitPage() {
                 </div>
 
                 {/* Submit */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-white/10 pt-8 mt-8">
                   {!isLocked && (
                     <button
                       id="save-submission-btn"
@@ -411,7 +562,7 @@ export default function SubmitPage() {
                       type="button"
                       onClick={handleFinalize}
                       disabled={isPending}
-                      className="btn-pill border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
                     >
                       Finalize & Lock →
                     </button>
@@ -419,7 +570,7 @@ export default function SubmitPage() {
 
                   {isLocked && (
                     <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <span>🔒 Submission Locked</span>
+                      <span className="flex items-center gap-1.5"><Lock size={14} /> Submission Locked</span>
                     </div>
                   )}
 
@@ -432,8 +583,10 @@ export default function SubmitPage() {
               </form>
             )}
           </div>
-        </div>
-      </section>
-    </main>
-  );
+        </>
+      )}
+      </div>
+    </section>
+  </main>
+);
 }
