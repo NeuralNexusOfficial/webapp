@@ -5,6 +5,8 @@ import HowItWorks from "@/components/landing/how-it-works";
 import Tracks from "@/components/landing/tracks";
 import Sponsors from "@/components/landing/sponsors";
 import Footer from "@/components/landing/footer";
+import { BackgroundPaths } from "@/components/ui/background-paths";
+import Chatbot from "@/components/landing/chatbot";
 import SplashCursor from "@/components/ui/splash-cursor";
 
 export default function LandingPage() {
@@ -18,6 +20,7 @@ export default function LandingPage() {
       <Tracks />
       <Sponsors />
       <Footer />
+      <Chatbot />
     </div>
   );
 }
