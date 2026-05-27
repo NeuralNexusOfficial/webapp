@@ -2,16 +2,16 @@
 
 import Sidebar from '@/components/dashboard/sidebar';
 import Link from 'next/link';
-import { Bot, Link as LinkIcon, HeartPulse, Wallet, Rocket, ClipboardList, Trophy, HelpCircle, MessageCircle, Medal, Award, Star } from 'lucide-react';
+import { Bot, Cloud, Clapperboard, BookOpen, Gamepad2, ClipboardList, Trophy, HelpCircle, MessageCircle, Medal, Award, Star } from 'lucide-react';
 
 const TRACKS = [
   {
-    id: 'ai-ml',
-    icon: <Bot className="w-5 h-5 text-violet-400" />,
-    label: 'AI / ML',
-    color: 'from-violet-500/10 to-purple-500/5',
-    border: 'border-violet-500/20',
-    description: 'Machine learning, neural networks, large language models, and computer vision.',
+    id: 'ai',
+    icon: <Bot className="w-5 h-5 text-rose-400" />,
+    label: 'Artificial Intelligence',
+    color: 'from-rose-500/10 to-red-500/5',
+    border: 'border-rose-500/20',
+    description: 'Next-gen intelligent systems, ML applications, automation, generative AI, AI agents, and problem-solving using AI.',
     resources: [
       { label: 'OpenAI API Docs', href: 'https://platform.openai.com/docs' },
       { label: 'HuggingFace Spaces', href: 'https://huggingface.co/spaces' },
@@ -20,59 +20,58 @@ const TRACKS = [
     ],
   },
   {
-    id: 'web3',
-    icon: <LinkIcon className="w-5 h-5 text-amber-400" />,
-    label: 'Web3',
-    color: 'from-amber-500/10 to-orange-500/5',
-    border: 'border-amber-500/20',
-    description: 'Blockchain applications, smart contracts, DeFi protocols, and decentralised identity.',
-    resources: [
-      { label: 'Ethereum Docs', href: 'https://ethereum.org/developers' },
-      { label: 'Solidity by Example', href: 'https://solidity-by-example.org' },
-      { label: 'Hardhat', href: 'https://hardhat.org' },
-      { label: 'The Graph', href: 'https://thegraph.com' },
-    ],
-  },
-  {
-    id: 'healthtech',
-    icon: <HeartPulse className="w-5 h-5 text-emerald-400" />,
-    label: 'HealthTech',
-    color: 'from-emerald-500/10 to-teal-500/5',
-    border: 'border-emerald-500/20',
-    description: 'Digital health, telemedicine, mental wellness, and biomedical data analysis.',
-    resources: [
-      { label: 'FHIR API Standard', href: 'https://www.hl7.org/fhir' },
-      { label: 'PhysioNet Datasets', href: 'https://physionet.org' },
-      { label: 'WHO Open Data', href: 'https://www.who.int/data' },
-      { label: 'NIH Open Data', href: 'https://www.nlm.nih.gov/databases' },
-    ],
-  },
-  {
-    id: 'fintech',
-    icon: <Wallet className="w-5 h-5 text-sky-400" />,
-    label: 'FinTech',
+    id: 'saas',
+    icon: <Cloud className="w-5 h-5 text-sky-400" />,
+    label: 'SaaS',
     color: 'from-sky-500/10 to-blue-500/5',
     border: 'border-sky-500/20',
-    description: 'Payments, banking infrastructure, insurance, robo-advisory, and personal finance.',
+    description: 'Scalable software products, B2B solutions, productivity platforms, cloud-based systems, workflow automation, and CRM tools.',
     resources: [
-      { label: 'Razorpay APIs', href: 'https://razorpay.com/docs/api' },
-      { label: 'Plaid API', href: 'https://plaid.com/docs' },
-      { label: 'Alpha Vantage (Market Data)', href: 'https://www.alphavantage.co' },
-      { label: 'SEBI Open Data', href: 'https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doOpenData=yes' },
+      { label: 'Vercel Docs', href: 'https://vercel.com/docs' },
+      { label: 'Supabase Docs', href: 'https://supabase.com/docs' },
+      { label: 'Stripe API', href: 'https://stripe.com/docs/api' },
+      { label: 'Notion API', href: 'https://developers.notion.com' },
     ],
   },
   {
-    id: 'open-innovation',
-    icon: <Rocket className="w-5 h-5 text-rose-400" />,
-    label: 'Open Innovation',
-    color: 'from-rose-500/10 to-pink-500/5',
-    border: 'border-rose-500/20',
-    description: 'No constraints — build anything that solves a real problem. Impress the judges.',
+    id: 'gaming',
+    icon: <Gamepad2 className="w-5 h-5 text-violet-400" />,
+    label: 'Gaming',
+    color: 'from-violet-500/10 to-purple-500/5',
+    border: 'border-violet-500/20',
+    description: 'Game development, immersive experiences, multiplayer systems, storytelling games, indie concepts, and entertainment innovation.',
     resources: [
-      { label: 'Product Hunt', href: 'https://www.producthunt.com' },
-      { label: 'Vercel AI SDK', href: 'https://sdk.vercel.ai/docs' },
-      { label: 'Supabase Docs', href: 'https://supabase.com/docs' },
-      { label: 'GitHub Student Pack', href: 'https://education.github.com/pack' },
+      { label: 'Unity Learn', href: 'https://learn.unity.com' },
+      { label: 'Godot Docs', href: 'https://docs.godotengine.org' },
+      { label: 'Phaser.js', href: 'https://phaser.io' },
+      { label: 'itch.io', href: 'https://itch.io' },
+    ],
+  },
+  {
+    id: 'storytelling',
+    icon: <BookOpen className="w-5 h-5 text-emerald-400" />,
+    label: 'Storytelling',
+    color: 'from-emerald-500/10 to-teal-500/5',
+    border: 'border-emerald-500/20',
+    description: 'Original stories, screenplays, and story-driven scripts for animated cinematic experiences. Individual only.',
+    resources: [
+      { label: 'WriterSolo', href: 'https://writersolo.com' },
+      { label: 'Story Structure Guide', href: 'https://www.masterclass.com/articles/how-to-structure-a-story' },
+      { label: 'Screenplay Format', href: 'https://www.writersstore.com/how-to-write-a-screenplay' },
+    ],
+  },
+  {
+    id: 'animation',
+    icon: <Clapperboard className="w-5 h-5 text-amber-400" />,
+    label: 'Animation',
+    color: 'from-amber-500/10 to-orange-500/5',
+    border: 'border-amber-500/20',
+    description: 'Visual storytelling, motion graphics, cinematic experiences, VFX, character animation, and digital creativity.',
+    resources: [
+      { label: 'Blender Learn', href: 'https://www.blender.org/support/tutorials' },
+      { label: 'Adobe After Effects', href: 'https://helpx.adobe.com/after-effects/tutorials.html' },
+      { label: 'RunwayML', href: 'https://runwayml.com' },
+      { label: 'Mixamo', href: 'https://www.mixamo.com' },
     ],
   },
 ];
@@ -105,21 +104,23 @@ const GENERAL_RESOURCES = [
 ];
 
 const RULES = [
-  'All code must be written during the hackathon window. Using open-source libraries, APIs, and frameworks is allowed.',
-  'Teams can have 2–5 members. Solo participation is permitted.',
+  'All code must be written during the hackathon window (Aug 21 – Oct 21, 2026). Using open-source libraries, APIs, and frameworks is allowed.',
+  'Teams can have 1–4 members. Solo participation is permitted in all domains.',
   'Each team may only submit one project. The last saved draft before the deadline counts.',
   'Projects must be original work and must not infringe on third-party IP.',
-  'The project must address at least one of the listed tracks or clearly state its impact.',
-  'All team members must have completed registration (paid ₹500 fee) to be eligible for prizes.',
-  'Judges\' decisions are final. Winners will be announced within 48 hours of the judging session.',
+  'The project must target one of the five domains: AI, SaaS, Gaming, Storytelling, or Animation.',
+  'All team members must have completed registration (paid the domain-specific fee) to be eligible for prizes.',
+  'AI tools (e.g., ChatGPT) may be used for assistance, but core logic must be authored by your team.',
+  'Judges\' decisions are final. Winners will be announced after the judging session.',
 ];
 
 const PRIZES = [
-  { place: <Medal className="w-6 h-6 text-amber-400" />, label: '1st Place', reward: '₹50,000 + Swag + Internship Interviews' },
-  { place: <Medal className="w-6 h-6 text-gray-300" />, label: '2nd Place', reward: '₹25,000 + Swag' },
-  { place: <Medal className="w-6 h-6 text-amber-700" />, label: '3rd Place', reward: '₹10,000 + Swag' },
-  { place: <Star className="w-6 h-6 text-violet-400" />, label: 'Best AI/ML Project', reward: '₹15,000 + Cloud Credits' },
-  { place: <LinkIcon className="w-6 h-6 text-amber-400" />, label: 'Best Web3 Project', reward: '₹15,000 + Blockchain Tools' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'AI — 1st Place', reward: '$15,000 + Annual ChatGPT, Midjourney & RunwayML Subscriptions' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'Gaming — 1st Place', reward: '$10,000 + Official game launch under Fraylon' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'SaaS — 1st Place', reward: '$7,000 + Annual CRM, Marketing, Product & Ops Tools' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'Animation — 1st Place', reward: '$5,000 Cash Prize' },
+  { place: <Star className="w-6 h-6 text-emerald-400" />, label: 'Storytelling Winner', reward: 'Story transformed into an animated film + Official Writer/Creator credit' },
+  { place: <Award className="w-6 h-6 text-violet-400" />, label: '2nd & 3rd Place (All Domains)', reward: 'Full-Time Roles, Internships + Premium Software Subscriptions' },
 ];
 
 const FAQS = [
@@ -133,15 +134,19 @@ const FAQS = [
   },
   {
     q: 'Do we need a working prototype to submit?',
-    a: 'A working demo is strongly recommended. Submissions without a demo or repo link may be scored lower on the implementation criterion.',
+    a: 'A working demo is strongly recommended for AI, SaaS, Gaming, and Animation domains. Storytelling requires original stories/screenplays.',
   },
   {
     q: 'Can I participate if I don\'t have a team?',
-    a: 'Yes. Select "Go Solo" in the dashboard. Note that team projects historically score higher due to scope.',
+    a: 'Yes. All domains allow individual participation. Note that team projects may have broader scope.',
+  },
+  {
+    q: 'What are the registration fees?',
+    a: 'Fees vary by domain: AI ($25/$35), SaaS ($15/$25), Gaming ($18/$30), Storytelling ($8), Animation ($12/$18). One payment per team covers all members.',
   },
   {
     q: 'When will results be announced?',
-    a: 'Results will be shared via email and on the platform within 48 hours of the judging session ending.',
+    a: 'Results will be shared via email and on the platform after the judging session ends.',
   },
 ];
 
@@ -155,7 +160,7 @@ export default function ResourcesPage() {
         <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex items-center justify-between">
           <div className="pl-10 md:pl-0">
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
-              Resources & Problem Statements
+              Resources &amp; Problem Statements
             </h1>
             <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
@@ -191,7 +196,7 @@ export default function ResourcesPage() {
           {/* Tracks */}
           <div id="tracks">
             <div className="flex items-center gap-3 mb-6">
-              <div className="tag-label">Problem Statements</div>
+              <div className="tag-label">Domains</div>
               <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>Tracks</h2>
             </div>
             <div className="space-y-4">

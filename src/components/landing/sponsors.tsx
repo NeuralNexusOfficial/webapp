@@ -46,7 +46,7 @@ export default function Sponsors() {
             Gold Sponsors
             <span className="w-8 h-px bg-amber-400/40" />
           </p>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4 relative z-10">
             {goldSponsors.map((s) => (
               <div
                 key={s.name}
@@ -73,7 +73,7 @@ export default function Sponsors() {
             Silver Sponsors
             <span className="w-8 h-px bg-slate-400/40" />
           </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             {silverSponsors.map((s) => (
               <div
                 key={s.name}
@@ -99,7 +99,7 @@ export default function Sponsors() {
             Community Partners
             <span className="w-8 h-px bg-white/20" />
           </p>
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-3 justify-center relative z-10">
             {communitySponsors.map((s) => (
               <div
                 key={s.name}
@@ -114,7 +114,7 @@ export default function Sponsors() {
         </div>
 
         {/* Become a sponsor CTA */}
-        <div className="mt-14 card-cyber p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-white/10">
+        <div className="mt-14 card-cyber p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-white/10 relative z-10">
           <div>
             <p className="text-white font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>
               Become a Sponsor

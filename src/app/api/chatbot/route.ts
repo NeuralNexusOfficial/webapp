@@ -16,18 +16,19 @@ export async function POST(req: Request) {
 
     const completion =
       await client.chat.completions.create({
-        model: 'openai/gpt-oss-120b',
+        model: 'llama-3.3-70b-versatile',
 
         messages: [
           {
             role: 'system',
             content: `
-You are an AI assistant for the Neural Nexus Hackathon.
+You are the official AI assistant for AOT Hackathon: Architects of Tomorrow — a global innovation-driven hackathon by Fraylon.
 
-Answer ONLY based on the provided hackathon information.
+Answer questions ONLY based on the provided hackathon knowledge base below. Be friendly, concise, and helpful.
+Use bullet points and short paragraphs for readability. Format prize amounts with $ symbol.
 
-If the answer is not available, politely say:
-"I could not find that information."
+If someone asks about something not covered in the knowledge base, politely say:
+"I don't have that specific information yet. Please reach out to our team for more details!"
 
 Hackathon Knowledge Base:
 ${hackathonFAQ}

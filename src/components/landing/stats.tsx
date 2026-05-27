@@ -2,10 +2,10 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 
 export default function Stats() {
   const stats = [
-    { value: 5000, suffix: "+", label: "Hackers Worldwide" },
-    { value: 100, suffix: "+", label: "Projects Submitted" },
-    { value: 24, suffix: " hrs", label: "Non-Stop Hacking" },
-    { value: 5, prefix: "₹", suffix: "L+", label: "Prize Pool" },
+    { value: 5, suffix: "", label: "Domains" },
+    { value: 37, prefix: "$", suffix: "K+", label: "Prize Pool" },
+    { value: 60, suffix: "", label: "Days of Hacking" },
+    { value: 5, suffix: "+", label: "Career Opportunities" },
   ];
 
   return (
@@ -13,7 +13,7 @@ export default function Stats() {
       <div className="max-w-6xl mx-auto">
         <div className="glow-line mb-16" />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden relative z-10">
           {stats.map((item) => (
             <div
               key={item.label}

@@ -6,7 +6,7 @@ export default function Tracks() {
       icon: <Cloud className="w-8 h-8 text-sky-400" />,
       tag: "Track 01",
       title: "SaaS",
-      desc: "Software as a Service. Build productivity tools, enterprise solutions, or consumer SaaS that solves real problems efficiently.",
+      desc: "Build scalable software products — CRM systems, productivity platforms, analytics dashboards, workflow automation, and B2B solutions.",
       color: "from-sky-500/10 to-blue-500/5",
       border: "border-sky-500/20 hover:border-sky-500/40",
       tagColor: "text-sky-400",
@@ -15,7 +15,7 @@ export default function Tracks() {
       icon: <Clapperboard className="w-8 h-8 text-amber-400" />,
       tag: "Track 02",
       title: "Animation",
-      desc: "Bring ideas to life. 2D/3D animation, motion graphics, interactive web animations, or cinematic experiences.",
+      desc: "2D/3D animation, motion graphics, cinematic trailers, anime-style content, character design, and experimental visual storytelling.",
       color: "from-amber-500/10 to-orange-500/5",
       border: "border-amber-500/20 hover:border-amber-500/40",
       tagColor: "text-amber-400",
@@ -24,7 +24,7 @@ export default function Tracks() {
       icon: <BookOpen className="w-8 h-8 text-emerald-400" />,
       tag: "Track 03",
       title: "Storytelling",
-      desc: "Craft interactive narratives, digital storytelling platforms, and immersive experiences that captivate users.",
+      desc: "Craft original stories, screenplays, and narrative scripts capable of becoming animated cinematic experiences under Fraylon.",
       color: "from-emerald-500/10 to-teal-500/5",
       border: "border-emerald-500/20 hover:border-emerald-500/40",
       tagColor: "text-emerald-400",
@@ -33,7 +33,7 @@ export default function Tracks() {
       icon: <Gamepad2 className="w-8 h-8 text-violet-400" />,
       tag: "Track 04",
       title: "Gaming",
-      desc: "Create browser games, indie titles, or gamified applications. Push the limits of web-based or native entertainment.",
+      desc: "Mobile games, multiplayer experiences, story-based & indie games, simulations, AI-powered games, and competitive gaming concepts.",
       color: "from-violet-500/10 to-purple-500/5",
       border: "border-violet-500/20 hover:border-violet-500/40",
       tagColor: "text-violet-400",
@@ -42,7 +42,7 @@ export default function Tracks() {
       icon: <Bot className="w-8 h-8 text-rose-400" />,
       tag: "Track 05",
       title: "AI",
-      desc: "Machine learning, neural networks, LLMs, computer vision, AI agents — if it thinks and learns, it belongs here.",
+      desc: "AI SaaS products, automation systems, AI agents, computer vision, NLP, generative AI, healthcare AI, and FinTech AI solutions.",
       color: "from-rose-500/10 to-red-500/5",
       border: "border-rose-500/20 hover:border-rose-500/40",
       tagColor: "text-rose-400",
@@ -54,7 +54,7 @@ export default function Tracks() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
-          <div className="tag-label mb-4">Tracks</div>
+          <div className="tag-label mb-4">Domains</div>
           <h2
             className="text-5xl md:text-6xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
@@ -62,13 +62,13 @@ export default function Tracks() {
             Choose Your Arena
           </h2>
           <p className="text-white/40 mt-4 text-lg max-w-2xl leading-relaxed">
-            Five cutting-edge tracks, one massive prize pool. Pick the domain
-            that fires you up — or go open and surprise us all.
+            Five domains, $37,000+ in prizes. Pick the domain
+            that fires you up and build the future.
           </p>
         </div>
 
         {/* Track cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
           {tracks.map((track) => (
             <div
               key={track.tag}
@@ -118,10 +118,10 @@ export default function Tracks() {
                 className="text-5xl font-bold text-white"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                ₹5L+
+                $37,000+
               </p>
               <p className="text-white/40 text-sm mt-2">
-                Distributed across all tracks · Winner + runner-up per track
+                Cash prizes + full-time roles, internships &amp; premium subscriptions across all domains
               </p>
             </div>
             <a

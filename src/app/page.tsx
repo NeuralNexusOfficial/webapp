@@ -12,7 +12,7 @@ import SplashCursor from "@/components/ui/splash-cursor";
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col text-white">
-      <SplashCursor />
+      <SplashCursor zIndex={1} />
       <Navbar />
       <Hero />
       <Stats />

@@ -3,22 +3,22 @@ export default function HowItWorks() {
     {
       num: "01",
       title: "Register",
-      desc: "Sign up and complete your hacker profile in under 2 minutes.",
+      desc: "Sign up, choose your domain, and complete your profile. Fees start at just $8.",
     },
     {
       num: "02",
       title: "Build Your Team",
-      desc: "Form a team of up to 5 or compete solo — your call.",
+      desc: "Form a team of up to 4 or compete solo — your call.",
     },
     {
       num: "03",
       title: "Hack & Submit",
-      desc: "Build your project in 24 hours and submit via the dashboard.",
+      desc: "Build your project over 2 months (Aug 21 – Oct 21) and submit via the dashboard.",
     },
     {
       num: "04",
-      title: "Win Prizes",
-      desc: "Top projects win from a ₹5L+ prize pool across tracks.",
+      title: "Win Big",
+      desc: "Top projects win from a $37,000+ prize pool, plus roles, internships & subscriptions.",
     },
   ];
 
@@ -37,7 +37,7 @@ export default function HowItWorks() {
         </div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-4 gap-4 relative z-10">
           {steps.map((step, i) => (
             <div key={step.num} className="relative group">
               {/* Connector line */}

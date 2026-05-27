@@ -52,7 +52,7 @@ export default async function Hero() {
         {/* Label */}
         <div className="tag-label mx-auto mb-8 w-fit">
           <span className="w-1.5 h-1.5 rounded-full bg-white/60 inline-block" />
-          Global Hackathon · Oct 2026
+          Global Hackathon · Aug–Oct 2026
         </div>
 
         {/* Headline */}
@@ -67,12 +67,12 @@ export default async function Hero() {
 
         {/* Sub */}
         <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          Join 5,000+ developers, designers and innovators to solve
-          real-world challenges — Aug 21 to Oct 21, ₹5L+ in prizes.
+          Join developers, designers, animators &amp; storytellers worldwide to
+          build the future — Aug 21 to Oct 21, $37,000+ in prizes.
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
           {user ? (
             <>
               {role === 'ADMIN' ? (

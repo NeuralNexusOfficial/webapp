@@ -142,10 +142,21 @@ function SignupForm() {
   );
 }
 
+import SplashCursor from "@/components/ui/splash-cursor";
+
 export default function SignupPage() {
   return (
-    <Suspense>
-      <SignupForm />
-    </Suspense>
+    <>
+      <SplashCursor
+        SPLAT_RADIUS={0.2}
+        SPLAT_FORCE={5000}
+        DENSITY_DISSIPATION={5}
+        VELOCITY_DISSIPATION={3}
+        zIndex={0}
+      />
+      <Suspense>
+        <SignupForm />
+      </Suspense>
+    </>
   );
 }

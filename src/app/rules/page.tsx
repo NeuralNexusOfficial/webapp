@@ -14,35 +14,57 @@ export default function RulesPage() {
           <section className="card-cyber p-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Eligibility</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>AOT Hackathon is open to all developers, designers, and innovators worldwide.</li>
+              <li>AOT Hackathon: Architects of Tomorrow is open to all developers, designers, writers, animators, and innovators worldwide.</li>
               <li>Participants must be at least 18 years old or have parental consent.</li>
-              <li>Teams can consist of 1 to 4 members. Individual participation is also allowed.</li>
+              <li>Teams can consist of 1 to 4 members. Individual participation is allowed in all domains.</li>
             </ul>
           </section>
 
           <section className="card-cyber p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">2. Code & Submissions</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">2. Domains</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>All project code must be written during the hackathon period (Aug 21 - Oct 21, 2026).</li>
-              <li>Use of open-source libraries and APIs is highly encouraged, but the core logic must be original.</li>
-              <li>A working prototype, GitHub repository link, and a short demo video are required for a valid submission.</li>
-            </ul>
-          </section>
-
-          <section className="card-cyber p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">3. Domains & Tracks</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Submissions must target one of the specific domains: SaaS, Animation, Storytelling, Gaming, or AI.</li>
+              <li>Submissions must target one of the five domains: AI, SaaS, Gaming, Storytelling, or Animation.</li>
               <li>Cross-domain projects are allowed but must declare a primary domain for judging.</li>
+              <li>Each domain has its own registration fee and prize structure. See the Tracks page for details.</li>
             </ul>
           </section>
 
           <section className="card-cyber p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">4. Code of Conduct</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">3. Code &amp; Submissions</h2>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>All project code must be written during the hackathon period (Aug 21 – Oct 21, 2026).</li>
+              <li>Use of open-source libraries, APIs, and frameworks is encouraged, but the core logic must be original.</li>
+              <li>A working prototype, GitHub repository link, and a short demo video are required for a valid submission (except Storytelling domain which requires original stories/screenplays).</li>
+              <li>AI tools (e.g., ChatGPT) may be used for assistance, but all core logic must be authored by your team.</li>
+            </ul>
+          </section>
+
+          <section className="card-cyber p-8">
+            <h2 className="text-2xl font-bold text-white mb-4">4. Registration &amp; Fees</h2>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Registration fees vary by domain: AI ($25/$35), SaaS ($15/$25), Gaming ($18/$30), Storytelling ($8), Animation ($12/$18).</li>
+              <li>Individual and team pricing differs. If one team member pays, it covers the entire team.</li>
+              <li>All team members must have completed registration to be eligible for prizes.</li>
+            </ul>
+          </section>
+
+          <section className="card-cyber p-8">
+            <h2 className="text-2xl font-bold text-white mb-4">5. Timeline</h2>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>University Promotions: June 20 – August 20, 2026.</li>
+              <li>Hackathon Period: August 21 – October 21, 2026 (approx. 2 months).</li>
+              <li>Includes registrations, team formations, submission rounds, evaluations, final presentations, and winner announcements.</li>
+            </ul>
+          </section>
+
+          <section className="card-cyber p-8">
+            <h2 className="text-2xl font-bold text-white mb-4">6. Code of Conduct</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>Be respectful. Harassment of any kind will not be tolerated and will result in immediate disqualification.</li>
+              <li>No plagiarism — all work must be original.</li>
+              <li>Projects must not infringe on third-party intellectual property.</li>
               <li>Collaborate and share knowledge. Hackathons are about community.</li>
-              <li>The judges' decisions are final and binding.</li>
+              <li>The judges&apos; decisions are final and binding.</li>
             </ul>
           </section>
         </div>
