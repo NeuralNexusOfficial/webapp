@@ -41,6 +41,7 @@ export default async function AdminPage({
             <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px]">Submissions</span>
             <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium">Judges</Link>
             <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium">Users</Link>
+            <Link href="/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium">Leaderboard</Link>
           </div>
         </div>
 

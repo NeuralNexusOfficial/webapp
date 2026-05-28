@@ -182,3 +182,56 @@ export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN' |
   revalidatePath('/admin/users')
   return { success: true, data: undefined }
 }
+
+/**
+ * Deletes a user from the platform (profiles + Supabase Auth).
+ * Super Admin account is protected from deletion.
+ */
+export async function deleteUser(userId: string): Promise<AdminActionResult> {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
+    return { success: false, error: 'Access denied' }
+  }
+
+  // Cannot delete yourself
+  if (user.id === userId) {
+    return { success: false, error: 'You cannot delete your own account.' }
+  }
+
+  const adminSupabase = createAdminClient()
+
+  // Protect super admin
+  const { data: targetUser } = await adminSupabase
+    .from('profiles')
+    .select('email')
+    .eq('id', userId)
+    .single()
+
+  if (!targetUser) {
+    return { success: false, error: 'User not found.' }
+  }
+
+  if (targetUser.email === 'kishlayamishra@gmail.com') {
+    return { success: false, error: 'Cannot delete the Super Admin account.' }
+  }
+
+  // Delete profile (cascade should handle related records)
+  const { error: profileError } = await adminSupabase
+    .from('profiles')
+    .delete()
+    .eq('id', userId)
+
+  if (profileError) return { success: false, error: profileError.message }
+
+  // Delete from Supabase Auth
+  const { error: authError } = await adminSupabase.auth.admin.deleteUser(userId)
+  if (authError) return { success: false, error: authError.message }
+
+  revalidatePath('/admin/users')
+  return { success: true, data: undefined }
+}

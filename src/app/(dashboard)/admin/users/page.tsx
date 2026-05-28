@@ -28,6 +28,7 @@ export default async function AdminUsersPage() {
             <Link href="/admin" className="text-white/50 hover:text-white transition font-medium">Submissions</Link>
             <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium">Judges</Link>
             <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px]">Users</span>
+            <Link href="/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium">Leaderboard</Link>
           </div>
         </div>
 
