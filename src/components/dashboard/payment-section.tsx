@@ -60,7 +60,7 @@ export default function PaymentSection({
   // automatically perform the pending action when payment succeeds.
   useEffect(() => {
     let cancelled = false;
-    let intervalId: number | null = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
 
     async function checkAndMaybeAct() {
       try {
