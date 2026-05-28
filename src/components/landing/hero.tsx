@@ -101,11 +101,7 @@ export default async function Hero() {
           )}
         </div>
 
-        {/* Scroll hint */}
-        <div className="mt-20 flex flex-col items-center gap-2 text-white/20 text-xs tracking-widest uppercase">
-          <span>scroll</span>
-          <div className="w-px h-10 bg-white/10" />
-        </div>
+
       </div>
 
       <style>{`
