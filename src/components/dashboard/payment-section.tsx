@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import PayButton from './pay-button';
-import { getMyTeamWithMembers } from '@/app/actions/team';
+import { getMyTeamWithMembers, createTeam, goSolo } from '@/app/actions/team';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
 import { Check } from 'lucide-react';
 
 export default function PaymentSection({ 
   selectedDomain,
-  registrationType
+  registrationType,
+  pendingTeamName,
 }: { 
   selectedDomain?: Track | '';
   registrationType?: 'solo' | 'team';
+  pendingTeamName?: string | null;
 }) {
   const [internalDomain, setInternalDomain] = useState<Track | ''>('');
   
@@ -26,6 +29,9 @@ export default function PaymentSection({
   const isTeam = registrationType !== undefined ? registrationType === 'team' : dbIsTeam;
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState('loading');
+  const [processingPendingAction, setProcessingPendingAction] = useState(false);
+  const [polling, setPolling] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function load() {
@@ -48,6 +54,59 @@ export default function PaymentSection({
     }
     load();
   }, []);
+
+  // If this PaymentSection is shown as part of a pending registration
+  // (registrationType provided), poll the backend for payment status and
+  // automatically perform the pending action when payment succeeds.
+  useEffect(() => {
+    let cancelled = false;
+    let intervalId: number | null = null;
+
+    async function checkAndMaybeAct() {
+      try {
+        const p = await getPaymentStatus();
+        if (cancelled) return;
+        setPaymentStatus(p.status);
+        if (p.status === 'SUCCESS' && registrationType && !processingPendingAction) {
+          setProcessingPendingAction(true);
+          // Perform server action depending on registration type
+          try {
+            if (registrationType === 'solo') {
+              const res = await goSolo();
+              if (res.success) router.push('/dashboard/team');
+            } else if (registrationType === 'team') {
+              if (!pendingTeamName) {
+                console.warn('[payment-section] missing team name for pending create');
+              } else {
+                const res = await createTeam({ name: pendingTeamName });
+                if (res.success) router.push('/dashboard/team');
+              }
+            }
+          } catch (err) {
+            console.error('[payment-section] pending action error', err);
+          } finally {
+            setProcessingPendingAction(false);
+          }
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    if (registrationType) {
+      // start polling every 2.5s until success or unmounted
+      setPolling(true);
+      intervalId = setInterval(checkAndMaybeAct, 2500);
+      // also run once immediately
+      checkAndMaybeAct();
+    }
+
+    return () => {
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+      setPolling(false);
+    };
+  }, [registrationType, pendingTeamName, processingPendingAction]);
 
   if (loading || paymentStatus === 'loading') {
     return (

@@ -122,7 +122,7 @@ export default function TeamActions() {
               {pendingRegType === 'team' ? " As a team creator, you will pay for the entire team." : ""}
             </p>
           </div>
-          <PaymentSection registrationType={pendingRegType} />
+          <PaymentSection registrationType={pendingRegType} pendingTeamName={teamName} />
         </div>
       ) : (
         <div className="grid lg:grid-cols-3 gap-4">
