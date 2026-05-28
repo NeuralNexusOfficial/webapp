@@ -105,11 +105,11 @@ export default function PaymentSection({
                 onChange={(e) => setInternalDomain(e.target.value as Track)}
               >
                 <option value="" disabled>Choose your track...</option>
-                <option value="SaaS">SaaS Domain</option>
-                <option value="Animation">Animation Domain</option>
-                <option value="Storytelling">Storytelling Domain</option>
-                <option value="Gaming">Gaming Domain</option>
-                <option value="AI">AI Domain</option>
+                <option value="SaaS">SaaS</option>
+                <option value="Animation">Animation</option>
+                <option value="Storytelling">Storytelling</option>
+                <option value="Gaming">Gaming</option>
+                <option value="AI">Artificial Intelligence</option>
               </select>
             </>
           )}
