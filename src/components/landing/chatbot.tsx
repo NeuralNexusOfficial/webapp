@@ -11,8 +11,8 @@ type Message = {
 type ChatSize = 'default' | 'medium' | 'fullscreen';
 
 const SIZE_CONFIG: Record<ChatSize, string> = {
-  default: 'fixed bottom-24 right-6 w-[360px] h-[520px] rounded-2xl',
-  medium: 'fixed bottom-16 right-6 w-[480px] h-[680px] rounded-2xl',
+  default: 'fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[360px] h-[calc(100vh-7rem)] sm:h-[520px] rounded-2xl',
+  medium: 'fixed bottom-20 sm:bottom-16 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[480px] h-[calc(100vh-7rem)] sm:h-[680px] rounded-2xl',
   fullscreen: 'fixed inset-4 w-auto h-auto rounded-2xl',
 };
 
@@ -165,7 +165,7 @@ export default function Chatbot() {
       <button
         data-chatbot-toggle
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-white text-black shadow-2xl hover:scale-105 transition-all flex items-center justify-center group"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-white text-black shadow-2xl hover:scale-105 transition-all flex items-center justify-center group"
       >
         {open ? (
           <X size={22} className="transition-transform duration-200" />
