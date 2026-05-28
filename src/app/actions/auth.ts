@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getUserRole } from '@/lib/auth/roles'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 
@@ -23,20 +24,11 @@ export async function login(formData: FormData) {
 
   let redirectUrl = next
   if (data.user) {
-    if (email === 'kishlayamishra@gmail.com') {
+    const role = await getUserRole(data.user.id)
+    if (role === 'ADMIN') {
       redirectUrl = '/admin'
-    } else {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single()
-
-      if (profile?.role === 'ADMIN') {
-        redirectUrl = '/admin'
-      } else if (profile?.role === 'JUDGE') {
-        redirectUrl = '/panel'
-      }
+    } else if (role === 'JUDGE') {
+      redirectUrl = '/panel'
     }
   }
 
@@ -88,15 +80,10 @@ export async function signup(formData: FormData) {
 
   let redirectUrl = next
   if (data.user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .maybeSingle()
-
-    if (profile?.role === 'ADMIN') {
+    const role = await getUserRole(data.user.id)
+    if (role === 'ADMIN') {
       redirectUrl = '/admin'
-    } else if (profile?.role === 'JUDGE') {
+    } else if (role === 'JUDGE') {
       redirectUrl = '/panel'
     }
   }
@@ -149,15 +136,10 @@ export async function updatePassword(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   let redirectUrl = '/dashboard'
   if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()
-
-    if (profile?.role === 'ADMIN' || user.email === 'kishlayamishra@gmail.com') {
+    const role = await getUserRole(user.id)
+    if (role === 'ADMIN') {
       redirectUrl = '/admin'
-    } else if (profile?.role === 'JUDGE') {
+    } else if (role === 'JUDGE') {
       redirectUrl = '/panel'
     }
   }
