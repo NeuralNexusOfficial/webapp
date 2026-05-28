@@ -7,6 +7,7 @@ import { updateUserRole } from '@/app/actions/admin'
 export default function UserTable({ users }: { users: Profile[] }) {
   const [isPending, startTransition] = useTransition()
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null)
+  const [query, setQuery] = useState('')
 
   function handleRoleChange(userId: string, newRole: 'USER' | 'ADMIN' | 'JUDGE') {
     startTransition(async () => {
@@ -20,6 +21,14 @@ export default function UserTable({ users }: { users: Profile[] }) {
     })
   }
 
+  const normalizedQuery = query.trim().toLowerCase()
+  const filteredUsers = users.filter((user) => {
+    if (!normalizedQuery) return true
+    const name = (user.full_name ?? '').toLowerCase()
+    const email = (user.email ?? '').toLowerCase()
+    return name.includes(normalizedQuery) || email.includes(normalizedQuery)
+  })
+
   return (
     <div className="space-y-4">
       {toast && (
@@ -27,6 +36,20 @@ export default function UserTable({ users }: { users: Profile[] }) {
           {toast.msg}
         </div>
       )}
+      <div className="max-w-md">
+        <label htmlFor="user-search" className="text-xs uppercase tracking-widest text-white/30 mb-2 block">
+          Search Users
+        </label>
+        <input
+          id="user-search"
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by user name or email"
+          className="input-nn"
+          autoComplete="off"
+        />
+      </div>
       <div className="card-cyber overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
@@ -38,7 +61,7 @@ export default function UserTable({ users }: { users: Profile[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.06]">
-            {users.map(user => (
+            {filteredUsers.map(user => (
               <tr key={user.id} className="hover:bg-white/[0.02] transition-colors">
                 <td className="p-4 text-sm font-medium text-white">{user.full_name || '—'}</td>
                 <td className="p-4 text-sm text-white/60">{user.email || '—'}</td>
@@ -67,6 +90,13 @@ export default function UserTable({ users }: { users: Profile[] }) {
                 </td>
               </tr>
             ))}
+            {filteredUsers.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-6 text-sm text-white/40 text-center">
+                  No users match your search.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
