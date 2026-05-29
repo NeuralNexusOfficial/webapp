@@ -3,9 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createTeam, joinTeam, goSolo } from "@/app/actions/team";
-import { getPaymentStatus } from "@/app/actions/payment";
-import PaymentSection from "./payment-section";
-import { useEffect } from "react";
 
 export default function TeamActions() {
   const router = useRouter();
@@ -14,12 +11,6 @@ export default function TeamActions() {
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [activeAction, setActiveAction] = useState<"solo" | "create" | "join" | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [paymentStatus, setPaymentStatus] = useState<string>("loading");
-  const [pendingRegType, setPendingRegType] = useState<"solo" | "team" | null>(null);
-
-  useEffect(() => {
-    getPaymentStatus().then((res) => setPaymentStatus(res.status));
-  }, []);
 
   function showToast(msg: string, ok: boolean) {
     setToast({ msg, ok });
@@ -27,10 +18,6 @@ export default function TeamActions() {
   }
 
   function handleSolo() {
-    if (paymentStatus !== "SUCCESS") {
-      setPendingRegType("solo");
-      return;
-    }
     setActiveAction("solo");
     startTransition(async () => {
       const res = await goSolo();
@@ -46,10 +33,6 @@ export default function TeamActions() {
 
   function handleCreate() {
     if (!teamName.trim()) return showToast("Enter a team name", false);
-    if (paymentStatus !== "SUCCESS") {
-      setPendingRegType("team");
-      return;
-    }
     setActiveAction("create");
     startTransition(async () => {
       const res = await createTeam({ name: teamName.trim() });
@@ -104,29 +87,7 @@ export default function TeamActions() {
         </div>
       )}
 
-      {/* Main UI or Payment UI */}
-      {pendingRegType ? (
-        <div className="card-cyber p-7 border border-emerald-500/20">
-          <button
-            onClick={() => setPendingRegType(null)}
-            className="text-xs text-white/40 hover:text-white mb-4 uppercase tracking-widest flex items-center gap-1"
-          >
-            ← Back to Options
-          </button>
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold text-white mb-2" style={{ fontFamily: "var(--font-display)" }}>
-              Complete Registration
-            </h3>
-            <p className="text-sm text-white/40">
-              Please select your track and complete payment to finalize your registration.
-              {pendingRegType === 'team' ? " As a team creator, you will pay for the entire team." : ""}
-            </p>
-          </div>
-          <PaymentSection registrationType={pendingRegType} pendingTeamName={teamName} />
-        </div>
-      ) : (
-        <div className="grid lg:grid-cols-3 gap-4">
-
+      <div className="grid lg:grid-cols-3 gap-4">
         {/* Solo */}
         <div className="card-cyber p-7 flex flex-col gap-4">
           <div>
@@ -216,9 +177,7 @@ export default function TeamActions() {
             {isPending && activeAction === "join" ? "Joining…" : "Join Team →"}
           </button>
         </div>
-
       </div>
-      )}
     </div>
   );
 }

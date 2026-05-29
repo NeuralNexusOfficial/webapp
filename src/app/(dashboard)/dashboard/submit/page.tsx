@@ -15,6 +15,7 @@ import {
   validateDescription,
 } from '@/lib/validation/submission-text';
 import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen } from 'lucide-react';
+import PaymentSection from '@/components/dashboard/payment-section';
 
 const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
@@ -53,6 +54,7 @@ export default function SubmitPage() {
   const [role, setRole] = useState<string>('loading');
   const [isTeam, setIsTeam] = useState<boolean | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED' | null>(null);
+  const [paidTrack, setPaidTrack] = useState<Track | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
@@ -74,6 +76,8 @@ export default function SubmitPage() {
       // 3. Fetch payment status
       const paymentRes = await getPaymentStatus();
       setPaymentStatus(paymentRes.status);
+      const pTrack = paymentRes.track ?? null;
+      setPaidTrack(pTrack);
 
       // 4. Fetch submission
       const res = await getMySubmission();
@@ -85,12 +89,15 @@ export default function SubmitPage() {
         setForm({
           title,
           description,
-          track: s.track ?? '',
+          track: pTrack ?? s.track ?? '',
           repo_url: s.repo_url ?? '',
           demo_url: s.demo_url ?? '',
           file_url: s.file_url ?? '',
         });
         setCharCount(description.length);
+      } else if (pTrack) {
+        // Pre-fill paid track even if no submission exists yet
+        setForm((f) => ({ ...f, track: pTrack }));
       }
       setLoadingExisting(false);
     }
@@ -270,11 +277,11 @@ export default function SubmitPage() {
                 Access Restricted
               </h2>
               <p className="text-white/60">
-                You are currently logged in as an <span className="font-bold text-white">{role}</span>. 
+                You are currently logged in as an <span className="font-bold text-white">{role}</span>.
                 Admins and Judges cannot participate in the hackathon or submit projects.
               </p>
             </div>
-          ) : isTeam === false || (paymentStatus !== null && paymentStatus !== 'SUCCESS') ? (
+          ) : isTeam === false ? (
             <div className="card-cyber p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-400" />
@@ -283,8 +290,29 @@ export default function SubmitPage() {
                 Access Restricted
               </h2>
               <p className="text-white/60">
-                Sorry, You need to be part of any team to access it.
+                You need to be part of a team to submit a project. Head to <a href="/dashboard/team" className="text-emerald-400 underline">Team Setup</a> to create or join one.
               </p>
+            </div>
+          ) : paymentStatus !== null && paymentStatus !== 'SUCCESS' ? (
+            <div className="space-y-6">
+              <div className="card-cyber p-8 text-center border-amber-500/30">
+                <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                  <Lock className="w-6 h-6 text-amber-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                  Pay &amp; Submit
+                </h2>
+                <p className="text-white/60">
+                  Your team is ready! Complete payment for your chosen track to unlock the submission form.
+                </p>
+              </div>
+              <PaymentSection
+                pollForSuccess
+                onPaymentSuccess={() => {
+                  // Refresh page data to unlock submission form
+                  window.location.reload();
+                }}
+              />
             </div>
           ) : (
             <>
@@ -429,6 +457,8 @@ export default function SubmitPage() {
                   <div className="grid sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Select hackathon track">
                     {TRACKS.map((t) => {
                       const selected = form.track === t.value;
+                      const isTrackLocked = !!paidTrack && paidTrack !== t.value;
+                      const isDisabled = isLocked || isTrackLocked;
                       return (
                         <button
                           key={t.value}
@@ -436,16 +466,17 @@ export default function SubmitPage() {
                           id={`track-${t.value.toLowerCase().replace('/', '-')}`}
                           role="radio"
                           aria-checked={selected}
-                          onClick={() => !isLocked && handleChange('track', t.value)}
-                          disabled={isLocked}
+                          onClick={() => !isDisabled && handleChange('track', t.value)}
+                          disabled={isDisabled}
                           className={`text-left p-4 rounded-xl border transition-all ${
                             selected
                               ? 'bg-white/10 border-white/40 text-white'
                               : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
-                          } ${isLocked ? 'cursor-not-allowed opacity-50' : ''}`}
+                          } ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
                           <p className="font-semibold text-sm mb-0.5 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
                             {t.icon} {t.label}
+                            {isTrackLocked && <Lock size={12} className="text-amber-400" />}
                           </p>
                           <p className="text-xs opacity-70 leading-relaxed">{t.desc}</p>
                         </button>

@@ -250,7 +250,15 @@ export async function getSubmissionScores(submissionId: string): Promise<Judging
   return { success: true, data }
 }
 
-export async function getSubmissionById(submissionId: string): Promise<JudgingActionResult<Submission & { team_name: string; judge_assignments: any[] }>> {
+export async function getSubmissionById(submissionId: string): Promise<
+  JudgingActionResult<
+    Submission & {
+      team_name: string
+      judge_assignments: any[]
+      team_members: { full_name: string | null; email: string | null; role: string }[]
+    }
+  >
+> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
@@ -282,5 +290,24 @@ export async function getSubmissionById(submissionId: string): Promise<JudgingAc
 
   if (error) return { success: false, error: error.message }
 
-  return { success: true, data: { ...data, team_name: data.teams?.name || 'Unknown Team' } }
+  // Fetch team members for this submission's team
+  const { data: membersData, error: membersError } = await adminSupabase
+    .from('team_members')
+    .select('role, profiles(full_name, email)')
+    .eq('team_id', data.team_id)
+
+  const teamMembers = (membersData || []).map((m: any) => ({
+    full_name: m.profiles?.full_name ?? null,
+    email: m.profiles?.email ?? null,
+    role: m.role as string,
+  }))
+
+  return {
+    success: true,
+    data: {
+      ...data,
+      team_name: data.teams?.name || 'Unknown Team',
+      team_members: teamMembers,
+    },
+  }
 }

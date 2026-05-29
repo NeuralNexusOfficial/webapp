@@ -29,7 +29,7 @@ export default async function JudgeSubmissionPage({ params }: { params: Promise<
       <Sidebar />
       <section className="flex-1 overflow-y-auto p-6 md:p-10">
         <div className="mb-8">
-          <Link href="/judge" className="text-white/50 hover:text-white transition">
+          <Link href="/panel" className="text-white/50 hover:text-white transition">
             ← Back to Submissions
           </Link>
         </div>
@@ -83,6 +83,55 @@ export default async function JudgeSubmissionPage({ params }: { params: Promise<
                 ) : (
                   <p className="text-white/50">No file uploaded.</p>
                 )}
+              </div>
+            </div>
+
+            <div className="card-cyber p-6">
+              <h3 className="text-xl font-bold text-white mb-4">Team Details</h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-white/40">Team:</span>
+                  <span className="text-sm font-semibold text-white">{submission.team_name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-white/40">Track:</span>
+                  <span className="px-2 py-1 rounded-md bg-white/5 border border-white/10 text-xs uppercase tracking-wider text-white/60">
+                    {submission.track}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-sm text-white/40 block mb-2">Members:</span>
+                  {submission.team_members.length === 0 ? (
+                    <p className="text-white/30 text-sm italic">No member data available.</p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {submission.team_members.map((member, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/[0.06]"
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-white/90">
+                              {member.full_name || 'Unknown'}
+                            </p>
+                            {member.email && (
+                              <p className="text-xs text-white/30">{member.email}</p>
+                            )}
+                          </div>
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border ${
+                              member.role === 'LEADER'
+                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                                : 'bg-white/5 border-white/10 text-white/40'
+                            }`}
+                          >
+                            {member.role}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
             </div>
           </div>

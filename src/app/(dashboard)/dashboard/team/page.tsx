@@ -1,11 +1,15 @@
 import TeamActions from "@/components/dashboard/team-actions";
 import Sidebar from "@/components/dashboard/sidebar";
 import { getMyTeamWithMembers } from "@/app/actions/team";
-import { Crown } from "lucide-react";
+import { getPaymentStatus } from "@/app/actions/payment";
+import { Crown, Check, CreditCard } from "lucide-react";
+import Link from "next/link";
 
 export default async function TeamPage() {
   const teamRes = await getMyTeamWithMembers();
   const team = teamRes.success ? teamRes.data : null;
+  const paymentRes = await getPaymentStatus();
+  const isPaid = paymentRes.status === 'SUCCESS';
 
   return (
     <main className="min-h-screen flex bg-black text-white">
@@ -51,6 +55,33 @@ export default async function TeamPage() {
                   <p className="font-semibold text-white">
                     {team.members.length} / {team.max_members} members
                   </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Status */}
+            <div className={`card-cyber p-6 md:p-8 ${isPaid ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 ${isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                  {isPaid ? <Check className="w-5 h-5" /> : <CreditCard className="w-5 h-5" />}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-white" style={{ fontFamily: "var(--font-display)" }}>
+                    {isPaid ? 'Payment Confirmed' : 'Payment Required'}
+                  </p>
+                  <p className="text-white/40 text-sm mt-1">
+                    {isPaid
+                      ? `Your team is fully registered${paymentRes.track ? ` for the ${paymentRes.track} track` : ''}. You can now submit your project.`
+                      : 'Complete payment to unlock project submission and finalize your registration.'}
+                  </p>
+                  {!isPaid && (
+                    <Link
+                      href="/dashboard/submit"
+                      className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors"
+                    >
+                      Go to Pay &amp; Submit →
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

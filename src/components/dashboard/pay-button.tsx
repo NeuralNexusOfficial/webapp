@@ -9,6 +9,7 @@ type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed';
 interface PayButtonProps {
   amount: number;
   label?: string;
+  track?: string;
 }
 
 declare global {
@@ -29,7 +30,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, label }: PayButtonProps) {
+export default function PayButton({ amount, label, track }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -72,7 +73,7 @@ export default function PayButton({ amount, label }: PayButtonProps) {
       const res = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount, track }),
       });
       if (!res.ok) {
         if (res.status === 401) {
