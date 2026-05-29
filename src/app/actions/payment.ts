@@ -1,13 +1,15 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { Track } from '@/types'
 
 /**
- * Returns the current user's latest payment status.
+ * Returns the current user's latest payment status and paid track (if any).
  * Used by PayButton to persist state across sessions/reloads.
  */
 export async function getPaymentStatus(): Promise<{
   status: 'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED'
+  track?: Track | null
 }> {
   const supabase = await createClient()
   const {
@@ -33,13 +35,18 @@ export async function getPaymentStatus(): Promise<{
       const userIds = teamMembers.map(m => m.user_id)
       const { data: teamPayments } = await supabase
         .from('payments')
-        .select('status')
+        .select('status, track')
         .in('user_id', userIds)
         .eq('status', 'SUCCESS')
+        .order('created_at', { ascending: false })
         .limit(1)
+        .maybeSingle()
 
-      if (teamPayments && teamPayments.length > 0) {
-        return { status: 'SUCCESS' }
+      if (teamPayments) {
+        return {
+          status: 'SUCCESS',
+          track: (teamPayments.track as Track) ?? null,
+        }
       }
     }
   }
@@ -47,7 +54,7 @@ export async function getPaymentStatus(): Promise<{
   // Get the latest payment for this user, ordered by most recent
   const { data, error } = await supabase
     .from('payments')
-    .select('status')
+    .select('status, track')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -55,5 +62,8 @@ export async function getPaymentStatus(): Promise<{
 
   if (error || !data) return { status: 'NONE' }
 
-  return { status: data.status as 'INITIATED' | 'SUCCESS' | 'FAILED' }
+  return {
+    status: data.status as 'INITIATED' | 'SUCCESS' | 'FAILED',
+    track: (data.track as Track) ?? null,
+  }
 }

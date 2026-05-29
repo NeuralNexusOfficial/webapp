@@ -8,6 +8,7 @@ import {
 } from '@/app/actions/judging';
 import { Submission, Score } from '@/types';
 import { Inbox, X } from 'lucide-react';
+import Link from 'next/link';
 
 type SubmissionWithExtras = Submission & {
   team_name: string;
@@ -323,6 +324,13 @@ export default function JudgeDashboard() {
                           View File
                         </a>
                       )}
+
+                      <Link
+                        href={`/panel/${s.id}`}
+                        className="btn-outline text-center text-sm"
+                      >
+                        View Details →
+                      </Link>
 
                       <button
                         onClick={() =>

@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const amount = Number(body.amount);
+    const track = body.track ?? null;
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
@@ -28,13 +29,18 @@ export async function POST(req: Request) {
     });
 
     // Record in Supabase with FSM initial state INITIATED
-    const { error: dbError } = await supabase.from('payments').insert({
+    const insertPayload: Record<string, unknown> = {
       user_id: user.id,
       razorpay_order_id: order.id,
       amount,
       receipt,
       status: 'INITIATED',
-    });
+    };
+    if (track) {
+      insertPayload.track = track;
+    }
+
+    const { error: dbError } = await supabase.from('payments').insert(insertPayload);
 
     if (dbError) {
       console.error('DB insert error:', dbError);

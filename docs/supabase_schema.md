@@ -71,6 +71,7 @@ create table payments (
   razorpay_payment_id text,           -- populated by webhook on SUCCESS
   receipt text,                        -- nn_<user_prefix>_<timestamp>
   amount int,
+  track text check (track in ('SaaS', 'Animation', 'Storytelling', 'Gaming', 'AI')),
   status text check (status in ('INITIATED', 'SUCCESS', 'FAILED')) default 'INITIATED',
   created_at timestamp with time zone default now()
 );
@@ -84,7 +85,8 @@ alter table payments
 
 alter table payments
   add column if not exists razorpay_payment_id text,
-  add column if not exists receipt text;
+  add column if not exists receipt text,
+  add column if not exists track text check (track in ('SaaS', 'Animation', 'Storytelling', 'Gaming', 'AI'));
 
 -- rename existing PENDING rows to INITIATED
 update payments set status = 'INITIATED' where status = 'PENDING';

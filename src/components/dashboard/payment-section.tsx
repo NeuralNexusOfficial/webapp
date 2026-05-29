@@ -8,23 +8,27 @@ import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
 import { Check } from 'lucide-react';
 
-export default function PaymentSection({ 
+export default function PaymentSection({
   selectedDomain,
   registrationType,
   pendingTeamName,
-}: { 
+  onPaymentSuccess,
+  pollForSuccess,
+}: {
   selectedDomain?: Track | '';
   registrationType?: 'solo' | 'team';
   pendingTeamName?: string | null;
+  onPaymentSuccess?: () => void;
+  pollForSuccess?: boolean;
 }) {
   const [internalDomain, setInternalDomain] = useState<Track | ''>('');
-  
+
   // Use prop if provided, otherwise use internal state
   const domain = selectedDomain !== undefined ? selectedDomain : internalDomain;
-  
+
   const [dbIsTeam, setDbIsTeam] = useState(false);
   const [teamSize, setTeamSize] = useState(0);
-  
+
   // If registrationType is explicitly passed, use it. Otherwise, fallback to DB state.
   const isTeam = registrationType !== undefined ? registrationType === 'team' : dbIsTeam;
   const [loading, setLoading] = useState(true);
@@ -67,25 +71,29 @@ export default function PaymentSection({
         const p = await getPaymentStatus();
         if (cancelled) return;
         setPaymentStatus(p.status);
-        if (p.status === 'SUCCESS' && registrationType && !processingPendingAction) {
-          setProcessingPendingAction(true);
-          // Perform server action depending on registration type
-          try {
-            if (registrationType === 'solo') {
-              const res = await goSolo();
-              if (res.success) router.push('/dashboard/team');
-            } else if (registrationType === 'team') {
-              if (!pendingTeamName) {
-                console.warn('[payment-section] missing team name for pending create');
-              } else {
-                const res = await createTeam({ name: pendingTeamName });
+        if (p.status === 'SUCCESS') {
+          if (registrationType && !processingPendingAction) {
+            setProcessingPendingAction(true);
+            // Perform server action depending on registration type
+            try {
+              if (registrationType === 'solo') {
+                const res = await goSolo();
                 if (res.success) router.push('/dashboard/team');
+              } else if (registrationType === 'team') {
+                if (!pendingTeamName) {
+                  console.warn('[payment-section] missing team name for pending create');
+                } else {
+                  const res = await createTeam({ name: pendingTeamName });
+                  if (res.success) router.push('/dashboard/team');
+                }
               }
+            } catch (err) {
+              console.error('[payment-section] pending action error', err);
+            } finally {
+              setProcessingPendingAction(false);
             }
-          } catch (err) {
-            console.error('[payment-section] pending action error', err);
-          } finally {
-            setProcessingPendingAction(false);
+          } else if (pollForSuccess && onPaymentSuccess) {
+            onPaymentSuccess();
           }
         }
       } catch (err) {
@@ -93,7 +101,7 @@ export default function PaymentSection({
       }
     }
 
-    if (registrationType) {
+    if (registrationType || pollForSuccess) {
       // start polling every 2.5s until success or unmounted
       setPolling(true);
       intervalId = setInterval(checkAndMaybeAct, 2500);
@@ -106,7 +114,7 @@ export default function PaymentSection({
       if (intervalId) clearInterval(intervalId);
       setPolling(false);
     };
-  }, [registrationType, pendingTeamName, processingPendingAction]);
+  }, [registrationType, pendingTeamName, processingPendingAction, pollForSuccess, onPaymentSuccess, router]);
 
   if (loading || paymentStatus === 'loading') {
     return (
@@ -142,8 +150,8 @@ export default function PaymentSection({
     'AI': { ind: 25, team: 35 },
   };
 
-  const currentPriceUSD = domain 
-    ? (isTeam && prices[domain as Track].team ? prices[domain as Track].team : prices[domain as Track].ind) 
+  const currentPriceUSD = domain
+    ? (isTeam && prices[domain as Track].team ? prices[domain as Track].team : prices[domain as Track].ind)
     : null;
 
   // Convert USD to INR (Approx $1 = ₹83) for Razorpay (must be integer rupees)
@@ -158,7 +166,7 @@ export default function PaymentSection({
               <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">
                 Select Domain
               </label>
-              <select 
+              <select
                 className="input-nn w-full bg-black/50"
                 value={internalDomain}
                 onChange={(e) => setInternalDomain(e.target.value as Track)}
@@ -176,7 +184,7 @@ export default function PaymentSection({
             <p className="text-sm text-white/50 mb-2">Please select a track above to calculate your fee.</p>
           )}
           <p className="text-[11px] text-white/30 mt-2">
-            {isTeam 
+            {isTeam
               ? (registrationType === 'team' ? "You are paying for a team." : `You are paying for a team of ${teamSize}.`)
               : "You are paying as an individual."}
           </p>
@@ -191,7 +199,7 @@ export default function PaymentSection({
               <p className="text-sm text-white/40 mb-4">
                 One-time fee · Includes swag kit, meals, and access
               </p>
-              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} />
+              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
             </>
           ) : (
             <>
