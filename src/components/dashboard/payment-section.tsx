@@ -6,7 +6,15 @@ import PayButton from './pay-button';
 import { getMyTeamWithMembers, createTeam, goSolo } from '@/app/actions/team';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
-import { Check } from 'lucide-react';
+import { Check, Cloud, Clapperboard, BookOpen, Gamepad2, Bot } from 'lucide-react';
+
+const TRACK_OPTIONS: { value: Track; label: string; icon: React.ReactNode }[] = [
+  { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={14} /> },
+  { value: 'Animation',    label: 'Animation',    icon: <Clapperboard size={14} /> },
+  { value: 'Storytelling', label: 'Storytelling',  icon: <BookOpen size={14} /> },
+  { value: 'Gaming',       label: 'Gaming',        icon: <Gamepad2 size={14} /> },
+  { value: 'AI',           label: 'AI',             icon: <Bot size={14} /> },
+];
 
 export default function PaymentSection({
   selectedDomain,
@@ -21,7 +29,7 @@ export default function PaymentSection({
   onPaymentSuccess?: () => void;
   pollForSuccess?: boolean;
 }) {
-  const [internalDomain, setInternalDomain] = useState<Track | ''>('');
+  const [internalDomain, setInternalDomain] = useState<Track | ''>('SaaS');
 
   // Use prop if provided, otherwise use internal state
   const domain = selectedDomain !== undefined ? selectedDomain : internalDomain;
@@ -254,30 +262,37 @@ export default function PaymentSection({
   return (
     <div className="card-cyber p-6 md:p-8 flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-center">
-        <div className="flex-1 w-full max-w-sm">
+        <div className="flex-1 w-full">
           {selectedDomain === undefined && (
             <>
-              <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">
-                Select Domain
+              <label className="block text-xs uppercase tracking-widest text-white/40 mb-3">
+                Select Track
               </label>
-              <select
-                className="input-nn w-full bg-black/50"
-                value={internalDomain}
-                onChange={(e) => setInternalDomain(e.target.value as Track)}
-              >
-                <option value="" disabled>Choose your track...</option>
-                <option value="SaaS">SaaS</option>
-                <option value="Animation">Animation</option>
-                <option value="Storytelling">Storytelling</option>
-                <option value="Gaming">Gaming</option>
-                <option value="AI">Artificial Intelligence</option>
-              </select>
+              <div className="flex flex-wrap gap-2">
+                {TRACK_OPTIONS.map((t) => {
+                  const selected = internalDomain === t.value;
+                  return (
+                    <button
+                      key={t.value}
+                      type="button"
+                      onClick={() => setInternalDomain(t.value)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                        selected
+                          ? 'bg-white/10 border-white/30 text-white'
+                          : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
+                      }`}
+                    >
+                      {t.icon} {t.label}
+                    </button>
+                  );
+                })}
+              </div>
             </>
           )}
           {selectedDomain !== undefined && !selectedDomain && (
             <p className="text-sm text-white/50 mb-2">Please select a track above to calculate your fee.</p>
           )}
-          <p className="text-[11px] text-white/30 mt-2">
+          <p className="text-[11px] text-white/30 mt-3">
             {isTeam
               ? (registrationType === 'team' ? "You are paying for a team." : `You are paying for a team of ${teamSize}.`)
               : "You are paying as an individual."}

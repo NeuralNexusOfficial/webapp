@@ -439,3 +439,152 @@ export async function regenerateInviteCode(
   revalidatePath('/dashboard/team')
   return { success: true, data: { invite_code: newCode } }
 }
+
+// ─── Leave Team ───────────────────────────────────────────────────────────────
+
+/**
+ * Lets a MEMBER leave their current team.
+ * Blocked if any team member has a successful payment.
+ */
+export async function leaveTeam(): Promise<TeamActionResult<undefined>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  // Find user's membership
+  const { data: membership, error: membershipError } = await supabase
+    .from('team_members')
+    .select('id, team_id, role')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (membershipError) return { success: false, error: membershipError.message }
+  if (!membership) return { success: false, error: 'You are not on a team', code: 404 }
+
+  if (membership.role === 'LEADER') {
+    return {
+      success: false,
+      error: 'Team leaders cannot leave. Use "Disband Team" instead.',
+      code: 403,
+    }
+  }
+
+  // Check if any team member has paid
+  const { data: teamMembers } = await supabase
+    .from('team_members')
+    .select('user_id')
+    .eq('team_id', membership.team_id)
+
+  if (teamMembers && teamMembers.length > 0) {
+    const userIds = teamMembers.map(m => m.user_id)
+    const { data: paidPayment } = await supabase
+      .from('payments')
+      .select('id')
+      .in('user_id', userIds)
+      .eq('status', 'SUCCESS')
+      .limit(1)
+      .maybeSingle()
+
+    if (paidPayment) {
+      return {
+        success: false,
+        error: 'Cannot leave — your team has already completed payment.',
+        code: 403,
+      }
+    }
+  }
+
+  // Remove user from team
+  const { error: deleteError } = await supabase
+    .from('team_members')
+    .delete()
+    .eq('id', membership.id)
+
+  if (deleteError) return { success: false, error: deleteError.message }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/team')
+  return { success: true, data: undefined }
+}
+
+// ─── Disband Team ─────────────────────────────────────────────────────────────
+
+/**
+ * Lets the LEADER disband (delete) their team entirely.
+ * Removes all team_members rows and then deletes the team.
+ * Blocked if any member has a successful payment.
+ */
+export async function disbandTeam(): Promise<TeamActionResult<undefined>> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated', code: 401 }
+
+  // Find user's membership — must be LEADER
+  const { data: membership, error: membershipError } = await supabase
+    .from('team_members')
+    .select('id, team_id, role')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (membershipError) return { success: false, error: membershipError.message }
+  if (!membership) return { success: false, error: 'You are not on a team', code: 404 }
+
+  if (membership.role !== 'LEADER') {
+    return {
+      success: false,
+      error: 'Only the team leader can disband the team.',
+      code: 403,
+    }
+  }
+
+  // Check if any team member has paid
+  const { data: teamMembers } = await supabase
+    .from('team_members')
+    .select('user_id')
+    .eq('team_id', membership.team_id)
+
+  if (teamMembers && teamMembers.length > 0) {
+    const userIds = teamMembers.map(m => m.user_id)
+    const { data: paidPayment } = await supabase
+      .from('payments')
+      .select('id')
+      .in('user_id', userIds)
+      .eq('status', 'SUCCESS')
+      .limit(1)
+      .maybeSingle()
+
+    if (paidPayment) {
+      return {
+        success: false,
+        error: 'Cannot disband — your team has already completed payment.',
+        code: 403,
+      }
+    }
+  }
+
+  // Delete all team members first (foreign key constraint)
+  const { error: membersDeleteError } = await supabase
+    .from('team_members')
+    .delete()
+    .eq('team_id', membership.team_id)
+
+  if (membersDeleteError) return { success: false, error: membersDeleteError.message }
+
+  // Delete the team itself
+  const { error: teamDeleteError } = await supabase
+    .from('teams')
+    .delete()
+    .eq('id', membership.team_id)
+
+  if (teamDeleteError) return { success: false, error: teamDeleteError.message }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/dashboard/team')
+  return { success: true, data: undefined }
+}

@@ -1,15 +1,24 @@
 import TeamActions from "@/components/dashboard/team-actions";
 import Sidebar from "@/components/dashboard/sidebar";
+import TeamManage from "@/components/dashboard/team-manage";
 import { getMyTeamWithMembers } from "@/app/actions/team";
 import { getPaymentStatus } from "@/app/actions/payment";
+import { createClient } from "@/lib/supabase/server";
 import { Crown, Check, CreditCard } from "lucide-react";
 import Link from "next/link";
 
 export default async function TeamPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const teamRes = await getMyTeamWithMembers();
   const team = teamRes.success ? teamRes.data : null;
   const paymentRes = await getPaymentStatus();
   const isPaid = paymentRes.status === 'SUCCESS';
+
+  // Determine the current user's role in the team
+  const currentMember = team?.members.find(m => m.user_id === user?.id);
+  const userRole = currentMember?.role ?? 'MEMBER';
+  const isSolo = team ? team.members.length === 1 && team.status === 'LOCKED' : false;
 
   return (
     <main className="min-h-screen flex bg-black text-white">
@@ -140,6 +149,13 @@ export default async function TeamPage() {
                 </ul>
               )}
             </div>
+
+            {/* Leave / Disband */}
+            <TeamManage
+              role={userRole as 'LEADER' | 'MEMBER'}
+              isPaid={isPaid}
+              isSolo={isSolo}
+            />
           </div>
         </div>
       ) : (

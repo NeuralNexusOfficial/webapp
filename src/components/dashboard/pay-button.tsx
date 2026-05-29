@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Check, X } from 'lucide-react';
 
-type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed';
+type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed' | 'cancelled';
 
 interface PayButtonProps {
   amount: number;
@@ -127,8 +127,7 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
       },
       modal: {
         ondismiss: () => {
-          setErrorMsg('Payment cancelled. You can try again.');
-          setState('failed');
+          setState('cancelled');
         },
       },
     });
@@ -182,9 +181,26 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
         </div>
         <button
           onClick={() => { setState('idle'); setErrorMsg(''); }}
-          className="self-start text-sm text-white/50 underline underline-offset-2 hover:text-white transition-colors"
+          className="self-start btn-pill btn-outline text-sm py-2 px-4"
         >
-          Try again
+          Try Again →
+        </button>
+      </div>
+    );
+  }
+
+  if (state === 'cancelled') {
+    return (
+      <div className="flex flex-col gap-3">
+        <p className="text-sm text-amber-400/70">
+          Payment was cancelled. Click below to try again.
+        </p>
+        <button
+          id="pay-registration-fee"
+          onClick={handlePay}
+          className="btn-pill btn-primary"
+        >
+          {`${label ?? `Pay ${currency === 'INR' ? '₹' : ''}${amount}`} →`}
         </button>
       </div>
     );
