@@ -74,6 +74,15 @@ export default function LeaderboardClient({
     ? Math.max(...entries.map(e => e.avg_total))
     : 0;
 
+  const sortOptions: { value: SortKey; label: string }[] = [
+    { value: 'avg_total', label: 'Total score' },
+    { value: 'avg_innovation', label: 'Innovation' },
+    { value: 'avg_technical', label: 'Technical' },
+    { value: 'avg_uiux', label: 'UI/UX' },
+    { value: 'avg_scalability', label: 'Scalability' },
+    { value: 'judge_count', label: 'Judge count' },
+  ];
+
   const SortHeader = ({ label, field, className = '' }: { label: string; field: SortKey; className?: string }) => (
     <th
       className={`p-4 font-medium whitespace-nowrap cursor-pointer select-none hover:text-white/70 transition-colors ${className}`}
@@ -91,7 +100,7 @@ export default function LeaderboardClient({
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8 min-w-0 max-w-full">
       {/* Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card-cyber p-5">
@@ -130,7 +139,7 @@ export default function LeaderboardClient({
       </div>
 
       {/* Filters */}
-      <div className="card-cyber p-6 grid md:grid-cols-2 gap-4">
+      <div className="card-cyber p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 min-w-0">
         <input
           type="text"
           value={searchQuery}
@@ -155,16 +164,107 @@ export default function LeaderboardClient({
         </select>
       </div>
 
-      {/* Leaderboard Table */}
+      {/* Leaderboard */}
       {filteredEntries.length === 0 ? (
-        <div className="card-cyber p-16 flex flex-col items-center justify-center text-center">
+        <div className="card-cyber p-10 sm:p-16 flex flex-col items-center justify-center text-center">
           <Trophy className="w-12 h-12 text-white/10 mb-4" />
           <p className="text-white/50 text-lg font-semibold">No scored submissions yet</p>
           <p className="text-white/25 text-sm mt-1">Scores from judges will appear here as a ranked leaderboard.</p>
         </div>
       ) : (
-        <div className="card-cyber overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[900px]">
+        <>
+        {/* Mobile & tablet: cards */}
+        <div className="lg:hidden space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <label className="text-xs uppercase tracking-widest text-white/30">Sort by</label>
+            <div className="flex gap-2 flex-1 min-w-0">
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className="input-nn flex-1 min-w-0 text-sm"
+              >
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setSortAsc(!sortAsc)}
+                className="shrink-0 px-3 py-2 rounded-lg border border-white/10 bg-white/[0.03] text-white/70 hover:text-white text-sm"
+                aria-label={sortAsc ? 'Sort ascending' : 'Sort descending'}
+              >
+                {sortAsc ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          {filteredEntries.map((entry, index) => {
+            const rankStyle = index < 3 ? RANK_STYLES[index] : null;
+            const RankIcon = rankStyle?.icon;
+            const scorePercent = topScore > 0 ? (entry.avg_total / topScore) * 100 : 0;
+
+            return (
+              <div
+                key={entry.submission_id}
+                className={`card-cyber p-4 overflow-hidden ${
+                  rankStyle ? `border-l-2 ${rankStyle.border}` : ''
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    {rankStyle && RankIcon ? (
+                      <div className={`flex items-center justify-center w-9 h-9 rounded-lg shrink-0 ${rankStyle.text}`}>
+                        <RankIcon className="w-5 h-5" />
+                      </div>
+                    ) : (
+                      <span className="text-sm text-white/30 font-mono shrink-0 pt-1">#{index + 1}</span>
+                    )}
+                    <div className="min-w-0">
+                      <p className={`text-base font-bold break-words ${rankStyle ? rankStyle.text : 'text-white'}`}>
+                        {entry.title}
+                      </p>
+                      <p className="text-sm text-white/50 truncate mt-0.5">{entry.team_name}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className={`text-lg font-bold ${rankStyle ? rankStyle.text : 'text-white'}`}>{entry.avg_total}</p>
+                    <p className="text-[10px] text-white/30 uppercase">/ 40</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] uppercase tracking-wider text-white/40">
+                    {entry.track}
+                  </span>
+                  <span className="text-xs text-white/40">{entry.judge_count} judge{entry.judge_count !== 1 ? 's' : ''}</span>
+                </div>
+
+                <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden mb-3">
+                  <div
+                    className={`h-full rounded-full ${
+                      index === 0 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                      index === 1 ? 'bg-gradient-to-r from-slate-400 to-slate-300' :
+                      index === 2 ? 'bg-gradient-to-r from-orange-600 to-amber-500' :
+                      'bg-gradient-to-r from-blue-500/60 to-blue-400/40'
+                    }`}
+                    style={{ width: `${scorePercent}%` }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  <ScoreChip label="Innovation" value={entry.avg_innovation} />
+                  <ScoreChip label="Technical" value={entry.avg_technical} />
+                  <ScoreChip label="UI/UX" value={entry.avg_uiux} />
+                  <ScoreChip label="Scale" value={entry.avg_scalability} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop: table */}
+        <div className="hidden lg:block card-cyber overflow-x-auto max-w-full overscroll-x-contain">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-white/10 text-white/40 text-xs tracking-widest uppercase">
                 <th className="p-4 font-medium whitespace-nowrap w-12">Rank</th>
@@ -270,7 +370,20 @@ export default function LeaderboardClient({
             </tbody>
           </table>
         </div>
+        </>
       )}
+    </div>
+  );
+}
+
+function ScoreChip({ label, value }: { label: string; value: number }) {
+  const ratio = value / 10;
+  const color = ratio >= 0.8 ? 'text-emerald-400' : ratio >= 0.6 ? 'text-blue-400' : ratio >= 0.4 ? 'text-amber-400' : 'text-red-400';
+
+  return (
+    <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-2 py-1.5">
+      <p className="text-[10px] uppercase tracking-wider text-white/30">{label}</p>
+      <p className={`text-sm font-semibold ${color}`}>{value}</p>
     </div>
   );
 }

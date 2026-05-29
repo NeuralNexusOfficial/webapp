@@ -1,6 +1,6 @@
 import Sidebar from '@/components/dashboard/sidebar';
-import { getFilteredSubmissions, getAllJudges } from '@/app/actions/judging';
 import Link from 'next/link';
+import { getFilteredSubmissions } from '@/app/actions/judging';
 import AdminFilters from './AdminFilters';
 import AdminSubmissionsList from './AdminSubmissionsList';
 
@@ -20,29 +20,39 @@ export default async function AdminPage({
   const submissions = res.success ? res.data : [];
   const error = !res.success ? res.error : null;
 
-  const judgesRes = await getAllJudges();
-  const judges = judgesRes.success ? judgesRes.data : [];
-
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden bg-black">
       <Sidebar />
-      <section className="flex-1 overflow-y-auto p-6 md:p-10">
-        <div className="mb-10">
+      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
+        <div className="mb-8 md:mb-10">
           <p className="text-xs uppercase tracking-widest text-white/30 mb-2">
             Admin Panel
           </p>
           <h1
-            className="text-4xl md:text-5xl font-bold text-white"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 md:mb-6 break-words"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Submission Review
           </h1>
-          <div className="flex gap-6 border-b border-white/10 pb-4">
-            <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px]">Submissions</span>
-            <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium">Judges</Link>
-            <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium">Users</Link>
-            <Link href="/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium">Leaderboard</Link>
-          </div>
+          <nav
+            className="overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            aria-label="Admin sections"
+          >
+            <div className="flex flex-nowrap gap-4 sm:gap-6 border-b border-white/10 pb-4 w-max max-w-full sm:w-auto sm:flex-wrap">
+              <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px] shrink-0 text-sm sm:text-base">
+                Submissions
+              </span>
+              <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+                Judges
+              </Link>
+              <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+                Users
+              </Link>
+              <Link href="/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+                Leaderboard
+              </Link>
+            </div>
+          </nav>
         </div>
 
         {error && (
@@ -51,7 +61,10 @@ export default async function AdminPage({
           </div>
         )}
 
-        <AdminFilters initialTrack={resolvedParams.track} initialStatus={resolvedParams.status} />
+        <AdminFilters
+          initialTrack={resolvedParams.track}
+          initialStatus={resolvedParams.status}
+        />
 
         <div className="mt-8">
           <AdminSubmissionsList submissions={submissions} />
