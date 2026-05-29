@@ -6,12 +6,13 @@ import {
   getAssignedSubmissions,
   scoreSubmission,
 } from '@/app/actions/judging';
-import { Submission } from '@/types';
+import { Submission, Score } from '@/types';
 import { Inbox, X } from 'lucide-react';
 
 type SubmissionWithExtras = Submission & {
   team_name: string;
   is_scored: boolean;
+  judge_score: Score | null;
 };
 
 export default function JudgeDashboard() {
@@ -25,15 +26,15 @@ export default function JudgeDashboard() {
     useState<SubmissionWithExtras | null>(null);
 
   const [innovation, setInnovation] =
-    useState(5);
+    useState<number | ''>(1);
 
   const [technical, setTechnical] =
-    useState(5);
+    useState<number | ''>(1);
 
-  const [uiUx, setUiUx] = useState(5);
+  const [uiUx, setUiUx] = useState<number | ''>(1);
 
   const [scalability, setScalability] =
-    useState(5);
+    useState<number | ''>(1);
 
   const [comments, setComments] =
     useState('');
@@ -79,11 +80,19 @@ export default function JudgeDashboard() {
   ) {
     setSelected(submission);
 
-    setInnovation(5);
-    setTechnical(5);
-    setUiUx(5);
-    setScalability(5);
-    setComments('');
+    if (submission.judge_score) {
+      setInnovation(submission.judge_score.innovation_score);
+      setTechnical(submission.judge_score.technical_score);
+      setUiUx(submission.judge_score.ui_ux_score);
+      setScalability(submission.judge_score.scalability_score);
+      setComments(submission.judge_score.comments || '');
+    } else {
+      setInnovation(1);
+      setTechnical(1);
+      setUiUx(1);
+      setScalability(1);
+      setComments('');
+    }
   }
 
   function handleScore(
@@ -92,6 +101,20 @@ export default function JudgeDashboard() {
     e.preventDefault();
 
     if (!selected) return;
+
+    if (
+      innovation === '' ||
+      technical === '' ||
+      uiUx === '' ||
+      scalability === '' ||
+      innovation < 0 || innovation > 10 ||
+      technical < 0 || technical > 10 ||
+      uiUx < 0 || uiUx > 10 ||
+      scalability < 0 || scalability > 10
+    ) {
+      showToast('All scores must be between 0 and 10.', false);
+      return;
+    }
 
     startTransition(async () => {
       const res =
@@ -188,7 +211,7 @@ export default function JudgeDashboard() {
 
           {toast && (
             <div
-              className={`fixed top-5 right-5 z-[100] px-5 py-4 rounded-xl border shadow-2xl animate-in fade-in slide-in-from-top-5 ${
+              className={`fixed top-5 left-1/2 -translate-x-1/2 z-[100] px-5 py-4 rounded-xl border shadow-2xl animate-in fade-in slide-in-from-top-5 max-w-[90vw] md:max-w-md w-max ${
                 toast.ok
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                   : 'bg-red-500/10 border-red-500/30 text-red-400'
@@ -387,16 +410,13 @@ export default function JudgeDashboard() {
 
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max="10"
                         value={innovation}
-                        onChange={(e) =>
-                          setInnovation(
-                            parseInt(
-                              e.target.value
-                            )
-                          )
-                        }
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setInnovation(isNaN(val) ? '' : val);
+                        }}
                         className="input-nn w-full"
                         required
                       />
@@ -409,16 +429,13 @@ export default function JudgeDashboard() {
 
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max="10"
                         value={technical}
-                        onChange={(e) =>
-                          setTechnical(
-                            parseInt(
-                              e.target.value
-                            )
-                          )
-                        }
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setTechnical(isNaN(val) ? '' : val);
+                        }}
                         className="input-nn w-full"
                         required
                       />
@@ -431,16 +448,13 @@ export default function JudgeDashboard() {
 
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max="10"
                         value={uiUx}
-                        onChange={(e) =>
-                          setUiUx(
-                            parseInt(
-                              e.target.value
-                            )
-                          )
-                        }
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setUiUx(isNaN(val) ? '' : val);
+                        }}
                         className="input-nn w-full"
                         required
                       />
@@ -453,16 +467,13 @@ export default function JudgeDashboard() {
 
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max="10"
                         value={scalability}
-                        onChange={(e) =>
-                          setScalability(
-                            parseInt(
-                              e.target.value
-                            )
-                          )
-                        }
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setScalability(isNaN(val) ? '' : val);
+                        }}
                         className="input-nn w-full"
                         required
                       />

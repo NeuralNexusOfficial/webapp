@@ -118,7 +118,7 @@ export async function unassignJudge(submissionId: string, judgeId: string): Prom
   return { success: true, data: undefined }
 }
 
-export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Submission & { team_name: string; is_scored: boolean })[]>> {
+export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Submission & { team_name: string; is_scored: boolean; judge_score: Score | null })[]>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
@@ -143,18 +143,22 @@ export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Sub
   // Get submissions
   const { data: submissions, error: subError } = await adminSupabase
     .from('submissions')
-    .select('*, teams(name), scores(judge_id)')
+    .select('*, teams(name), scores(*)')
     .in('id', submissionIds)
     .order('created_at', { ascending: false })
 
   if (subError) return { success: false, error: subError.message }
 
-  const formatted = submissions.map((s: any) => ({
-    ...s,
-    track: trackFromDb(s.track),
-    team_name: s.teams?.name || 'Unknown Team',
-    is_scored: s.scores.some((score: any) => score.judge_id === user.id)
-  }))
+  const formatted = submissions.map((s: any) => {
+    const judgeScore = s.scores.find((score: any) => score.judge_id === user.id);
+    return {
+      ...s,
+      track: trackFromDb(s.track),
+      team_name: s.teams?.name || 'Unknown Team',
+      is_scored: !!judgeScore,
+      judge_score: judgeScore || null,
+    };
+  })
 
   return { success: true, data: formatted }
 }
