@@ -8,6 +8,7 @@ type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed';
 
 interface PayButtonProps {
   amount: number;
+  currency?: string;
   label?: string;
   track?: string;
   onPaymentVerified?: () => void;
@@ -31,7 +32,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, label, track, onPaymentVerified }: PayButtonProps) {
+export default function PayButton({ amount, currency = 'INR', label, track, onPaymentVerified }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -74,7 +75,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
       const res = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, track }),
+        body: JSON.stringify({ amount, currency, track }),
       });
       if (!res.ok) {
         if (res.status === 401) {
@@ -205,7 +206,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
           Opening payment…
         </>
       ) : (
-        `${label ?? `Pay ₹${amount}`} →`
+        `${label ?? `Pay ${currency === 'INR' ? '₹' : ''}${amount}`} →`
       )}
     </button>
   );

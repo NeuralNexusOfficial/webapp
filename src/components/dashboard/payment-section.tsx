@@ -37,6 +37,101 @@ export default function PaymentSection({
   const [polling, setPolling] = useState(false);
   const router = useRouter();
 
+  const [userCurrency, setUserCurrency] = useState('USD');
+  const [userSymbol, setUserSymbol] = useState('$');
+  const [exchangeRate, setExchangeRate] = useState(1);
+  const [currencyLoading, setCurrencyLoading] = useState(true);
+
+  useEffect(() => {
+    async function initCurrency() {
+      try {
+        let cc = '';
+        
+        // Try multiple IP APIs
+        try {
+          const ipRes = await fetch('https://ipwho.is/');
+          const ipData = await ipRes.json();
+          if (ipData.success !== false) {
+             cc = ipData.country_code;
+          }
+        } catch (e) {
+          console.warn('ipwho.is failed', e);
+        }
+
+        // Fallback to timezone if IP API fails
+        if (!cc) {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (tz === 'Asia/Calcutta' || tz === 'Asia/Kolkata') {
+            cc = 'IN';
+          }
+        }
+
+        let cCode = 'USD';
+        let cSymbol = '$';
+
+        if (cc) {
+          try {
+            const countryRes = await fetch(`https://restcountries.com/v3.1/alpha/${cc}?fields=currencies`);
+            const countryData = await countryRes.json();
+            const countryObj = Array.isArray(countryData) ? countryData[0] : countryData;
+            
+            if (countryObj && countryObj.currencies) {
+              const keys = Object.keys(countryObj.currencies);
+              if (keys.length > 0) {
+                cCode = keys[0];
+                cSymbol = countryObj.currencies[cCode].symbol || cCode;
+              }
+            }
+          } catch (e) {
+            console.warn('restcountries failed', e);
+            if (cc === 'IN') {
+              cCode = 'INR';
+              cSymbol = '₹';
+            }
+          }
+        }
+
+        let rateData: any = { rates: {} };
+        try {
+          const rateRes = await fetch('https://api.frankfurter.dev/v1/latest?base=USD');
+          rateData = await rateRes.json();
+        } catch (e) {
+          console.warn('frankfurter failed', e);
+        }
+
+        if (cCode === 'USD') {
+          setUserCurrency('USD');
+          setUserSymbol('$');
+          setExchangeRate(1);
+        } else if (rateData.rates && rateData.rates[cCode]) {
+          setUserCurrency(cCode);
+          setUserSymbol(cSymbol);
+          setExchangeRate(rateData.rates[cCode]);
+        } else if (cCode === 'INR') {
+          setUserCurrency('INR');
+          setUserSymbol('₹');
+          setExchangeRate(rateData.rates?.INR || 83); 
+        } else {
+          setUserCurrency('USD');
+          setUserSymbol('$');
+          setExchangeRate(1);
+        }
+      } catch (err) {
+        console.error('Error fetching currency:', err);
+        // Absolute fallback to Timezone if completely failed
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (tz === 'Asia/Calcutta' || tz === 'Asia/Kolkata') {
+          setUserCurrency('INR');
+          setUserSymbol('₹');
+          setExchangeRate(83);
+        }
+      } finally {
+        setCurrencyLoading(false);
+      }
+    }
+    initCurrency();
+  }, []);
+
   useEffect(() => {
     async function load() {
       try {
@@ -154,8 +249,7 @@ export default function PaymentSection({
     ? (isTeam && prices[domain as Track].team ? prices[domain as Track].team : prices[domain as Track].ind)
     : null;
 
-  // Convert USD to INR (Approx $1 = ₹83) for Razorpay (must be integer rupees)
-  const currentPriceINR = currentPriceUSD ? Math.round(currentPriceUSD * 83) : 0;
+  const currentLocalPrice = currentPriceUSD ? Number((currentPriceUSD * exchangeRate).toFixed(2)) : 0;
 
   return (
     <div className="card-cyber p-6 md:p-8 flex flex-col gap-6">
@@ -194,12 +288,27 @@ export default function PaymentSection({
           {domain ? (
             <>
               <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                ${currentPriceUSD} <span className="text-lg text-white/40 font-sans font-normal">(~₹{currentPriceINR})</span>
+                {currencyLoading ? (
+                  <span className="animate-pulse bg-white/20 h-8 w-24 rounded inline-block"></span>
+                ) : (
+                  `${userSymbol}${currentLocalPrice}`
+                )}
+                {userCurrency !== 'USD' && !currencyLoading && (
+                  <span className="text-lg text-white/40 font-sans font-normal ml-2">
+                    (${currentPriceUSD})
+                  </span>
+                )}
               </p>
               <p className="text-sm text-white/40 mb-4">
                 One-time fee · Includes swag kit, meals, and access
               </p>
-              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
+              <PayButton 
+                amount={currentLocalPrice} 
+                currency={userCurrency}
+                label={`Pay ${userSymbol}${currentLocalPrice}`} 
+                track={domain || undefined} 
+                onPaymentVerified={onPaymentSuccess} 
+              />
             </>
           ) : (
             <>

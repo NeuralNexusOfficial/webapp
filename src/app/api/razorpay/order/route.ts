@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const amount = Number(body.amount);
     const track = body.track ?? null;
+    const currency = body.currency ?? 'INR';
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
@@ -21,10 +22,10 @@ export async function POST(req: Request) {
 
     const receipt = `nn_${user.id.slice(0, 8)}_${Date.now()}`;
 
-    // Create order in Razorpay (amount in paise: ₹500 = 50000 paise)
+    // Create order in Razorpay (amount in smallest unit: 500.00 = 50000)
     const order = await razorpay.orders.create({
-      amount: amount * 100,
-      currency: 'INR',
+      amount: Math.round(amount * 100),
+      currency: currency,
       receipt,
     });
 
