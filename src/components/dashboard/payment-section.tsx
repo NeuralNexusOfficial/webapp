@@ -199,7 +199,7 @@ export default function PaymentSection({
               <p className="text-sm text-white/40 mb-4">
                 One-time fee · Includes swag kit, meals, and access
               </p>
-              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} track={domain || undefined} />
+              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
             </>
           ) : (
             <>

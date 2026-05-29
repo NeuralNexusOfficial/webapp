@@ -10,6 +10,7 @@ interface PayButtonProps {
   amount: number;
   label?: string;
   track?: string;
+  onPaymentVerified?: () => void;
 }
 
 declare global {
@@ -30,7 +31,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, label, track }: PayButtonProps) {
+export default function PayButton({ amount, label, track, onPaymentVerified }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -98,7 +99,31 @@ export default function PayButton({ amount, label, track }: PayButtonProps) {
       name: 'AOT Hackathon',
       description: 'Hackathon Registration Fee',
       theme: { color: '#ffffff', backdrop_color: '#000000' },
-      handler: () => setState('success'),
+      handler: async (response: any) => {
+        // Verify payment on server immediately so we don't rely solely on webhook
+        try {
+          const verifyRes = await fetch('/api/razorpay/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: orderData.order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
+          if (!verifyRes.ok) {
+            const err = await verifyRes.json();
+            console.error('[pay-button] verification failed:', err);
+            setErrorMsg('Payment succeeded but verification failed. Please refresh to check status.');
+            setState('failed');
+            return;
+          }
+        } catch (err) {
+          console.error('[pay-button] verify request error:', err);
+        }
+        setState('success');
+        if (onPaymentVerified) onPaymentVerified();
+      },
       modal: {
         ondismiss: () => {
           setErrorMsg('Payment cancelled. You can try again.');
