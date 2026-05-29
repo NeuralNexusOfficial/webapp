@@ -15,11 +15,17 @@ export default function Footer() {
         </div>
 
         <div className="flex items-center gap-6 text-xs text-white/40">
+          <Link href="/privacy" className="hover:text-white/70 transition-colors">
+            Privacy Policy
+          </Link>
+          <span className="text-white/10">|</span>
+          <Link href="/terms" className="hover:text-white/70 transition-colors">
+            Terms of Service
+          </Link>
+          <span className="text-white/10">|</span>
           <Link href="/login" className="hover:text-white/70 transition-colors">
             Sign In
           </Link>
-          <span className="text-white/10">|</span>
-          <span>Built for builders.</span>
         </div>
       </div>
     </footer>
