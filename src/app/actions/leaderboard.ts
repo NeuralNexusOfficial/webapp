@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getUserRole } from '@/lib/auth/roles'
+import { trackFromDb } from '@/lib/tracks'
 
 export type LeaderboardEntry = {
   submission_id: string
@@ -68,9 +69,9 @@ export async function getLeaderboard(trackFilter?: string): Promise<LeaderboardR
     if (!sub) continue
 
     const submissionId = score.submission_id
-    const track = sub.track || 'Unknown'
+    const track = trackFromDb(sub.track || 'Unknown')
 
-    // Apply track filter if specified
+    // Apply track filter if specified (UI track names)
     if (trackFilter && trackFilter !== 'All' && track !== trackFilter) continue
 
     const existing = aggregated.get(submissionId)

@@ -31,7 +31,8 @@ export interface Payment {
   created_at: string;
 }
 
-export type Track = 'SaaS' | 'Animation' | 'Storytelling' | 'Gaming' | 'AI';
+import type { Track } from '@/lib/tracks'
+export type { Track }
 
 export type SubmissionStatus = 'DRAFT' | 'SUBMITTED' | 'JUDGED';
 

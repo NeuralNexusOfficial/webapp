@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { getUserRole } from '@/lib/auth/roles'
 import { revalidatePath } from 'next/cache'
 import { Submission, SubmissionStatus, Profile, Score } from '@/types'
+import { trackFilterToDb, trackFromDb } from '@/lib/tracks'
 
 export type JudgingActionResult<T = undefined> =
   | { success: true; data: T }
@@ -30,7 +31,7 @@ export async function getFilteredSubmissions(
     .order('created_at', { ascending: false })
 
   if (trackFilter && trackFilter !== 'All') {
-    query = query.eq('track', trackFilter)
+    query = query.eq('track', trackFilterToDb(trackFilter))
   }
   if (statusFilter && statusFilter !== 'All') {
     query = query.eq('status', statusFilter)
@@ -41,6 +42,7 @@ export async function getFilteredSubmissions(
 
   const formatted = (data || []).map((s: any) => ({
     ...s,
+    track: trackFromDb(s.track),
     team_name: s.teams?.name || 'Unknown Team',
   }))
 
@@ -149,6 +151,7 @@ export async function getAssignedSubmissions(): Promise<JudgingActionResult<(Sub
 
   const formatted = submissions.map((s: any) => ({
     ...s,
+    track: trackFromDb(s.track),
     team_name: s.teams?.name || 'Unknown Team',
     is_scored: s.scores.some((score: any) => score.judge_id === user.id)
   }))
@@ -282,5 +285,12 @@ export async function getSubmissionById(submissionId: string): Promise<JudgingAc
 
   if (error) return { success: false, error: error.message }
 
-  return { success: true, data: { ...data, team_name: data.teams?.name || 'Unknown Team' } }
+  return {
+    success: true,
+    data: {
+      ...data,
+      track: trackFromDb(data.track),
+      team_name: data.teams?.name || 'Unknown Team',
+    },
+  }
 }

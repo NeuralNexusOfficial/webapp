@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Trophy, Medal, Award, TrendingUp, Users, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import type { LeaderboardEntry } from '@/app/actions/leaderboard';
+import { TRACK_OPTIONS } from '@/lib/tracks';
 
 type SortKey = 'avg_total' | 'avg_innovation' | 'avg_technical' | 'avg_uiux' | 'avg_scalability' | 'judge_count';
 
@@ -146,11 +147,11 @@ export default function LeaderboardClient({
           className="input-nn"
         >
           <option value="All">All Tracks</option>
-          <option value="AI/ML">AI/ML</option>
-          <option value="Web3">Web3</option>
-          <option value="HealthTech">HealthTech</option>
-          <option value="FinTech">FinTech</option>
-          <option value="OpenInnovation">Open Innovation</option>
+          {TRACK_OPTIONS.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
         </select>
       </div>
 

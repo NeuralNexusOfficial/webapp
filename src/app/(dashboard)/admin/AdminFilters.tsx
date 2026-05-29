@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
+import { TRACK_OPTIONS } from '@/lib/tracks';
 
 export default function AdminFilters({
   initialTrack,
@@ -36,11 +37,11 @@ export default function AdminFilters({
         className="input-nn"
       >
         <option value="All">All Tracks</option>
-        <option value="AI/ML">AI/ML</option>
-        <option value="Web3">Web3</option>
-        <option value="HealthTech">HealthTech</option>
-        <option value="FinTech">FinTech</option>
-        <option value="OpenInnovation">Open Innovation</option>
+        {TRACK_OPTIONS.map((t) => (
+          <option key={t.value} value={t.value}>
+            {t.label}
+          </option>
+        ))}
       </select>
 
       <select

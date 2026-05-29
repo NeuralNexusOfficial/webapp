@@ -3,8 +3,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-import { Track, SubmissionStatus, Submission } from '@/types'
+import { SubmissionStatus, Submission, Track } from '@/types'
 import { validateSubmissionTextFields } from '@/lib/validation/submission-text'
+import {
+  TRACK_VALUES,
+  isValidTrack,
+  trackToDb,
+  trackFromDb,
+} from '@/lib/tracks'
 
 export type SubmissionActionResult<T = undefined> =
   | { success: true; data: T }
@@ -74,7 +80,12 @@ export async function getMySubmission(): Promise<SubmissionActionResult<Submissi
 
   if (error) return { success: false, error: error.message }
 
-  return { success: true, data: data as Submission | null }
+  if (!data) return { success: true, data: null }
+
+  return {
+    success: true,
+    data: { ...(data as Submission), track: trackFromDb(data.track) },
+  }
 }
 
 // ─── Upsert Submission ────────────────────────────────────────────────────────
@@ -137,9 +148,12 @@ export async function upsertSubmission(
   }
   if (!input.track) return { success: false, error: 'Track is required', code: 400 }
 
-  const validTracks: Track[] = ['SaaS', 'Animation', 'Storytelling', 'Gaming', 'AI']
-  if (!validTracks.includes(input.track)) {
-    return { success: false, error: `Invalid track. Must be one of: ${validTracks.join(', ')}`, code: 400 }
+  if (!isValidTrack(input.track)) {
+    return {
+      success: false,
+      error: `Invalid track. Must be one of: ${TRACK_VALUES.join(', ')}`,
+      code: 400,
+    }
   }
 
   // ── 4. Check existing status ───────────────────────────────────────────────
@@ -162,7 +176,7 @@ export async function upsertSubmission(
     team_id: teamId,
     title: input.title.trim(),
     description: input.description.trim(),
-    track: input.track,
+    track: trackToDb(input.track),
     repo_url: input.repo_url?.trim() || null,
     demo_url: input.demo_url?.trim() || null,
     file_url: input.file_url?.trim() || null,
@@ -180,7 +194,10 @@ export async function upsertSubmission(
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/dashboard/submit')
-  return { success: true, data: data as Submission }
+  return {
+    success: true,
+    data: { ...(data as Submission), track: trackFromDb(data.track) },
+  }
 }
 
 // ─── Lock Submission ──────────────────────────────────────────────────────────
@@ -222,5 +239,8 @@ export async function lockSubmission(): Promise<SubmissionActionResult<Submissio
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/dashboard/submit')
-  return { success: true, data: data as Submission }
+  return {
+    success: true,
+    data: { ...(data as Submission), track: trackFromDb(data.track) },
+  }
 }
