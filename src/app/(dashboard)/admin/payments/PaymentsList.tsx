@@ -79,7 +79,7 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
       </div>
 
       {/* Payments List */}
-      <div className="space-y-4 mt-6">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6">
         <AnimatePresence mode="popLayout">
           {filtered.length === 0 ? (
             <motion.div
@@ -87,7 +87,7 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="card-cyber p-8 text-center"
+              className="card-cyber p-8 text-center col-span-full"
             >
               <p className="text-white/70 text-lg font-bold">No payments found</p>
               {search && (
@@ -103,24 +103,24 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
                 exit={{ opacity: 0, y: -10 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`bg-black/70 backdrop-blur-md border border-green-500/30 rounded-xl p-6 transition cursor-pointer ring-1 ring-green-500/20 ${selected?.id === p.id ? 'border-2 border-green-500/70 bg-black/80 shadow-xl ring-2 ring-green-500/50' : ''}`}
+                className={`bg-black/70 backdrop-blur-md border border-green-500/30 rounded-xl p-4 md:p-6 transition cursor-pointer ring-1 ring-green-500/20 ${selected?.id === p.id ? 'border-2 border-green-500/70 bg-black/80 shadow-xl ring-2 ring-green-500/50' : ''} w-full`}
                 onClick={() => setSelected(p)}
               >
                 <div className="flex items-start justify-between gap-6">
                   <div>
                     <p className="text-white/30 text-sm mb-1">Payment ID</p>
-                    <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{p.id}</h2>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white truncate max-w-[120px]" style={{ fontFamily: 'var(--font-display)' }}>{p.id}</h2>
                   </div>
                   <div className="text-right">
                     <p className="text-white/30 text-sm mb-1">Amount</p>
-                    <h3 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{'$'}{p.amount}</h3>
+                    <h3 className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{'$'}{p.amount}</h3>
                   </div>
                 </div>
 
                 {/* Username displayed prominently */}
                 <div className="mt-2">
                   <p className="text-white/30 text-sm mb-1">Paid By</p>
-                  <h3 className="text-3xl font-semibold text-white" style={{ fontFamily: 'var(--font-display)' }}>{p.user_name ?? p.user_id}</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold text-white truncate" style={{ fontFamily: 'var(--font-display)' }}>{p.user_name ?? p.user_id}</h3>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-3 items-center text-sm">
                   {/* Mode badge */}
@@ -139,7 +139,6 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
                   }>
                     {p.status}
                   </span>
-                  <span className="text-white/50">Created: {new Date(p.created_at).toLocaleDateString()}</span>
                 </div>
               </motion.div>
             ))
@@ -157,51 +156,49 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-black/70 backdrop-blur-md border border-green-500/30 rounded-xl p-8 w-full max-w-lg"
+              className="bg-black/70 backdrop-blur-md border border-green-500/30 rounded-xl p-4 md:p-8 w-full max-w-full sm:max-w-lg max-h-[90vh] overflow-y-auto"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
             >
-              <div className="flex justify-between items-center mb-4">
-  <h2 className="text-3xl font-extrabold text-white" style={{ fontFamily: 'var(--font-display)' }}>Payment Details</h2>
-  <button onClick={() => setSelected(null)} className="text-white/40 hover:text-white transition">
-    <X className="w-6 h-6" />
-  </button>
-</div>
-  <div className="bg-black/70 backdrop-blur-md rounded-xl p-6 border border-white/20 text-white">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-    <div>
-      <p className="font-medium text-white/70">ID</p>
-      <p className="font-bold text-white">{selected.id}</p>
-    </div>
-    <div>
-      <p className="font-medium text-white/70">User</p>
-      <p className="font-bold text-white">{selected.user_name ?? selected.user_id}</p>
-    </div>
-    <div>
-      <p className="font-medium text-white/70">Amount</p>
-      <p><strong>Amount:</strong> {'$'}{selected.amount}</p>
-    </div>
-    <div>
-      <p className="font-medium text-white/70">Mode</p>
-      <span className="text-white/70 font-medium">{selected.razorpay_order_id ? 'Razorpay' : 'Manual'}</span>
-    </div>
-    <div>
-      <p className="font-medium text-white/70">Status</p>
-      <span className="text-white/70 font-medium">{selected.status}</span>
-    </div>
-    {selected.razorpay_order_id && (
-      <div className="col-span-2">
-        <p className="font-medium text-white/70">Razorpay Order ID</p>
-        <p className="font-mono text-sm break-all text-white/70">{selected.razorpay_order_id}</p>
-      </div>
-    )}
-    <div className="col-span-2">
-      <p className="font-medium text-white/70">Created</p>
-      <p className="text-sm text-white/60">{new Date(selected.created_at).toLocaleString()}</p>
-    </div>
-  </div>
-</div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg md:text-xl font-extrabold text-white" style={{ fontFamily: 'var(--font-display)' }}>Payment Details</h2>
+                  <button onClick={() => setSelected(null)} className="text-white/40 hover:text-white transition">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 sm:gap-4 text-sm">
+                  <div>
+                    <p className="font-medium text-white/70">ID</p>
+                    <p className="font-bold text-white">{selected.id}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">User</p>
+                    <p className="font-bold text-white">{selected.user_name ?? selected.user_id}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Amount</p>
+                    <p className="font-bold text-white">{'$'}{selected.amount}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Mode</p>
+                    <p className="text-white/70 font-medium">{selected.razorpay_order_id ? 'Razorpay' : 'Manual'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Status</p>
+                    <p className="text-white/70 font-medium">{selected.status}</p>
+                  </div>
+                  {selected.razorpay_order_id && (
+                    <div className="col-span-2">
+                      <p className="font-medium text-white/70">Razorpay Order ID</p>
+                      <p className="font-mono text-sm break-all text-white/70">{selected.razorpay_order_id}</p>
+                    </div>
+                  )}
+                  <div className="col-span-2">
+                    <p className="font-medium text-white/70">Created</p>
+                    <p className="text-sm text-white/60">{new Date(selected.created_at).toLocaleString()}</p>
+                  </div>
+                </div>
             </motion.div>
           </motion.div>
         )}
