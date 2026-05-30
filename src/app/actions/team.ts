@@ -261,7 +261,13 @@ export async function createTeam(
     .select()
     .single()
 
-  if (teamError) return { success: false, error: teamError.message }
+    if (teamError) {
+      // If the team name already exists (unique constraint violation), provide a friendly message.
+      if (teamError.code === '23505' && teamError.message?.toLowerCase()?.includes('name')) {
+        return { success: false, error: 'Team name already exists. Please choose a different team name.', code: 409 }
+      }
+      return { success: false, error: teamError.message }
+    }
 
   // Insert owner as LEADER in team_members
   const { error: memberError } = await supabase.from('team_members').insert({
