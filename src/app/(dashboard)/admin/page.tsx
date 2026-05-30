@@ -42,13 +42,13 @@ export default async function AdminPage({
               <span className="text-white font-bold border-b-2 border-white pb-4 -mb-[18px] shrink-0 text-sm sm:text-base">
                 Submissions
               </span>
-              <Link href="/admin/judges" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+              <Link href="/dashboard/admin/judges" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
                 Judges
               </Link>
-              <Link href="/admin/users" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+              <Link href="/dashboard/admin/users" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
                 Users
               </Link>
-              <Link href="/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
+              <Link href="/dashboard/admin/leaderboard" className="text-white/50 hover:text-white transition font-medium shrink-0 text-sm sm:text-base">
                 Leaderboard
               </Link>
             </div>

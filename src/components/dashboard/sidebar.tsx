@@ -21,10 +21,11 @@ const userItems: NavItem[] = [
 ];
 
 const adminItems: NavItem[] = [
-  { label: "Admin Panel",    href: "/admin", match: (p: string) => p === "/admin" || p.startsWith("/admin/submissions") || p.startsWith("/admin/judges") },
-  { label: "Manage Users",   href: "/admin/users", match: (p: string) => p.startsWith("/admin/users") },
-  { label: "Leaderboard",    href: "/admin/leaderboard", match: (p: string) => p.startsWith("/admin/leaderboard") },
-  { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
+  { label: "Dashboard", href: "/admin" },
+  { label: "Teams", href: "/admin/teams" },
+  { label: "Users", href: "/admin/users" },
+  { label: "Submissions", href: "/admin/submissions" },
+  { label: "Payments", href: "/admin/payments" },
 ];
 
 const judgeItems: NavItem[] = [
