@@ -14,7 +14,7 @@ import {
   validateTitle,
   validateDescription,
 } from '@/lib/validation/submission-text';
-import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen, CreditCard } from 'lucide-react';
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen, CreditCard, Trash2, Plus } from 'lucide-react';
 import PayButton from '@/components/dashboard/pay-button';
 
 const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
@@ -44,6 +44,7 @@ export default function SubmitPage() {
     file_url: '',
   });
   const [existing, setExisting] = useState<Submission | null>(null);
+  const [extraLinks, setExtraLinks] = useState<string[]>(['']);
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -94,6 +95,8 @@ export default function SubmitPage() {
           demo_url: s.demo_url ?? '',
           file_url: s.file_url ?? '',
         });
+        const loadedDemoUrls = (s.demo_url ?? '').split('|||').filter(Boolean);
+        setExtraLinks(loadedDemoUrls.length > 0 ? loadedDemoUrls : ['']);
         setCharCount(description.length);
       } else if (pTrack) {
         // Pre-fill paid track even if no submission exists yet
@@ -505,7 +508,10 @@ export default function SubmitPage() {
                 <div className="card-cyber p-6 space-y-4">
                   <span className="text-xs text-white/40 uppercase tracking-widest block">Links</span>
                   <label className="block">
-                    <span className="text-xs text-white/30 mb-2 block">GitHub / GitLab Repo <span className="text-red-400">*</span></span>
+                    <span className="text-xs text-white/30 mb-2 flex items-center justify-between">
+                      <span>GitHub / GitLab Repo</span>
+                      <span className="text-white/20 italic lowercase">Optional</span>
+                    </span>
                     <input
                       id="submit-repo"
                       type="url"
@@ -514,7 +520,6 @@ export default function SubmitPage() {
                       value={form.repo_url}
                       onChange={(e) => handleChange('repo_url', e.target.value)}
                       disabled={isLocked}
-                      required
                     />
                   </label>
                   <label className="block">
@@ -522,15 +527,46 @@ export default function SubmitPage() {
                       <span>Demo URL / Additional Links</span>
                       <span className="text-white/20 italic lowercase">Optional</span>
                     </span>
-                    <input
-                      id="submit-demo"
-                      type="url"
-                      className="input-nn"
-                      placeholder="https://youtu.be/your-demo or https://your-live-app.vercel.app"
-                      value={form.demo_url}
-                      onChange={(e) => handleChange('demo_url', e.target.value)}
-                      disabled={isLocked}
-                    />
+                    {extraLinks.map((link, idx) => (
+                      <div key={idx} className="flex items-center gap-2 mb-2">
+                        <input
+                          type="url"
+                          className="input-nn flex-1"
+                          placeholder="https://..."
+                          value={link}
+                          onChange={(e) => {
+                            const newLinks = [...extraLinks];
+                            newLinks[idx] = e.target.value;
+                            setExtraLinks(newLinks);
+                            handleChange('demo_url', newLinks.join('|||'));
+                          }}
+                          disabled={isLocked}
+                        />
+                        {!isLocked && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newLinks = extraLinks.filter((_, i) => i !== idx);
+                              if (newLinks.length === 0) newLinks.push('');
+                              setExtraLinks(newLinks);
+                              handleChange('demo_url', newLinks.join('|||'));
+                            }}
+                            className="p-3 text-white/30 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    {!isLocked && (
+                      <button
+                        type="button"
+                        onClick={() => setExtraLinks([...extraLinks, ''])}
+                        className="flex items-center gap-2 text-xs text-emerald-400/80 hover:text-emerald-400 transition-colors mt-2"
+                      >
+                        <Plus size={14} /> Add another link
+                      </button>
+                    )}
                   </label>
                 </div>
 
