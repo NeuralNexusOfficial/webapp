@@ -113,7 +113,7 @@ export default function Sidebar() {
         <div>
           <div className="px-6 py-5 border-b border-white/6">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
-              <img src="/logo_blue-removebg.png" alt="AOT Logo" className="h-7 w-auto object-contain" />
+              <img src="/aot_white.png" alt="AOT Logo" className="h-7 w-auto object-contain" />
               <div className="flex flex-col">
                 <span
                   className="text-xl font-bold tracking-tight text-white leading-none"

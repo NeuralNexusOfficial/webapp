@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/sidebar";
-import TeamActions from "@/components/dashboard/team-actions";
 import { BackgroundPaths } from "@/components/ui/background-paths";
+import Link from "next/link";
+import { Users, FileText, BookOpen, ArrowRight } from "lucide-react";
 
 export default function DashboardPage() {
   const [timeLeft, setTimeLeft] = useState("00:00:00:00");
@@ -94,9 +95,47 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Team setup */}
-          <TeamActions />
+          {/* Quick Links */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link href="/dashboard/team" className="card-cyber p-6 flex flex-col items-center justify-center text-center gap-3 hover:border-emerald-500/30 transition-colors group">
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white/50 group-hover:text-emerald-400 group-hover:bg-emerald-500/10 transition-colors">
+                <Users size={20} />
+              </div>
+              <div>
+                <p className="font-semibold text-white">Team Setup</p>
+                <p className="text-xs text-white/40 mt-1">Create or join a team</p>
+              </div>
+            </Link>
 
+            <Link href="/dashboard/resources" className="card-cyber p-6 flex flex-col items-center justify-center text-center gap-3 hover:border-amber-500/30 transition-colors group">
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white/50 group-hover:text-amber-400 group-hover:bg-amber-500/10 transition-colors">
+                <BookOpen size={20} />
+              </div>
+              <div>
+                <p className="font-semibold text-white">Resources</p>
+                <p className="text-xs text-white/40 mt-1">Tools and templates</p>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/submit" className="card-cyber p-6 flex flex-col items-center justify-center text-center gap-3 hover:border-purple-500/30 transition-colors group">
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white/50 group-hover:text-purple-400 group-hover:bg-purple-500/10 transition-colors">
+                <FileText size={20} />
+              </div>
+              <div>
+                <p className="font-semibold text-white">Submit Project</p>
+                <p className="text-xs text-white/40 mt-1">Finalize your work</p>
+              </div>
+            </Link>
+          </div>
+
+          <div className="flex justify-end pt-4">
+            <Link 
+              href="/dashboard/team" 
+              className="btn-pill btn-primary flex items-center gap-2"
+            >
+              Next Step: Team Setup <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </section>
     </main>

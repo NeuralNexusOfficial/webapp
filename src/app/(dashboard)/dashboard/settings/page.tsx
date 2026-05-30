@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/dashboard/sidebar';
-import { getProfile, updateProfile } from '@/app/actions/profile';
+import { getProfile, updateProfile, changeEmail, deleteAccount } from '@/app/actions/profile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Pencil, 
@@ -14,7 +14,9 @@ import {
   Check, 
   X, 
   Loader2, 
-  Lock 
+  Lock,
+  Trash2,
+  AlertTriangle
 } from 'lucide-react';
 
 interface UserProfile {
@@ -30,15 +32,22 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [emailChanging, setEmailChanging] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Form fields
   const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [collegeCompany, setCollegeCompany] = useState('');
 
-  // Field-specific validation errors
   const [errors, setErrors] = useState({
     fullName: '',
+    email: '',
     phone: '',
     collegeCompany: '',
   });
@@ -56,6 +65,7 @@ export default function SettingsPage() {
         const data = await getProfile();
         setProfile(data as UserProfile);
         setFullName(data.full_name || '');
+        setEmail(data.email || '');
         setPhone(data.phone || '');
         setCollegeCompany(data.college_company || '');
       } catch (error) {
@@ -91,6 +101,14 @@ export default function SettingsPage() {
     }
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setEmail(val);
+    if (!val) setErrors(prev => ({ ...prev, email: 'Email is required' }));
+    else if (!val.includes('@')) setErrors(prev => ({ ...prev, email: 'Valid email is required' }));
+    else setErrors(prev => ({ ...prev, email: '' }));
+  };
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Only allow digits, max 10
     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -123,9 +141,10 @@ export default function SettingsPage() {
   const startEditing = () => {
     if (profile) {
       setFullName(profile.full_name || '');
+      setEmail(profile.email || '');
       setPhone(profile.phone || '');
       setCollegeCompany(profile.college_company || '');
-      setErrors({ fullName: '', phone: '', collegeCompany: '' });
+      setErrors({ fullName: '', email: '', phone: '', collegeCompany: '' });
       setIsEditing(true);
     }
   };
@@ -135,16 +154,18 @@ export default function SettingsPage() {
     // Reset values to original profile data
     if (profile) {
       setFullName(profile.full_name || '');
+      setEmail(profile.email || '');
       setPhone(profile.phone || '');
       setCollegeCompany(profile.college_company || '');
     }
-    setErrors({ fullName: '', phone: '', collegeCompany: '' });
+    setErrors({ fullName: '', email: '', phone: '', collegeCompany: '' });
   };
 
   // Check if form is valid to submit
   const isFormInvalid = 
-    !!(errors.fullName || errors.phone || errors.collegeCompany) ||
+    !!(errors.fullName || errors.email || errors.phone || errors.collegeCompany) ||
     !fullName.trim() || fullName.trim().length < 3 || !/^[a-zA-Z\s]+$/.test(fullName) ||
+    !email.trim() || !email.includes('@') ||
     !phone || phone.length !== 10 ||
     !collegeCompany.trim() || collegeCompany.trim().length < 2 ||
     !/^[a-zA-Z\s.,'\/&()-]+$/.test(collegeCompany.trim());
@@ -164,6 +185,16 @@ export default function SettingsPage() {
 
       await updateProfile(formData);
 
+      let msg = 'Profile updated successfully!';
+      if (email.trim() !== profile?.email) {
+        const emailRes = await changeEmail(email.trim());
+        if (emailRes.success) {
+          msg = 'Profile updated! Check your email to verify the new address.';
+        } else {
+          msg = `Profile updated, but email change failed: ${emailRes.error}`;
+        }
+      }
+
       setProfile(prev => prev ? {
         ...prev,
         full_name: fullName.trim(),
@@ -171,7 +202,7 @@ export default function SettingsPage() {
         college_company: collegeCompany.trim()
       } : null);
 
-      showToast('Profile updated successfully!', true);
+      showToast(msg, true);
       setIsEditing(false);
     } catch (error) {
       console.error(error);
@@ -371,18 +402,35 @@ export default function SettingsPage() {
                   )}
                 </div>
 
-                {/* EMAIL (Read-only representation) */}
+                {/* EMAIL */}
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-white/30 font-semibold mb-1.5 flex items-center gap-1.5">
-                    Email Address <Lock className="w-3 h-3 text-white/20" />
+                  <label className="block text-xs uppercase tracking-widest text-white/60 font-semibold mb-1.5">
+                    Email Address
                   </label>
                   <input
                     type="email"
-                    value={profile?.email || ''}
-                    disabled
-                    className="input-nn w-full opacity-40 cursor-not-allowed border-dashed"
+                    value={email}
+                    onChange={handleEmailChange}
+                    className={`input-nn w-full ${
+                      errors.email ? 'border-red-500/70 focus:border-red-500' : 'focus:border-white/50'
+                    }`}
+                    required
                   />
-                  <p className="text-[10px] text-white/20 mt-1">Contact your support to change your registered email.</p>
+                  {errors.email && (
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="text-red-400 text-xs mt-1.5 flex items-center gap-1"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-red-400 inline-block" />
+                      {errors.email}
+                    </motion.p>
+                  )}
+                  {email !== profile?.email && !errors.email && (
+                    <p className="text-[11px] text-amber-400/80 mt-1.5">
+                      Changing email requires verification of both old and new addresses.
+                    </p>
+                  )}
                 </div>
 
                 {/* PHONE NUMBER */}
@@ -475,6 +523,96 @@ export default function SettingsPage() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* ── Danger Zone ─────────────────────────────── */}
+        <div className="card-cyber p-6 md:p-8 mt-6 border-red-500/20">
+          <div className="flex items-center gap-3 mb-4 pb-3 border-b border-red-500/10">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <div>
+              <h2 className="text-lg font-bold text-red-400">Danger Zone</h2>
+              <p className="text-xs text-white/40 mt-0.5">Irreversible actions</p>
+            </div>
+          </div>
+
+          <p className="text-sm text-white/50 mb-4">
+            Deleting your account will permanently remove your profile, team memberships, and submissions. 
+            This action cannot be undone. <span className="font-semibold text-white/80 block mt-2">Note: If you have already paid the registration fee, there is no refund available upon account deletion.</span>
+          </p>
+
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="btn-pill text-sm py-2 px-4 border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete Account
+          </button>
+        </div>
+
+        {/* Delete confirmation modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="card-cyber p-6 md:p-8 max-w-md w-full border-red-500/30">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-lg" style={{ fontFamily: 'var(--font-display)' }}>
+                    Delete Account?
+                  </p>
+                  <p className="text-white/50 text-sm mt-1">
+                    This will permanently delete your account, profile, team, and all submissions. This cannot be undone.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-xs uppercase tracking-widest text-white/40 font-semibold mb-1.5">
+                  Type <span className="text-red-400 font-mono">DELETE</span> to confirm
+                </label>
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  className="input-nn w-full border-red-500/30 focus:border-red-500/50"
+                  placeholder="DELETE"
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
+                  className="btn-pill btn-outline text-sm py-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    setIsDeleting(true);
+                    const res = await deleteAccount();
+                    if (res.success) {
+                      window.location.href = '/login';
+                    } else {
+                      showToast(res.error || 'Failed to delete account', false);
+                      setIsDeleting(false);
+                    }
+                  }}
+                  disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                  className={`btn-pill text-sm py-2 px-4 bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500/30 transition-colors ${
+                    deleteConfirmText !== 'DELETE' || isDeleting ? 'opacity-40 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {isDeleting ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</>
+                  ) : (
+                    'Permanently Delete'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
       </section>
     </main>

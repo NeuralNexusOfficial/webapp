@@ -14,8 +14,8 @@ import {
   validateTitle,
   validateDescription,
 } from '@/lib/validation/submission-text';
-import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen } from 'lucide-react';
-import PaymentSection from '@/components/dashboard/payment-section';
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen, CreditCard } from 'lucide-react';
+import PayButton from '@/components/dashboard/pay-button';
 
 const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
@@ -239,6 +239,38 @@ export default function SubmitPage() {
   }
 
   const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
+  const isPaid = paymentStatus === 'SUCCESS';
+
+  // Compute USD price for Pay & Submit button
+  const prices: Record<Track, { ind: number; team?: number }> = {
+    'SaaS': { ind: 15, team: 25 }, 'Animation': { ind: 12, team: 18 },
+    'Storytelling': { ind: 8, team: 12 }, 'Gaming': { ind: 18, team: 30 }, 'AI': { ind: 25, team: 35 },
+  };
+  const selectedTrack = ((isPaid && paidTrack) ? paidTrack : form.track) as Track | '';
+  const priceUSD = selectedTrack ? (isTeam && prices[selectedTrack]?.team ? prices[selectedTrack].team : prices[selectedTrack]?.ind) ?? 0 : 0;
+
+  // Handle Pay & Submit: save draft first, then on payment success lock it
+  async function handlePayAndSubmitSuccess() {
+    // Save the submission first
+    const res = await upsertSubmission({
+      title: form.title,
+      description: form.description,
+      track: (paidTrack ?? form.track) as Track,
+      repo_url: form.repo_url,
+      demo_url: form.demo_url,
+      file_url: form.file_url,
+    });
+    if (res.success) {
+      setExisting(res.data);
+      // Now lock it
+      const lockRes = await lockSubmission();
+      if (lockRes.success) {
+        setExisting(lockRes.data);
+        setPaymentStatus('SUCCESS');
+        showToast('Payment confirmed & submission finalized!', true);
+      }
+    }
+  }
 
   const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
     ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE).toLocaleString('en-IN', {
@@ -292,27 +324,6 @@ export default function SubmitPage() {
               <p className="text-white/60">
                 You need to be part of a team to submit a project. Head to <a href="/dashboard/team" className="text-emerald-400 underline">Team Setup</a> to create or join one.
               </p>
-            </div>
-          ) : paymentStatus !== null && paymentStatus !== 'SUCCESS' ? (
-            <div className="space-y-6">
-              <div className="card-cyber p-8 text-center border-amber-500/30">
-                <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
-                  <Lock className="w-6 h-6 text-amber-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-                  Pay &amp; Submit
-                </h2>
-                <p className="text-white/60">
-                  Your team is ready! Complete payment for your chosen track to unlock the submission form.
-                </p>
-              </div>
-              <PaymentSection
-                pollForSuccess
-                onPaymentSuccess={() => {
-                  // Refresh page data to unlock submission form
-                  window.location.reload();
-                }}
-              />
             </div>
           ) : (
             <>
@@ -420,9 +431,14 @@ export default function SubmitPage() {
                       inputMode="text"
                       autoComplete="off"
                       spellCheck
-                      className={`input-nn min-h-[140px] resize-y ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
+                      className={`input-nn min-h-[140px] resize-none overflow-hidden ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
                       placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
                       value={form.description}
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = '140px';
+                        target.style.height = `${target.scrollHeight}px`;
+                      }}
                       onChange={(e) => handleDescriptionChange(e.target.value)}
                       onBlur={() => {
                         setTouched((t) => ({ ...t, description: true }));
@@ -457,7 +473,7 @@ export default function SubmitPage() {
                   <div className="grid sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Select hackathon track">
                     {TRACKS.map((t) => {
                       const selected = form.track === t.value;
-                      const isTrackLocked = !!paidTrack && paidTrack !== t.value;
+                      const isTrackLocked = !!paidTrack && isPaid && paidTrack !== t.value;
                       const isDisabled = isLocked || isTrackLocked;
                       return (
                         <button
@@ -487,9 +503,9 @@ export default function SubmitPage() {
 
                 {/* Links */}
                 <div className="card-cyber p-6 space-y-4">
-                  <span className="text-xs text-white/40 uppercase tracking-widest block">Links (optional)</span>
+                  <span className="text-xs text-white/40 uppercase tracking-widest block">Links</span>
                   <label className="block">
-                    <span className="text-xs text-white/30 mb-2 block">GitHub / GitLab Repo</span>
+                    <span className="text-xs text-white/30 mb-2 block">GitHub / GitLab Repo <span className="text-red-400">*</span></span>
                     <input
                       id="submit-repo"
                       type="url"
@@ -498,10 +514,14 @@ export default function SubmitPage() {
                       value={form.repo_url}
                       onChange={(e) => handleChange('repo_url', e.target.value)}
                       disabled={isLocked}
+                      required
                     />
                   </label>
                   <label className="block">
-                    <span className="text-xs text-white/30 mb-2 block">Demo URL / Video Link</span>
+                    <span className="text-xs text-white/30 mb-2 flex items-center justify-between">
+                      <span>Demo URL / Additional Links</span>
+                      <span className="text-white/20 italic lowercase">Optional</span>
+                    </span>
                     <input
                       id="submit-demo"
                       type="url"
@@ -587,7 +607,24 @@ export default function SubmitPage() {
                     </button>
                   )}
 
-                  {existing && !isLocked && (
+                  {/* Pay & Submit (when unpaid) */}
+                  {existing && !isLocked && !isPaid && selectedTrack && (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-xs text-amber-400/70 flex items-center gap-1.5">
+                        <CreditCard size={12} /> Payment required to finalize submission
+                      </p>
+                      <PayButton
+                        amount={priceUSD}
+                        currency="USD"
+                        label={`Pay $${priceUSD} & Submit`}
+                        track={selectedTrack}
+                        onPaymentVerified={handlePayAndSubmitSuccess}
+                      />
+                    </div>
+                  )}
+
+                  {/* Finalize (when already paid) */}
+                  {existing && !isLocked && isPaid && (
                     <button
                       id="finalize-submission-btn"
                       type="button"
@@ -608,7 +645,9 @@ export default function SubmitPage() {
                   <p className="text-xs text-white/30">
                     {isLocked 
                       ? "This project has been submitted and can no longer be edited."
-                      : "You can update anytime before the deadline."}
+                      : isPaid
+                        ? "You can update anytime before the deadline."
+                        : "Save your draft, then pay to finalize your submission."}
                   </p>
                 </div>
               </form>
