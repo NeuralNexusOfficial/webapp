@@ -22,10 +22,9 @@ const userItems: NavItem[] = [
 
 const adminItems: NavItem[] = [
   { label: "Dashboard", href: "/admin" },
-  { label: "Teams", href: "/admin/teams" },
   { label: "Users", href: "/admin/users" },
-  { label: "Submissions", href: "/admin/submissions" },
   { label: "Payments", href: "/admin/payments" },
+  { label: "Judges", href: "/admin/judges" },
 ];
 
 const judgeItems: NavItem[] = [

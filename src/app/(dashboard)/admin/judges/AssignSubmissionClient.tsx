@@ -42,9 +42,9 @@ export default function AssignSubmissionClient({
 
   return (
     <div className="mt-4 pt-4 border-t border-white/10">
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <select 
-          className="input-nn text-sm flex-1 p-2"
+          className="input-nn text-sm flex-1 p-2 min-w-0"
           value={selectedSubId}
           onChange={(e) => setSelectedSubId(e.target.value)}
           disabled={loading || availableSubmissions.length === 0}
@@ -57,7 +57,7 @@ export default function AssignSubmissionClient({
         <button
           onClick={handleAssign}
           disabled={!selectedSubId || loading}
-          className="btn-pill btn-primary py-2 px-4 text-sm disabled:opacity-50"
+          className="btn-pill btn-primary py-2 px-4 text-sm disabled:opacity-50 shrink-0"
         >
           {loading ? '...' : 'Add'}
         </button>

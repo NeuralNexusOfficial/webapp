@@ -87,9 +87,9 @@ export default function TeamActions() {
         </div>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Solo */}
-        <div className="card-cyber p-7 flex flex-col gap-4">
+        <div className="card-cyber p-5 sm:p-7 flex flex-col gap-4">
           <div>
             <p className="text-xs text-white/30 uppercase tracking-widest mb-2">Option A</p>
             <h3
@@ -113,7 +113,7 @@ export default function TeamActions() {
         </div>
 
         {/* Create */}
-        <div className="card-cyber p-7 flex flex-col gap-4">
+        <div className="card-cyber p-5 sm:p-7 flex flex-col gap-4">
           <div>
             <p className="text-xs text-white/30 uppercase tracking-widest mb-2">Option B</p>
             <h3
@@ -146,7 +146,7 @@ export default function TeamActions() {
         </div>
 
         {/* Join */}
-        <div className="card-cyber p-7 flex flex-col gap-4">
+        <div className="card-cyber p-5 sm:p-7 flex flex-col gap-4">
           <div>
             <p className="text-xs text-white/30 uppercase tracking-widest mb-2">Option C</p>
             <h3

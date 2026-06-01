@@ -201,3 +201,47 @@ body {
   to   { transform: translate(-38%, -62%) scale(1.25); }
 }
 
+/* Custom Select Dropdown styling */
+select.input-nn {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  padding-right: 2.5rem; /* Make room for the custom arrow */
+}
+
+/* Fix option styling for dropdowns across browsers */
+select.input-nn option {
+  background: #0d0d0d;
+  color: #ffffff;
+}
+
+/* Button style matching the shape of input-nn */
+.btn-nn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #000000;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+.btn-nn:hover:not(:disabled) {
+  background: #e8e8e8;
+  box-shadow: 0 0 30px rgba(255,255,255,0.15);
+}
+.btn-nn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+

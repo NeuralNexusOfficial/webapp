@@ -26,7 +26,18 @@ export async function POST(req: Request) {
   }
 
   // ── 2. Parse event ──────────────────────────────────────────────────────────
-  let event: { event: string; payload: { payment: { entity: { order_id: string; id: string } } } };
+  let event: { 
+    event: string; 
+    payload: { 
+      payment: { 
+        entity: { 
+          order_id: string; 
+          id: string;
+          currency?: string;
+        } 
+      } 
+    } 
+  };
   try {
     event = JSON.parse(rawBody);
   } catch {
@@ -35,6 +46,7 @@ export async function POST(req: Request) {
 
   const orderId: string = event?.payload?.payment?.entity?.order_id;
   const paymentId: string = event?.payload?.payment?.entity?.id;
+  const currency: string = event?.payload?.payment?.entity?.currency || 'INR';
 
   if (!orderId) {
     return NextResponse.json({ error: 'Missing order_id in payload' }, { status: 400 });
@@ -54,6 +66,7 @@ export async function POST(req: Request) {
       .update({
         status: 'SUCCESS',
         razorpay_payment_id: paymentId,
+        currency: currency,
       })
       .eq('razorpay_order_id', orderId)
       .eq('status', 'INITIATED'); // guard: only advance if still INITIATED

@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       user_id: user.id,
       razorpay_order_id: order.id,
       amount,
+      currency,
       receipt,
       status: 'INITIATED',
     };

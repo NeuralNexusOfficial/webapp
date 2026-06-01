@@ -12,6 +12,7 @@ interface PayButtonProps {
   label?: string;
   track?: string;
   onPaymentVerified?: () => void;
+  className?: string;
 }
 
 declare global {
@@ -32,7 +33,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, currency = 'INR', label, track, onPaymentVerified }: PayButtonProps) {
+export default function PayButton({ amount, currency = 'INR', label, track, onPaymentVerified, className }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -137,7 +138,7 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
   // ── Loading state ──────────────────────────────────────────────────────────
   if (state === 'loading') {
     return (
-      <div className="btn-pill btn-outline opacity-60 cursor-default">
+      <div className={`btn-pill btn-outline opacity-60 cursor-default ${className || ''}`}>
         <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -181,7 +182,7 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
         </div>
         <button
           onClick={() => { setState('idle'); setErrorMsg(''); }}
-          className="self-start btn-pill btn-outline text-sm py-2 px-4"
+          className={`self-start btn-pill btn-outline text-sm py-2 px-4 ${className || ''}`}
         >
           Try Again →
         </button>
@@ -198,7 +199,7 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
         <button
           id="pay-registration-fee"
           onClick={handlePay}
-          className="btn-pill btn-primary"
+          className={`btn-pill btn-primary ${className || ''}`}
         >
           {`${label ?? `Pay ${currency === 'INR' ? '₹' : ''}${amount}`} →`}
         </button>
@@ -211,7 +212,7 @@ export default function PayButton({ amount, currency = 'INR', label, track, onPa
       id="pay-registration-fee"
       onClick={handlePay}
       disabled={state === 'pending'}
-      className={`btn-pill ${state === 'pending' ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+      className={`btn-pill ${state === 'pending' ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'} ${className || ''}`}
     >
       {state === 'pending' ? (
         <>

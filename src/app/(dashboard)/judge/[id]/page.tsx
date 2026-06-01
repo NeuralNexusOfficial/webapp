@@ -46,11 +46,11 @@ export default function JudgeSubmissionPage() {
   }
 
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden bg-black">
 
       <Sidebar />
 
-      <section className="flex-1 overflow-y-auto p-6 md:p-10">
+      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
 
         {/* HEADER */}
 
@@ -61,7 +61,7 @@ export default function JudgeSubmissionPage() {
           </p>
 
           <h1
-            className="text-4xl font-bold text-white"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-white break-words"
             style={{
               fontFamily:
                 'var(--font-display)',
@@ -164,7 +164,7 @@ export default function JudgeSubmissionPage() {
 
           <textarea
             placeholder="Judge comments..."
-            className="input-nn min-h-[140px] mt-5"
+            className="input-nn min-h-[120px] sm:min-h-[140px] w-full mt-5"
             value={scores.comments}
             onChange={(e) =>
               handleChange(

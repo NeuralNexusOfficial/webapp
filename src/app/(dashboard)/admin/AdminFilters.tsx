@@ -28,13 +28,13 @@ export default function AdminFilters({
   );
 
   return (
-    <div className="card-cyber p-6 grid md:grid-cols-2 gap-4">
+    <div className="card-cyber p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
       <select
         value={initialTrack || 'All'}
         onChange={(e) => {
           router.push(`/admin?${createQueryString('track', e.target.value)}`);
         }}
-        className="input-nn"
+        className="input-nn w-full text-sm"
       >
         <option value="All">All Tracks</option>
         {TRACK_OPTIONS.map((t) => (
@@ -49,7 +49,7 @@ export default function AdminFilters({
         onChange={(e) => {
           router.push(`/admin?${createQueryString('status', e.target.value)}`);
         }}
-        className="input-nn"
+        className="input-nn w-full text-sm"
       >
         <option value="All">All Status</option>
         <option value="DRAFT">Draft</option>

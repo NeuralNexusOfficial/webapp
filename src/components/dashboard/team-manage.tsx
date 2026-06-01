@@ -115,8 +115,8 @@ export default function TeamManage({ role, isPaid, isSolo }: TeamManageProps) {
       )}
 
       {/* Action button */}
-      <div className="card-cyber p-6 md:p-8 border-white/[0.06]">
-        <div className="flex items-center justify-between gap-4">
+      <div className="card-cyber p-4 sm:p-6 md:p-8 border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-sm text-white/50">
               {isLeader
@@ -137,7 +137,7 @@ export default function TeamManage({ role, isPaid, isSolo }: TeamManageProps) {
             id="team-manage-action-btn"
             onClick={() => setConfirmOpen(true)}
             disabled={isPending}
-            className="btn-pill text-sm py-2 px-4 border border-red-500/30 text-red-400/80 hover:bg-red-500/10 hover:text-red-400 transition-colors shrink-0 flex items-center gap-2"
+            className="btn-pill text-sm py-2 px-4 border border-red-500/30 text-red-400/80 hover:bg-red-500/10 hover:text-red-400 transition-colors shrink-0 flex items-center justify-center w-full sm:w-auto gap-2"
           >
             {isLeader ? (
               <Trash2 className="w-3.5 h-3.5" />

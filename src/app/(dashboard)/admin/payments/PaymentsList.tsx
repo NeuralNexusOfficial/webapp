@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Payment } from '@/types';
+import { formatCurrency, isValidCurrency } from '@/lib/currency';
 
 // Extend payment with optional user_name from server join
 type PaymentItem = Payment & { user_name?: string | null };
@@ -34,7 +35,7 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
       {/* Controls: Search + Status Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Search Input */}
-        <div className="relative group flex-1">
+        <div className="relative group flex-1 w-full">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition duration-300 pointer-events-none" />
           <div className="relative flex items-center">
             <input
@@ -62,13 +63,13 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
           </div>
         </div>
         {/* Status Filter Dropdown */}
-        <div className="flex items-center gap-2">
-          <label htmlFor="statusFilter" className="text-white/70 text-sm">Status:</label>
+        <div className="flex items-center justify-between sm:justify-start gap-2 w-full md:w-auto shrink-0">
+          <label htmlFor="statusFilter" className="text-white/70 text-sm shrink-0">Status:</label>
           <select
             id="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="input-nn text-sm"
+            className="input-nn text-sm flex-1 sm:flex-none sm:min-w-[140px]"
           >
             <option value="">All</option>
             <option value="PENDING">Pending</option>
@@ -79,7 +80,7 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
       </div>
 
       {/* Payments List */}
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
         <AnimatePresence mode="popLayout">
           {filtered.length === 0 ? (
             <motion.div
@@ -91,11 +92,16 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
             >
               <p className="text-white/70 text-lg font-bold">No payments found</p>
               {search && (
-                <p className="text-white/30 text-sm mt-1">No results match "{search}"</p>
+                <p className="text-white/30 text-sm mt-1">No results match &quot;{search}&quot;</p>
               )}
             </motion.div>
           ) : (
-            filtered.map((p) => (
+            filtered.map((p) => {
+              const hasCurrency = isValidCurrency(p.currency);
+              // Only show warning if currency is invalid (not just missing - we default to INR)
+              const isInvalidCurrency = p.currency && !hasCurrency;
+              
+              return (
               <motion.div
                 key={p.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -103,45 +109,63 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
                 exit={{ opacity: 0, y: -10 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`bg-black/70 backdrop-blur-md border border-green-500/30 rounded-xl p-4 md:p-6 transition cursor-pointer ring-1 ring-green-500/20 ${selected?.id === p.id ? 'border-2 border-green-500/70 bg-black/80 shadow-xl ring-2 ring-green-500/50' : ''} w-full`}
+                className={`bg-black/70 backdrop-blur-md border rounded-xl p-6 cursor-pointer overflow-hidden transition-all duration-200 ${selected?.id === p.id ? 'border-green-500/70 shadow-xl ring-2 ring-green-500/50' : 'border-green-500/30 ring-1 ring-green-500/20'}`}
                 onClick={() => setSelected(p)}
+                title={isInvalidCurrency ? `Unknown currency: ${p.currency}` : ''}
               >
-                <div className="flex items-start justify-between gap-6">
-                  <div>
-                    <p className="text-white/30 text-sm mb-1">Payment ID</p>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white truncate max-w-[120px]" style={{ fontFamily: 'var(--font-display)' }}>{p.id}</h2>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-white/30 text-sm mb-1">Amount</p>
-                    <h3 className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{'$'}{p.amount}</h3>
+                {/* Amount - prominent at top with dynamic currency */}
+                <div className="mb-4">
+                  <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Amount</p>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-3xl font-extrabold text-green-400" style={{ fontFamily: 'var(--font-display)' }}>
+                      {formatCurrency(p.amount, p.currency)}
+                    </h2>
+                    {/* Warning badge only if currency is truly invalid */}
+                    {isInvalidCurrency && (
+                      <span 
+                        className="text-xs px-2 py-1 rounded bg-yellow-600/30 text-yellow-200"
+                        title={`Invalid currency: ${p.currency}`}
+                      >
+                        ⚠️
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Username displayed prominently */}
-                <div className="mt-2">
-                  <p className="text-white/30 text-sm mb-1">Paid By</p>
-                  <h3 className="text-lg sm:text-xl font-semibold text-white truncate" style={{ fontFamily: 'var(--font-display)' }}>{p.user_name ?? p.user_id}</h3>
+                {/* Payment ID */}
+                <div className="mb-3">
+                  <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Payment ID</p>
+                  <p className="text-sm font-mono text-white/80 truncate">{p.id}</p>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-3 items-center text-sm">
-                  {/* Mode badge */}
-                  <span className="px-2 py-1 rounded-full bg-blue-600/30 text-blue-200 font-medium">
+
+                {/* Paid By */}
+                <div className="mb-4">
+                  <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Paid By</p>
+                  <p className="text-base font-semibold text-white truncate" style={{ fontFamily: 'var(--font-display)' }}>
+                    {p.user_name ?? p.user_id}
+                  </p>
+                </div>
+
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="px-2.5 py-1 rounded-full bg-blue-600/30 text-blue-200 text-xs font-medium">
                     {p.razorpay_order_id
                       ? p.razorpay_order_id.toLowerCase().includes('upi')
                         ? 'UPI'
                         : 'Debit Card'
                       : 'Manual'}
                   </span>
-                  {/* Status badge with color coding */}
                   <span className={
-                    p.status === 'SUCCESS' ? 'px-2 py-1 rounded-full bg-green-600/30 text-green-200 font-medium' :
-                    p.status === 'PENDING' ? 'px-2 py-1 rounded-full bg-yellow-600/30 text-yellow-200 font-medium' :
-                    'px-2 py-1 rounded-full bg-red-600/30 text-red-200 font-medium'
+                    p.status === 'SUCCESS' ? 'px-2.5 py-1 rounded-full bg-green-600/30 text-green-200 text-xs font-medium' :
+                    p.status === 'PENDING' ? 'px-2.5 py-1 rounded-full bg-yellow-600/30 text-yellow-200 text-xs font-medium' :
+                    'px-2.5 py-1 rounded-full bg-red-600/30 text-red-200 text-xs font-medium'
                   }>
                     {p.status}
                   </span>
                 </div>
               </motion.div>
-            ))
+              );
+            })
           )}
         </AnimatePresence>
       </div>
@@ -178,7 +202,11 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
                   </div>
                   <div>
                     <p className="font-medium text-white/70">Amount</p>
-                    <p className="font-bold text-white">{'$'}{selected.amount}</p>
+                    <p className="font-bold text-white">{formatCurrency(selected.amount, selected.currency)}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Currency</p>
+                    <p className="font-bold text-white">{selected.currency || 'Not set'}</p>
                   </div>
                   <div>
                     <p className="font-medium text-white/70">Mode</p>
