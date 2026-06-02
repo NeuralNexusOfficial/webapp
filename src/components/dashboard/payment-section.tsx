@@ -154,9 +154,6 @@ export default function PaymentSection({
     ? (isTeam && prices[domain as Track].team ? prices[domain as Track].team : prices[domain as Track].ind)
     : null;
 
-  // Convert USD to INR (Approx $1 = ₹83) for Razorpay (must be integer rupees)
-  const currentPriceINR = currentPriceUSD ? Math.round(currentPriceUSD * 83) : 0;
-
   return (
     <div className="card-cyber p-6 md:p-8 flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-center">
@@ -194,12 +191,12 @@ export default function PaymentSection({
           {domain ? (
             <>
               <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                ${currentPriceUSD} <span className="text-lg text-white/40 font-sans font-normal">(~₹{currentPriceINR})</span>
+                ${currentPriceUSD}
               </p>
               <p className="text-sm text-white/40 mb-4">
                 One-time fee · Includes swag kit, meals, and access
               </p>
-              <PayButton amount={currentPriceINR} label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
+              <PayButton amount={currentPriceUSD || 0} label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
             </>
           ) : (
             <>

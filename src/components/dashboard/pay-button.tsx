@@ -205,7 +205,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
           Opening payment…
         </>
       ) : (
-        `${label ?? `Pay ₹${amount}`} →`
+        `${label ?? `Pay $${amount}`} →`
       )}
     </button>
   );

@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { hackathonFAQ } from '@/data/hackathon-faq';
 
 const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: process.env.GROQ_API_KEY || 'dummy-key-for-build',
   baseURL: 'https://api.groq.com/openai/v1',
 });
 

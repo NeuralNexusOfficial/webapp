@@ -21,10 +21,10 @@ export async function POST(req: Request) {
 
     const receipt = `nn_${user.id.slice(0, 8)}_${Date.now()}`;
 
-    // Create order in Razorpay (amount in paise: ₹500 = 50000 paise)
+    // Create order in Razorpay (amount in cents: $25 = 2500 cents)
     const order = await razorpay.orders.create({
       amount: amount * 100,
-      currency: 'INR',
+      currency: 'USD',
       receipt,
     });
 

@@ -114,6 +114,19 @@ export default async function AdminSubmissionDetails({
               </div>
             </div>
 
+            <div className="card-cyber p-6 mt-6">
+              <h3 className="text-xl font-bold text-white mb-4">Payment Info</h3>
+              <p className="text-sm text-white/50 mb-6 leading-relaxed">
+                Check Razorpay transaction logs, order amounts, and statuses for this team's submission.
+              </p>
+              <Link
+                href={`/admin/submissions/${submission.id}/payment`}
+                className="btn-pill btn-primary block text-center py-3 text-sm font-semibold transition hover:brightness-110"
+              >
+                View Payment Details →
+              </Link>
+            </div>
+
             <AssignJudgeClient submissionId={submission.id} judges={judges || []} assignedJudges={submission.judge_assignments || []} />
           </div>
         </div>

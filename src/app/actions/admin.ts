@@ -235,3 +235,109 @@ export async function deleteUser(userId: string): Promise<AdminActionResult> {
   revalidatePath('/admin/users')
   return { success: true, data: undefined }
 }
+
+/**
+ * Fetches payment details for a specific submission (project).
+ */
+export async function getPaymentDetailsForSubmission(
+  submissionId: string
+): Promise<AdminActionResult<{
+  submission: { id: string; title: string; team_name: string; track: string };
+  payments: {
+    id: string;
+    amount: number;
+    status: string;
+    track: string | null;
+    created_at: string;
+    razorpay_order_id: string;
+    razorpay_payment_id: string | null;
+    user: { full_name: string | null; email: string | null };
+  }[];
+}>> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  const role = await getUserRole(user.id)
+  if (role !== 'ADMIN') {
+    return { success: false, error: 'Access denied' }
+  }
+
+  const adminSupabase = createAdminClient()
+
+  // 1. Get submission & team ID
+  const { data: submission, error: subError } = await adminSupabase
+    .from('submissions')
+    .select('id, title, track, team_id, teams(name)')
+    .eq('id', submissionId)
+    .single()
+
+  if (subError || !submission) {
+    return { success: false, error: subError?.message || 'Submission not found' }
+  }
+
+  // 2. Get team members
+  const { data: members, error: membersError } = await adminSupabase
+    .from('team_members')
+    .select('user_id')
+    .eq('team_id', submission.team_id)
+
+  if (membersError) {
+    return { success: false, error: membersError.message }
+  }
+
+  const userIds = (members || []).map(m => m.user_id)
+  if (userIds.length === 0) {
+    return {
+      success: true,
+      data: {
+        submission: {
+          id: submission.id,
+          title: submission.title,
+          team_name: (submission.teams as any)?.name || 'Unknown Team',
+          track: submission.track,
+        },
+        payments: [],
+      },
+    }
+  }
+
+  // 3. Get payments for those users with profile info
+  const { data: paymentsData, error: paymentsError } = await adminSupabase
+    .from('payments')
+    .select('*, profiles(full_name, email)')
+    .in('user_id', userIds)
+    .order('created_at', { ascending: false })
+
+  if (paymentsError) {
+    return { success: false, error: paymentsError.message }
+  }
+
+  const formattedPayments = (paymentsData || []).map((p: any) => ({
+    id: p.id,
+    amount: p.amount,
+    status: p.status,
+    track: p.track,
+    created_at: p.created_at,
+    razorpay_order_id: p.razorpay_order_id,
+    razorpay_payment_id: p.razorpay_payment_id,
+    user: {
+      full_name: p.profiles?.full_name ?? null,
+      email: p.profiles?.email ?? null,
+    },
+  }))
+
+  return {
+    success: true,
+    data: {
+      submission: {
+        id: submission.id,
+        title: submission.title,
+        team_name: (submission.teams as any)?.name || 'Unknown Team',
+        track: submission.track,
+      },
+      payments: formattedPayments,
+    },
+  }
+}
+
