@@ -25,9 +25,9 @@ export default async function JudgeSubmissionPage({ params }: { params: Promise<
     : null;
 
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden bg-black">
       <Sidebar />
-      <section className="flex-1 overflow-y-auto p-6 md:p-10">
+      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
         <div className="mb-8">
           <Link href="/panel" className="text-white/50 hover:text-white transition">
             ← Back to Submissions
@@ -40,18 +40,18 @@ export default async function JudgeSubmissionPage({ params }: { params: Promise<
             Team: {submission.team_name}
           </p>
           <h1
-            className="text-4xl font-bold text-white mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 break-words"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             {submission.title}
           </h1>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <div className="tag-label">{submission.track}</div>
             <div className="tag-label">{submission.status}</div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {/* DETAILS */}
           <div className="md:col-span-2 space-y-6">
             <div className="card-cyber p-6">

@@ -21,10 +21,10 @@ const userItems: NavItem[] = [
 ];
 
 const adminItems: NavItem[] = [
-  { label: "Admin Panel",    href: "/admin", match: (p: string) => p === "/admin" || p.startsWith("/admin/submissions") || p.startsWith("/admin/judges") },
-  { label: "Manage Users",   href: "/admin/users", match: (p: string) => p.startsWith("/admin/users") },
-  { label: "Leaderboard",    href: "/admin/leaderboard", match: (p: string) => p.startsWith("/admin/leaderboard") },
-  { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
+  { label: "Dashboard", href: "/admin" },
+  { label: "Users", href: "/admin/users" },
+  { label: "Payments", href: "/admin/payments" },
+  { label: "Judges", href: "/admin/judges" },
 ];
 
 const judgeItems: NavItem[] = [
@@ -113,7 +113,7 @@ export default function Sidebar() {
         <div>
           <div className="px-6 py-5 border-b border-white/6">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
-              <img src="/logo_blue-removebg.png" alt="AOT Logo" className="h-7 w-auto object-contain" />
+              <img src="/aot_white.png" alt="AOT Logo" className="h-7 w-auto object-contain" />
               <div className="flex flex-col">
                 <span
                   className="text-xl font-bold tracking-tight text-white leading-none"

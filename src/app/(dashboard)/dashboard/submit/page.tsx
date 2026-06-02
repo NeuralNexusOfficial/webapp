@@ -14,8 +14,8 @@ import {
   validateTitle,
   validateDescription,
 } from '@/lib/validation/submission-text';
-import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen } from 'lucide-react';
-import PaymentSection from '@/components/dashboard/payment-section';
+import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen, CreditCard, Trash2, Plus } from 'lucide-react';
+import PayButton from '@/components/dashboard/pay-button';
 
 const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
@@ -44,6 +44,7 @@ export default function SubmitPage() {
     file_url: '',
   });
   const [existing, setExisting] = useState<Submission | null>(null);
+  const [extraLinks, setExtraLinks] = useState<string[]>(['']);
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -94,6 +95,8 @@ export default function SubmitPage() {
           demo_url: s.demo_url ?? '',
           file_url: s.file_url ?? '',
         });
+        const loadedDemoUrls = (s.demo_url ?? '').split('|||').filter(Boolean);
+        setExtraLinks(loadedDemoUrls.length > 0 ? loadedDemoUrls : ['']);
         setCharCount(description.length);
       } else if (pTrack) {
         // Pre-fill paid track even if no submission exists yet
@@ -239,6 +242,38 @@ export default function SubmitPage() {
   }
 
   const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
+  const isPaid = paymentStatus === 'SUCCESS';
+
+  // Compute USD price for Pay & Submit button
+  const prices: Record<Track, { ind: number; team?: number }> = {
+    'SaaS': { ind: 15, team: 25 }, 'Animation': { ind: 12, team: 18 },
+    'Storytelling': { ind: 8, team: 12 }, 'Gaming': { ind: 18, team: 30 }, 'AI': { ind: 25, team: 35 },
+  };
+  const selectedTrack = ((isPaid && paidTrack) ? paidTrack : form.track) as Track | '';
+  const priceUSD = selectedTrack ? (isTeam && prices[selectedTrack]?.team ? prices[selectedTrack].team : prices[selectedTrack]?.ind) ?? 0 : 0;
+
+  // Handle Pay & Submit: save draft first, then on payment success lock it
+  async function handlePayAndSubmitSuccess() {
+    // Save the submission first
+    const res = await upsertSubmission({
+      title: form.title,
+      description: form.description,
+      track: (paidTrack ?? form.track) as Track,
+      repo_url: form.repo_url,
+      demo_url: form.demo_url,
+      file_url: form.file_url,
+    });
+    if (res.success) {
+      setExisting(res.data);
+      // Now lock it
+      const lockRes = await lockSubmission();
+      if (lockRes.success) {
+        setExisting(lockRes.data);
+        setPaymentStatus('SUCCESS');
+        showToast('Payment confirmed & submission finalized!', true);
+      }
+    }
+  }
 
   const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
     ? new Date(process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE).toLocaleString('en-IN', {
@@ -253,20 +288,20 @@ export default function SubmitPage() {
 
       <section className="flex-1 overflow-y-auto min-w-0">
         {/* Top bar */}
-        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex items-center justify-between">
+        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <div className="pl-10 md:pl-0">
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Submit Project
             </h1>
             <p className="text-xs md:text-sm text-white/30 mt-0.5">AOT Hackathon 2026</p>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-xs text-white/40">
+          <div className="flex items-center gap-2 text-xs text-white/40 pl-10 sm:pl-0">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />
             Deadline: {deadlineStr}
           </div>
         </div>
 
-        <div className="p-5 md:p-10 space-y-8 max-w-3xl">
+        <div className="p-4 sm:p-6 md:p-10 space-y-8 max-w-3xl mx-auto w-full">
 
           {role === 'ADMIN' || role === 'JUDGE' ? (
             <div className="card-cyber p-8 text-center border-red-500/30">
@@ -293,331 +328,372 @@ export default function SubmitPage() {
                 You need to be part of a team to submit a project. Head to <a href="/dashboard/team" className="text-emerald-400 underline">Team Setup</a> to create or join one.
               </p>
             </div>
-          ) : paymentStatus !== null && paymentStatus !== 'SUCCESS' ? (
-            <div className="space-y-6">
-              <div className="card-cyber p-8 text-center border-amber-500/30">
-                <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
-                  <Lock className="w-6 h-6 text-amber-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-                  Pay &amp; Submit
-                </h2>
-                <p className="text-white/60">
-                  Your team is ready! Complete payment for your chosen track to unlock the submission form.
-                </p>
-              </div>
-              <PaymentSection
-                pollForSuccess
-                onPaymentSuccess={() => {
-                  // Refresh page data to unlock submission form
-                  window.location.reload();
-                }}
-              />
-            </div>
           ) : (
             <>
               {/* Status banner */}
-          {existing && (
-            <div className={`card-cyber p-5 flex items-start gap-4 ${isLocked ? 'border-emerald-500/30 bg-emerald-500/5' : ''}`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
-                isLocked ? 'bg-emerald-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
-              }`}>
-                {isLocked ? <Lock className="w-5 h-5" /> : <Check className="w-5 h-5" />}
-              </div>
-              <div>
-                <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
-                  {isLocked ? 'Submission Finalized' : 'Draft Saved'}
-                </p>
-                <p className="text-white/40 text-sm mt-0.5">
-                  {isLocked ? 'Finalized on' : 'Last saved'}:{' '}
-                  {existing.submitted_at
-                    ? new Date(existing.submitted_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
-                    : '—'}
-                  {' '}· Status: <span className="text-white/60 font-mono tracking-tight">{existing.status}</span>
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Toast */}
-          {toast && (
-            <div
-              className={`px-5 py-4 rounded-xl text-sm font-medium border ${
-                toast.ok
-                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                  : 'bg-red-500/10 border-red-500/20 text-red-400'
-              }`}
-            >
-              {toast.msg}
-            </div>
-          )}
-
-          {/* Submission form */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="tag-label">Project Details</div>
-              <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                Your Submission
-              </h2>
-            </div>
-
-            {loadingExisting ? (
-              <div className="card-cyber p-10 flex items-center justify-center text-white/30 text-sm">
-                Loading…
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Title */}
-                <div className="card-cyber p-6 space-y-4">
-                  <label className="block">
-                    <span className="text-xs text-white/40 uppercase tracking-widest mb-2 block">
-                      Project Title <span className="text-red-400">*</span>
-                    </span>
-                    <input
-                      id="submit-title"
-                      type="text"
-                      inputMode="text"
-                      autoComplete="off"
-                      spellCheck
-                      className={`input-nn ${fieldErrors.title ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
-                      placeholder="e.g. MediScan — AI-powered drug interaction checker"
-                      value={form.title}
-                      onChange={(e) => handleTitleChange(e.target.value)}
-                      onBlur={() => {
-                        setTouched((t) => ({ ...t, title: true }));
-                        setFieldErrors((err) => ({
-                          ...err,
-                          title: validateTitle(form.title) ?? undefined,
-                        }));
-                      }}
-                      disabled={isLocked}
-                      required
-                      minLength={3}
-                      maxLength={120}
-                      aria-invalid={!!fieldErrors.title}
-                      aria-describedby={fieldErrors.title ? 'submit-title-error' : 'submit-title-hint'}
-                    />
-                    <p id="submit-title-hint" className="text-[11px] text-white/25 mt-1.5">
-                      Letters, numbers, spaces, and . , &apos; - ( ) &amp; only
+              {existing && (
+                <div className={`card-cyber p-4 sm:p-5 flex items-start gap-3 sm:gap-4 ${isLocked ? 'border-emerald-500/30 bg-emerald-500/5' : ''}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
+                    isLocked ? 'bg-emerald-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
+                  }`}>
+                    {isLocked ? <Lock className="w-5 h-5" /> : <Check className="w-5 h-5" />}
+                  </div>
+                  <div>
+                    <p className="text-emerald-400 font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
+                      {isLocked ? 'Submission Finalized' : 'Draft Saved'}
                     </p>
-                    {fieldErrors.title && (
-                      <p id="submit-title-error" role="alert" className="text-xs text-red-400 mt-1.5">
-                        {fieldErrors.title}
-                      </p>
-                    )}
-                  </label>
-
-                  {/* Description */}
-                  <label className="block">
-                    <span className="text-xs text-white/40 uppercase tracking-widest mb-2 flex justify-between">
-                      <span>
-                        Description <span className="text-red-400">*</span>
-                      </span>
-                      <span className={charCount > 900 ? 'text-amber-400' : ''}>{charCount}/1000</span>
-                    </span>
-                    <textarea
-                      id="submit-description"
-                      inputMode="text"
-                      autoComplete="off"
-                      spellCheck
-                      className={`input-nn min-h-[140px] resize-y ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
-                      placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
-                      value={form.description}
-                      onChange={(e) => handleDescriptionChange(e.target.value)}
-                      onBlur={() => {
-                        setTouched((t) => ({ ...t, description: true }));
-                        setFieldErrors((err) => ({
-                          ...err,
-                          description: validateDescription(form.description) ?? undefined,
-                        }));
-                      }}
-                      disabled={isLocked}
-                      required
-                      minLength={10}
-                      maxLength={1000}
-                      aria-invalid={!!fieldErrors.description}
-                      aria-describedby={fieldErrors.description ? 'submit-description-error' : 'submit-description-hint'}
-                    />
-                    <p id="submit-description-hint" className="text-[11px] text-white/25 mt-1.5">
-                      Plain text only — no URLs, emails, or special symbols like @ # $ %
+                    <p className="text-white/40 text-sm mt-0.5">
+                      {isLocked ? 'Finalized on' : 'Last saved'}:{' '}
+                      {existing.submitted_at
+                        ? new Date(existing.submitted_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+                        : '—'}
+                      {' '}· Status: <span className="text-white/60 font-mono tracking-tight">{existing.status}</span>
                     </p>
-                    {fieldErrors.description && (
-                      <p id="submit-description-error" role="alert" className="text-xs text-red-400 mt-1.5">
-                        {fieldErrors.description}
-                      </p>
-                    )}
-                  </label>
-                </div>
-
-                {/* Track selector */}
-                <div className="card-cyber p-6">
-                  <span className="text-xs text-white/40 uppercase tracking-widest mb-4 block">
-                    Track <span className="text-red-400">*</span>
-                  </span>
-                  <div className="grid sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Select hackathon track">
-                    {TRACKS.map((t) => {
-                      const selected = form.track === t.value;
-                      const isTrackLocked = !!paidTrack && paidTrack !== t.value;
-                      const isDisabled = isLocked || isTrackLocked;
-                      return (
-                        <button
-                          key={t.value}
-                          type="button"
-                          id={`track-${t.value.toLowerCase().replace('/', '-')}`}
-                          role="radio"
-                          aria-checked={selected}
-                          onClick={() => !isDisabled && handleChange('track', t.value)}
-                          disabled={isDisabled}
-                          className={`text-left p-4 rounded-xl border transition-all ${
-                            selected
-                              ? 'bg-white/10 border-white/40 text-white'
-                              : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
-                          } ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
-                        >
-                          <p className="font-semibold text-sm mb-0.5 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
-                            {t.icon} {t.label}
-                            {isTrackLocked && <Lock size={12} className="text-amber-400" />}
-                          </p>
-                          <p className="text-xs opacity-70 leading-relaxed">{t.desc}</p>
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
+              )}
 
-                {/* Links */}
-                <div className="card-cyber p-6 space-y-4">
-                  <span className="text-xs text-white/40 uppercase tracking-widest block">Links (optional)</span>
-                  <label className="block">
-                    <span className="text-xs text-white/30 mb-2 block">GitHub / GitLab Repo</span>
-                    <input
-                      id="submit-repo"
-                      type="url"
-                      className="input-nn"
-                      placeholder="https://github.com/your-team/project"
-                      value={form.repo_url}
-                      onChange={(e) => handleChange('repo_url', e.target.value)}
-                      disabled={isLocked}
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="text-xs text-white/30 mb-2 block">Demo URL / Video Link</span>
-                    <input
-                      id="submit-demo"
-                      type="url"
-                      className="input-nn"
-                      placeholder="https://youtu.be/your-demo or https://your-live-app.vercel.app"
-                      value={form.demo_url}
-                      onChange={(e) => handleChange('demo_url', e.target.value)}
-                      disabled={isLocked}
-                    />
-                  </label>
+              {/* Toast */}
+              {toast && (
+                <div
+                  className={`px-5 py-4 rounded-xl text-sm font-medium border ${
+                    toast.ok
+                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                      : 'bg-red-500/10 border-red-500/20 text-red-400'
+                  }`}
+                >
+                  {toast.msg}
+                </div>
+              )}
+
+              {/* Submission form */}
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="tag-label">Project Details</div>
+                  <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                    Your Submission
+                  </h2>
                 </div>
 
-                {/* File upload */}
-                <div className="card-cyber p-6">
-                  <span className="text-xs text-white/40 uppercase tracking-widest mb-4 block">File Upload (optional)</span>
-                  
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
-                  />
+                {loadingExisting ? (
+                  <div className="card-cyber p-10 flex items-center justify-center text-white/30 text-sm">
+                    Loading…
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Title */}
+                    <div className="card-cyber p-4 sm:p-6 space-y-4">
+                      <label className="block">
+                        <span className="text-xs text-white/40 uppercase tracking-widest mb-2 block">
+                          Project Title <span className="text-red-400">*</span>
+                        </span>
+                        <input
+                          id="submit-title"
+                          type="text"
+                          inputMode="text"
+                          autoComplete="off"
+                          spellCheck
+                          className={`input-nn ${fieldErrors.title ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
+                          placeholder="e.g. MediScan — AI-powered drug interaction checker"
+                          value={form.title}
+                          onChange={(e) => handleTitleChange(e.target.value)}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, title: true }));
+                            setFieldErrors((err) => ({
+                              ...err,
+                              title: validateTitle(form.title) ?? undefined,
+                            }));
+                          }}
+                          disabled={isLocked}
+                          required
+                          minLength={3}
+                          maxLength={120}
+                          aria-invalid={!!fieldErrors.title}
+                          aria-describedby={fieldErrors.title ? 'submit-title-error' : 'submit-title-hint'}
+                        />
+                        <p id="submit-title-hint" className="text-[11px] text-white/25 mt-1.5">
+                          Letters, numbers, spaces, and . , &apos; - ( ) &amp; only
+                        </p>
+                        {fieldErrors.title && (
+                          <p id="submit-title-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                            {fieldErrors.title}
+                          </p>
+                        )}
+                      </label>
 
-                  {form.file_url ? (
-                    <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-6 flex items-center justify-between gap-4 animate-in fade-in zoom-in-95">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><FileText className="w-6 h-6 text-emerald-400" /></div>
-                        <div>
-                          <p className="text-emerald-400 font-semibold text-sm">File Uploaded</p>
-                          <a 
-                            href={form.file_url} 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            className="text-white/40 text-xs hover:text-white transition-colors"
-                          >
-                            View uploaded file →
-                          </a>
-                        </div>
+                      {/* Description */}
+                      <label className="block">
+                        <span className="text-xs text-white/40 uppercase tracking-widest mb-2 flex justify-between">
+                          <span>
+                            Description <span className="text-red-400">*</span>
+                          </span>
+                          <span className={charCount > 900 ? 'text-amber-400' : ''}>{charCount}/1000</span>
+                        </span>
+                        <textarea
+                          id="submit-description"
+                          inputMode="text"
+                          autoComplete="off"
+                          spellCheck
+                          className={`input-nn min-h-[140px] resize-none overflow-hidden ${fieldErrors.description ? 'border-red-500/50 focus:border-red-500/70' : ''}`}
+                          placeholder="Describe what your project does, the problem it solves, and the tech stack you used…"
+                          value={form.description}
+                          onInput={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
+                            target.style.height = '140px';
+                            target.style.height = `${target.scrollHeight}px`;
+                          }}
+                          onChange={(e) => handleDescriptionChange(e.target.value)}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, description: true }));
+                            setFieldErrors((err) => ({
+                              ...err,
+                              description: validateDescription(form.description) ?? undefined,
+                            }));
+                          }}
+                          disabled={isLocked}
+                          required
+                          minLength={10}
+                          maxLength={1000}
+                          aria-invalid={!!fieldErrors.description}
+                          aria-describedby={fieldErrors.description ? 'submit-description-error' : 'submit-description-hint'}
+                        />
+                        <p id="submit-description-hint" className="text-[11px] text-white/25 mt-1.5">
+                          Plain text only — no URLs, emails, or special symbols like @ # $ %
+                        </p>
+                        {fieldErrors.description && (
+                          <p id="submit-description-error" role="alert" className="text-xs text-red-400 mt-1.5">
+                            {fieldErrors.description}
+                          </p>
+                        )}
+                      </label>
+                    </div>
+
+                    {/* Track selector */}
+                    <div className="card-cyber p-4 sm:p-6">
+                      <span className="text-xs text-white/40 uppercase tracking-widest mb-4 block">
+                        Track <span className="text-red-400">*</span>
+                      </span>
+                      <div className="grid sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Select hackathon track">
+                        {TRACKS.map((t) => {
+                          const selected = form.track === t.value;
+                          const isTrackLocked = !!paidTrack && isPaid && paidTrack !== t.value;
+                          const isDisabled = isLocked || isTrackLocked;
+                          return (
+                            <button
+                              key={t.value}
+                              type="button"
+                              id={`track-${t.value.toLowerCase().replace('/', '-')}`}
+                              role="radio"
+                              aria-checked={selected}
+                              onClick={() => !isDisabled && handleChange('track', t.value)}
+                              disabled={isDisabled}
+                              className={`text-left p-4 rounded-xl border transition-all ${
+                                selected
+                                  ? 'bg-white/10 border-white/40 text-white'
+                                  : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/60'
+                              } ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
+                            >
+                              <p className="font-semibold text-sm mb-0.5 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
+                                {t.icon} {t.label}
+                                {isTrackLocked && <Lock size={12} className="text-amber-400" />}
+                              </p>
+                              <p className="text-xs opacity-70 leading-relaxed">{t.desc}</p>
+                            </button>
+                          );
+                        })}
                       </div>
+                    </div>
+
+                    {/* Links */}
+                    <div className="card-cyber p-4 sm:p-6 space-y-4">
+                      <span className="text-xs text-white/40 uppercase tracking-widest block">Links</span>
+                      <label className="block">
+                        <span className="text-xs text-white/30 mb-2 flex items-center justify-between">
+                          <span>GitHub / GitLab Repo</span>
+                          <span className="text-white/20 italic lowercase">Optional</span>
+                        </span>
+                        <input
+                          id="submit-repo"
+                          type="url"
+                          className="input-nn"
+                          placeholder="https://github.com/your-team/project"
+                          value={form.repo_url}
+                          onChange={(e) => handleChange('repo_url', e.target.value)}
+                          disabled={isLocked}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs text-white/30 mb-2 flex items-center justify-between">
+                          <span>Demo URL / Additional Links</span>
+                          <span className="text-white/20 italic lowercase">Optional</span>
+                        </span>
+                        {extraLinks.map((link, idx) => (
+                          <div key={idx} className="flex items-center gap-2 mb-2">
+                            <input
+                              type="url"
+                              className="input-nn flex-1"
+                              placeholder="https://..."
+                              value={link}
+                              onChange={(e) => {
+                                const newLinks = [...extraLinks];
+                                newLinks[idx] = e.target.value;
+                                setExtraLinks(newLinks);
+                                handleChange('demo_url', newLinks.join('|||'));
+                              }}
+                              disabled={isLocked}
+                            />
+                            {!isLocked && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newLinks = extraLinks.filter((_, i) => i !== idx);
+                                  if (newLinks.length === 0) newLinks.push('');
+                                  setExtraLinks(newLinks);
+                                  handleChange('demo_url', newLinks.join('|||'));
+                                }}
+                                className="p-3 text-white/30 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                        {!isLocked && (
+                          <button
+                            type="button"
+                            onClick={() => setExtraLinks([...extraLinks, ''])}
+                            className="flex items-center gap-2 text-xs text-emerald-400/80 hover:text-emerald-400 transition-colors mt-2"
+                          >
+                            <Plus size={14} /> Add another link
+                          </button>
+                        )}
+                      </label>
+                    </div>
+
+                    {/* File upload */}
+                    <div className="card-cyber p-4 sm:p-6">
+                      <span className="text-xs text-white/40 uppercase tracking-widest mb-4 block">File Upload (optional)</span>
+                      
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        accept=".pdf,.zip,.rar,.7z,.jpg,.png,.ppt,.pptx,.doc,.docx"
+                      />
+
+                      {form.file_url ? (
+                        <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-in fade-in zoom-in-95">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0"><FileText className="w-6 h-6 text-emerald-400" /></div>
+                            <div>
+                              <p className="text-emerald-400 font-semibold text-sm">File Uploaded</p>
+                              <a 
+                                href={form.file_url} 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="text-white/40 text-xs hover:text-white transition-colors"
+                              >
+                                View uploaded file →
+                              </a>
+                            </div>
+                          </div>
+                          {!isLocked && (
+                            <button
+                              type="button"
+                              onClick={() => setForm(f => ({ ...f, file_url: '' }))}
+                              className="w-full sm:w-auto text-center justify-center text-xs text-red-400/60 hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-400/10"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => !isLocked && !isUploading && fileInputRef.current?.click()}
+                          className={`border-2 border-dashed rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center gap-3 text-center transition-all ${
+                            isLocked || isUploading
+                              ? 'border-white/[0.06] opacity-30 cursor-not-allowed'
+                              : 'border-white/[0.12] hover:border-white/30 cursor-pointer hover:bg-white/[0.02]'
+                          }`}
+                        >
+                          {isUploading ? (
+                            <div className="animate-spin h-8 w-8 border-2 border-white/20 border-t-white rounded-full mb-2" />
+                          ) : (
+                            <FolderOpen className="w-8 h-8 text-white/40" />
+                          )}
+                          <p className="text-white/50 text-sm font-medium">
+                            {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
+                          </p>
+                          <p className="text-white/30 text-xs">PDF, ZIP, PPT, DOC, or any file ≤ 50 MB</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Submit */}
+                    <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 border-t border-white/10 pt-8 mt-8 w-full">
                       {!isLocked && (
                         <button
-                          type="button"
-                          onClick={() => setForm(f => ({ ...f, file_url: '' }))}
-                          className="text-xs text-red-400/60 hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-400/10"
+                          id="save-submission-btn"
+                          type="submit"
+                          disabled={isPending}
+                          className={`btn-pill w-full sm:w-auto justify-center ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
                         >
-                          Remove
+                          {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
                         </button>
                       )}
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => !isLocked && !isUploading && fileInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-3 text-center transition-all ${
-                        isLocked || isUploading
-                          ? 'border-white/[0.06] opacity-30 cursor-not-allowed'
-                          : 'border-white/[0.12] hover:border-white/30 cursor-pointer hover:bg-white/[0.02]'
-                      }`}
-                    >
-                      {isUploading ? (
-                        <div className="animate-spin h-8 w-8 border-2 border-white/20 border-t-white rounded-full mb-2" />
-                      ) : (
-                        <FolderOpen className="w-8 h-8 text-white/40" />
+
+                      {/* Pay & Submit (when unpaid) */}
+                      {existing && !isLocked && !isPaid && selectedTrack && (
+                        <div className="flex flex-col gap-2 w-full sm:w-auto">
+                          <p className="text-xs text-amber-400/70 flex items-center gap-1.5 justify-center sm:justify-start">
+                            <CreditCard size={12} /> Payment required to finalize submission
+                          </p>
+                          <PayButton
+                            amount={priceUSD}
+                            currency="USD"
+                            label={`Pay $${priceUSD} & Submit`}
+                            track={selectedTrack}
+                            onPaymentVerified={handlePayAndSubmitSuccess}
+                            className="w-full sm:w-auto justify-center"
+                          />
+                        </div>
                       )}
-                      <p className="text-white/50 text-sm font-medium">
-                        {isUploading ? 'Uploading file...' : 'Drag & drop or click to upload'}
+
+                      {/* Finalize (when already paid) */}
+                      {existing && !isLocked && isPaid && (
+                        <button
+                          id="finalize-submission-btn"
+                          type="button"
+                          onClick={handleFinalize}
+                          disabled={isPending}
+                          className={`btn-pill w-full sm:w-auto justify-center ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
+                        >
+                          Finalize & Lock →
+                        </button>
+                      )}
+
+                      {isLocked && (
+                        <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-full sm:w-auto justify-center">
+                          <span className="flex items-center gap-1.5"><Lock size={14} /> Submission Locked</span>
+                        </div>
+                      )}
+
+                      <p className="text-xs text-white/30 text-center sm:text-left w-full sm:w-auto flex-1">
+                        {isLocked 
+                          ? "This project has been submitted and can no longer be edited."
+                          : isPaid
+                            ? "You can update anytime before the deadline."
+                            : "Save your draft, then pay to finalize your submission."}
                       </p>
-                      <p className="text-white/30 text-xs">PDF, ZIP, PPT, DOC, or any file ≤ 50 MB</p>
                     </div>
-                  )}
-                </div>
-
-                {/* Submit */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-white/10 pt-8 mt-8">
-                  {!isLocked && (
-                    <button
-                      id="save-submission-btn"
-                      type="submit"
-                      disabled={isPending}
-                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
-                    >
-                      {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
-                    </button>
-                  )}
-
-                  {existing && !isLocked && (
-                    <button
-                      id="finalize-submission-btn"
-                      type="button"
-                      onClick={handleFinalize}
-                      disabled={isPending}
-                      className={`btn-pill ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'}`}
-                    >
-                      Finalize & Lock →
-                    </button>
-                  )}
-
-                  {isLocked && (
-                    <div className="text-emerald-400 text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <span className="flex items-center gap-1.5"><Lock size={14} /> Submission Locked</span>
-                    </div>
-                  )}
-
-                  <p className="text-xs text-white/30">
-                    {isLocked 
-                      ? "This project has been submitted and can no longer be edited."
-                      : "You can update anytime before the deadline."}
-                  </p>
-                </div>
-              </form>
-            )}
-          </div>
-        </>
-      )}
-      </div>
-    </section>
-  </main>
-);
+                  </form>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+    </main>
+  );
 }

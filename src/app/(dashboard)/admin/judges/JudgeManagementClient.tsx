@@ -114,19 +114,19 @@ export default function JudgeManagementClient({
                   <div className="card-cyber hover:border-white/20 transition overflow-hidden">
                     {/* Main Row — always visible */}
                     <div
-                      className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer"
+                      className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 cursor-pointer"
                       onClick={() => toggleExpand(judge.id)}
                     >
-                      <div className="flex items-center gap-4 min-w-0">
+                      <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                         {/* Avatar */}
-                        <div className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-lg font-bold text-white/70 shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-base sm:text-lg font-bold text-white/70 shrink-0">
                           {judge.full_name ? judge.full_name[0].toUpperCase() : (judge.email ? judge.email[0].toUpperCase() : 'J')}
                         </div>
 
                         {/* Name & Email */}
                         <div className="min-w-0">
                           <h2
-                            className="text-xl font-bold text-white group-hover:text-blue-400 transition truncate"
+                            className="text-lg sm:text-xl font-bold text-white group-hover:text-blue-400 transition truncate"
                             style={{ fontFamily: 'var(--font-display)' }}
                           >
                             {judge.full_name || 'Unnamed Judge'}
@@ -136,7 +136,7 @@ export default function JudgeManagementClient({
                       </div>
 
                       {/* Right side: stats + expand toggle */}
-                      <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-auto">
                         <div className="flex items-center gap-2">
                           <UserCheck className="w-4 h-4 text-white/20" />
                           <span className={`text-sm font-medium ${assignedToJudge.length > 0 ? 'text-emerald-400' : 'text-white/30'}`}>

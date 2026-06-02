@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Check, X } from 'lucide-react';
 
-type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed';
+type PaymentState = 'loading' | 'idle' | 'pending' | 'success' | 'failed' | 'cancelled';
 
 interface PayButtonProps {
   amount: number;
+  currency?: string;
   label?: string;
   track?: string;
   onPaymentVerified?: () => void;
+  className?: string;
 }
 
 declare global {
@@ -31,7 +33,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, label, track, onPaymentVerified }: PayButtonProps) {
+export default function PayButton({ amount, currency = 'INR', label, track, onPaymentVerified, className }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -74,7 +76,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
       const res = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, track }),
+        body: JSON.stringify({ amount, currency, track }),
       });
       if (!res.ok) {
         if (res.status === 401) {
@@ -126,8 +128,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
       },
       modal: {
         ondismiss: () => {
-          setErrorMsg('Payment cancelled. You can try again.');
-          setState('failed');
+          setState('cancelled');
         },
       },
     });
@@ -137,7 +138,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
   // ── Loading state ──────────────────────────────────────────────────────────
   if (state === 'loading') {
     return (
-      <div className="btn-pill btn-outline opacity-60 cursor-default">
+      <div className={`btn-pill btn-outline opacity-60 cursor-default ${className || ''}`}>
         <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -181,9 +182,26 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
         </div>
         <button
           onClick={() => { setState('idle'); setErrorMsg(''); }}
-          className="self-start text-sm text-white/50 underline underline-offset-2 hover:text-white transition-colors"
+          className={`self-start btn-pill btn-outline text-sm py-2 px-4 ${className || ''}`}
         >
-          Try again
+          Try Again →
+        </button>
+      </div>
+    );
+  }
+
+  if (state === 'cancelled') {
+    return (
+      <div className="flex flex-col gap-3">
+        <p className="text-sm text-amber-400/70">
+          Payment was cancelled. Click below to try again.
+        </p>
+        <button
+          id="pay-registration-fee"
+          onClick={handlePay}
+          className={`btn-pill btn-primary ${className || ''}`}
+        >
+          {`${label ?? `Pay ${currency === 'INR' ? '₹' : ''}${amount}`} →`}
         </button>
       </div>
     );
@@ -194,7 +212,7 @@ export default function PayButton({ amount, label, track, onPaymentVerified }: P
       id="pay-registration-fee"
       onClick={handlePay}
       disabled={state === 'pending'}
-      className={`btn-pill ${state === 'pending' ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+      className={`btn-pill ${state === 'pending' ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'} ${className || ''}`}
     >
       {state === 'pending' ? (
         <>

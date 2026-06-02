@@ -87,3 +87,97 @@ export async function getProfile() {
   return data
 }
 
+// ─── Change Email ─────────────────────────────────────────────────────────────
+
+export async function changeEmail(newEmail: string): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  if (!newEmail || !newEmail.includes('@')) {
+    return { success: false, error: 'Please enter a valid email address' }
+  }
+
+  if (newEmail.toLowerCase() === user.email?.toLowerCase()) {
+    return { success: false, error: 'New email is the same as current email' }
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    email: newEmail,
+  })
+
+  if (error) {
+    console.error('Error changing email:', error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
+
+// ─── Delete Account ───────────────────────────────────────────────────────────
+
+export async function deleteAccount(): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const adminSupabase = createAdminClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'Not authenticated' }
+
+  try {
+    // 1. Check if user has paid — block deletion if so
+    const { data: payment } = await adminSupabase
+      .from('payments')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'SUCCESS')
+      .limit(1)
+      .maybeSingle()
+
+    if (payment) {
+      return { success: false, error: 'Cannot delete account — you have an active payment. Contact support for assistance.' }
+    }
+
+    // 2. Find team membership
+    const { data: membership } = await adminSupabase
+      .from('team_members')
+      .select('id, team_id, role')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (membership) {
+      if (membership.role === 'LEADER') {
+        // Delete all team members + team
+        await adminSupabase.from('team_members').delete().eq('team_id', membership.team_id)
+        await adminSupabase.from('teams').delete().eq('id', membership.team_id)
+      } else {
+        // Just remove self from team
+        await adminSupabase.from('team_members').delete().eq('id', membership.id)
+      }
+    }
+
+    // 3. Delete submissions
+    await adminSupabase.from('submissions').delete().eq('user_id', user.id)
+
+    // 4. Delete profile
+    await adminSupabase.from('profiles').delete().eq('id', user.id)
+
+    // 5. Delete auth user
+    const { error: authError } = await adminSupabase.auth.admin.deleteUser(user.id)
+    if (authError) {
+      console.error('Error deleting auth user:', authError)
+      return { success: false, error: 'Failed to delete account. Please contact support.' }
+    }
+
+    return { success: true }
+  } catch (err) {
+    console.error('Error deleting account:', err)
+    return { success: false, error: 'An unexpected error occurred. Please contact support.' }
+  }
+}

@@ -143,16 +143,16 @@ export default function JudgeDashboard() {
   }
 
   return (
-    <main className="min-h-screen flex bg-black text-white">
+    <main className="min-h-screen flex bg-black text-white w-full max-w-[100vw] overflow-x-hidden">
       <Sidebar />
 
-      <section className="flex-1 overflow-y-auto min-w-0">
+      <section className="flex-1 overflow-y-auto min-w-0 max-w-full">
 
         {/* HEADER */}
 
-        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex items-center justify-between">
+        <div className="border-b border-white/[0.06] px-4 sm:px-6 md:px-10 pt-16 pb-5 md:pt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
-          <div className="pl-10 md:pl-0">
+          <div>
 
             <h1
               className="text-2xl md:text-3xl font-bold"
@@ -165,32 +165,30 @@ export default function JudgeDashboard() {
             </h1>
 
             <p className="text-white/30 text-sm mt-1">
-              Review and score assigned
-              hackathon projects
+              Review and score assigned hackathon projects
             </p>
 
           </div>
 
-          <div className="hidden md:flex items-center gap-6">
+          {/* Stats — visible on all screens */}
+          <div className="flex items-center gap-4 sm:gap-6">
 
-            <div className="text-right">
+            <div>
               <p className="text-xs uppercase text-white/30 tracking-widest">
                 Assigned
               </p>
-
-              <p className="text-2xl font-bold">
+              <p className="text-xl sm:text-2xl font-bold">
                 {submissions.length}
               </p>
             </div>
 
-            <div className="h-10 w-px bg-white/10" />
+            <div className="h-8 w-px bg-white/10" />
 
-            <div className="text-right">
+            <div>
               <p className="text-xs uppercase text-white/30 tracking-widest">
                 Scored
               </p>
-
-              <p className="text-2xl font-bold text-emerald-400">
+              <p className="text-xl sm:text-2xl font-bold text-emerald-400">
                 {
                   submissions.filter(
                     (s) => s.is_scored
@@ -205,7 +203,7 @@ export default function JudgeDashboard() {
 
         {/* CONTENT */}
 
-        <div className="p-5 md:p-10 space-y-6">
+        <div className="p-4 sm:p-5 md:p-10 space-y-6">
 
           {/* TOAST */}
 
@@ -244,18 +242,18 @@ export default function JudgeDashboard() {
 
                 <div
                   key={s.id}
-                  className={`card-cyber p-6 transition-all hover:border-white/20 ${
+                  className={`card-cyber p-4 sm:p-6 transition-all hover:border-white/20 ${
                     s.is_scored
                       ? 'border-emerald-500/20'
                       : ''
                   }`}
                 >
 
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 sm:gap-6">
 
                     {/* LEFT */}
 
-                    <div className="space-y-3 flex-1">
+                    <div className="space-y-3 flex-1 min-w-0">
 
                       <div className="flex items-center gap-2 flex-wrap">
 
@@ -273,7 +271,7 @@ export default function JudgeDashboard() {
 
                       <div>
 
-                        <h2 className="text-xl font-bold">
+                        <h2 className="text-lg sm:text-xl font-bold break-words">
                           {s.title}
                         </h2>
 
@@ -286,7 +284,7 @@ export default function JudgeDashboard() {
 
                       </div>
 
-                      <p className="text-sm text-white/50 leading-relaxed max-w-3xl">
+                      <p className="text-sm text-white/50 leading-relaxed">
                         {s.description}
                       </p>
 
@@ -294,14 +292,14 @@ export default function JudgeDashboard() {
 
                     {/* RIGHT */}
 
-                    <div className="flex flex-col gap-3 min-w-[180px]">
+                    <div className="flex flex-row lg:flex-col gap-2 lg:gap-3 flex-wrap lg:flex-nowrap lg:min-w-[160px]">
 
                       {s.repo_url && (
                         <a
                           href={s.repo_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="btn-outline text-center"
+                          className="btn-outline text-center text-sm flex-1 lg:flex-none"
                         >
                           Open Repo
                         </a>
@@ -312,7 +310,7 @@ export default function JudgeDashboard() {
                           href={s.demo_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="btn-outline text-center"
+                          className="btn-outline text-center text-sm flex-1 lg:flex-none"
                         >
                           Live Demo
                         </a>
@@ -323,7 +321,7 @@ export default function JudgeDashboard() {
                           href={s.file_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="btn-outline text-center"
+                          className="btn-outline text-center text-sm flex-1 lg:flex-none"
                         >
                           View File
                         </a>
@@ -333,7 +331,7 @@ export default function JudgeDashboard() {
                         onClick={() =>
                           openScoringModal(s)
                         }
-                        className={`btn-pill ${
+                        className={`btn-pill w-full ${
                           s.is_scored
                             ? 'btn-outline border-emerald-500/30 text-emerald-400'
                             : 'btn-primary'
@@ -361,21 +359,21 @@ export default function JudgeDashboard() {
 
         {selected && (
 
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
 
-            <div className="card-cyber w-full max-w-2xl p-0 overflow-hidden">
+            <div className="card-cyber w-full sm:max-w-2xl p-0 overflow-hidden rounded-t-2xl sm:rounded-2xl max-h-[90vh] sm:max-h-none flex flex-col">
 
               {/* TOP */}
 
-              <div className="p-6 border-b border-white/[0.06] flex items-center justify-between">
+              <div className="p-4 sm:p-6 border-b border-white/[0.06] flex items-center justify-between shrink-0">
 
                 <div>
 
-                  <h2 className="text-2xl font-bold">
+                  <h2 className="text-lg sm:text-2xl font-bold">
                     Score Submission
                   </h2>
 
-                  <p className="text-white/40 text-sm mt-1">
+                  <p className="text-white/40 text-sm mt-1 truncate max-w-[200px] sm:max-w-none">
                     {selected.team_name}
                   </p>
 
@@ -385,7 +383,7 @@ export default function JudgeDashboard() {
                   onClick={() =>
                     setSelected(null)
                   }
-                  className="w-9 h-9 rounded-full hover:bg-white/5"
+                  className="w-9 h-9 rounded-full hover:bg-white/5 flex items-center justify-center shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -394,14 +392,14 @@ export default function JudgeDashboard() {
 
               {/* BODY */}
 
-              <div className="p-6 max-h-[70vh] overflow-y-auto">
+              <div className="p-4 sm:p-6 overflow-y-auto flex-1">
 
                 <form
                   onSubmit={handleScore}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                     <div>
                       <label className="text-xs uppercase text-white/30 mb-2 block">
@@ -501,12 +499,12 @@ export default function JudgeDashboard() {
 
                   </div>
 
-                  <div className="flex gap-3 pt-4 border-t border-white/5">
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
 
                     <button
                       type="submit"
                       disabled={isPending}
-                      className="btn-primary flex-1 !py-3"
+                      className="btn-primary flex-1 !py-3 order-1 sm:order-none"
                     >
                       {isPending
                         ? 'Saving...'
@@ -518,7 +516,7 @@ export default function JudgeDashboard() {
                       onClick={() =>
                         setSelected(null)
                       }
-                      className="btn-outline flex-1 !py-3"
+                      className="btn-outline flex-1 !py-3 order-2 sm:order-none"
                     >
                       Cancel
                     </button>

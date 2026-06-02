@@ -27,6 +27,7 @@ export interface Payment {
   user_id: string;
   razorpay_order_id: string;
   amount: number;
+  currency: string;
   status: 'PENDING' | 'SUCCESS' | 'FAILED';
   track?: Track | null;
   created_at: string;

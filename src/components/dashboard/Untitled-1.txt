@@ -1,0 +1,3 @@
+# 
+
+{"ip":"2401:4900:8819:b880:8559:ee78:208f:a282","success":true,"type":"IPv6","continent":"Asia","continent_code":"AS","country":"India","country_code":"IN","region":"Rajasthan","region_code":"RJ","city":"Barmer","latitude":25.7531537,"longitude":71.4180622,"is_eu":false,"postal":"344001","calling_code":"91","capital":"New Delhi","borders":"BD,BT,CN,MM,NP,PK","flag":{"img":"https://cdn.ipwhois.io/flags/in.svg","emoji":"🇮🇳","emoji_unicode":"U+1F1EE U+1F1F3"},"connection":{"asn":24560,"org":"Bharti Airtel Limited","isp":"Bharti Airtel Limited","domain":"airtel.in"},"timezone":{"id":"Asia/Calcutta","abbr":"IST","is_dst":false,"offset":19800,"utc":"+05:30"},"readme":"https://ipwhois.io/docs"}

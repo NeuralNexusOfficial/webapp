@@ -50,8 +50,8 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
   }
 
   return (
-    <div className="card-cyber p-6">
-      <h2 className="text-white text-xl font-bold mb-6">
+    <div className="card-cyber p-4 sm:p-6">
+      <h2 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-6">
         Judge Scoring
       </h2>
 
@@ -61,7 +61,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         <label>
           <span className="text-xs text-white/40 uppercase mb-1 block">Innovation (0-10)</span>
           <input
@@ -115,11 +115,11 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
         </label>
       </div>
 
-      <label className="block mt-5">
+      <label className="block mt-4 sm:mt-5">
         <span className="text-xs text-white/40 uppercase mb-1 block">Comments (Optional)</span>
         <textarea
           placeholder="Judge comments..."
-          className="input-nn min-h-[140px]"
+          className="input-nn min-h-[120px] sm:min-h-[140px] w-full"
           value={scores.comments}
           onChange={(e) => handleChange('comments', e.target.value)}
         />
@@ -128,7 +128,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
       <button
         onClick={handleSave}
         disabled={loading}
-        className={`btn-pill btn-primary mt-6 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`btn-pill btn-primary mt-5 sm:mt-6 w-full sm:w-auto ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {loading ? 'Saving...' : 'Save Scores →'}
       </button>
