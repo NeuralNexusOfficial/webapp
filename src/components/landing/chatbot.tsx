@@ -11,8 +11,8 @@ type Message = {
 type ChatSize = 'default' | 'medium' | 'fullscreen';
 
 const SIZE_CONFIG: Record<ChatSize, string> = {
-  default: 'fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[360px] h-[calc(100vh-7rem)] sm:h-[520px] rounded-2xl',
-  medium: 'fixed bottom-20 sm:bottom-16 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[480px] h-[calc(100vh-7rem)] sm:h-[680px] rounded-2xl',
+  default: 'fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[360px] h-[calc(100dvh-7rem)] sm:h-[520px] rounded-2xl',
+  medium: 'fixed bottom-20 sm:bottom-16 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[480px] h-[calc(100dvh-7rem)] sm:h-[680px] rounded-2xl',
   fullscreen: 'fixed inset-4 w-auto h-auto rounded-2xl',
 };
 

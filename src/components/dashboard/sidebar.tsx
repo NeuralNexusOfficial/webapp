@@ -38,13 +38,17 @@ export default function Sidebar() {
   const [email, setEmail] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   // Load user identity on mount
   useEffect(() => {
     const supabase = createClient();
 
     supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return;
+      if (!user) {
+        setIsLoadingUser(false);
+        return;
+      }
       setEmail(user.email ?? null);
 
       // Fetch role via server action (bypasses RLS issues)
@@ -67,6 +71,10 @@ export default function Sidebar() {
       } else {
         setFirstName(user.email?.split("@")[0] ?? null);
       }
+
+      setIsLoadingUser(false);
+    }).catch(() => {
+      setIsLoadingUser(false);
     });
   }, []);
 
@@ -180,7 +188,7 @@ export default function Sidebar() {
             {/* Name + email */}
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white/80 truncate">
-                {firstName ?? "Hacker"}
+                {isLoadingUser ? "…" : (firstName ?? "Hacker")}
               </p>
               <p className="text-[10px] text-white/30 truncate">
                 {email ?? "…"}
