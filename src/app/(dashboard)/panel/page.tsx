@@ -27,15 +27,15 @@ export default function JudgeDashboard() {
     useState<SubmissionWithExtras | null>(null);
 
   const [innovation, setInnovation] =
-    useState<number | ''>(1);
+    useState<number>(0);
 
   const [technical, setTechnical] =
-    useState<number | ''>(1);
+    useState<number>(0);
 
-  const [uiUx, setUiUx] = useState<number | ''>(1);
+  const [uiUx, setUiUx] = useState<number>(0);
 
   const [scalability, setScalability] =
-    useState<number | ''>(1);
+    useState<number>(0);
 
   const [comments, setComments] =
     useState('');
@@ -88,10 +88,10 @@ export default function JudgeDashboard() {
       setScalability(submission.judge_score.scalability_score);
       setComments(submission.judge_score.comments || '');
     } else {
-      setInnovation(1);
-      setTechnical(1);
-      setUiUx(1);
-      setScalability(1);
+      setInnovation(0);
+      setTechnical(0);
+      setUiUx(0);
+      setScalability(0);
       setComments('');
     }
   }
@@ -104,12 +104,12 @@ export default function JudgeDashboard() {
     if (!selected) return;
 
     if (
-      innovation === '' ||
-      technical === '' ||
-      uiUx === '' ||
-      scalability === ''
+      innovation < 0 || innovation > 10 ||
+      technical < 0 || technical > 10 ||
+      uiUx < 0 || uiUx > 10 ||
+      scalability < 0 || scalability > 10
     ) {
-      showToast('All scores must be between 1 and 10.', false);
+      showToast('All scores must be between 0 and 10.', false);
       return;
     }
 
@@ -404,77 +404,97 @@ export default function JudgeDashboard() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                     <div>
-                      <label className="text-xs uppercase text-white/30 mb-2 block">
-                        Innovation
-                      </label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-xs uppercase text-white/30 block">
+                          Innovation
+                        </label>
+                        <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                          {innovation}
+                        </span>
+                      </div>
 
                       <input
-                        type="number"
-                        min="1"
+                        type="range"
+                        min="0"
                         max="10"
+                        step="1"
                         value={innovation}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          setInnovation(isNaN(val) ? '' : val);
+                          setInnovation(parseInt(e.target.value));
                         }}
-                        className="input-nn w-full"
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-xs uppercase text-white/30 mb-2 block">
-                        Technical
-                      </label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-xs uppercase text-white/30 block">
+                          Technical
+                        </label>
+                        <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                          {technical}
+                        </span>
+                      </div>
 
                       <input
-                        type="number"
-                        min="1"
+                        type="range"
+                        min="0"
                         max="10"
+                        step="1"
                         value={technical}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          setTechnical(isNaN(val) ? '' : val);
+                          setTechnical(parseInt(e.target.value));
                         }}
-                        className="input-nn w-full"
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-xs uppercase text-white/30 mb-2 block">
-                        UI / UX
-                      </label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-xs uppercase text-white/30 block">
+                          UI / UX
+                        </label>
+                        <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                          {uiUx}
+                        </span>
+                      </div>
 
                       <input
-                        type="number"
-                        min="1"
+                        type="range"
+                        min="0"
                         max="10"
+                        step="1"
                         value={uiUx}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          setUiUx(isNaN(val) ? '' : val);
+                          setUiUx(parseInt(e.target.value));
                         }}
-                        className="input-nn w-full"
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-xs uppercase text-white/30 mb-2 block">
-                        Scalability
-                      </label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-xs uppercase text-white/30 block">
+                          Scalability
+                        </label>
+                        <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                          {scalability}
+                        </span>
+                      </div>
 
                       <input
-                        type="number"
-                        min="1"
+                        type="range"
+                        min="0"
                         max="10"
+                        step="1"
                         value={scalability}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          setScalability(isNaN(val) ? '' : val);
+                          setScalability(parseInt(e.target.value));
                         }}
-                        className="input-nn w-full"
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
                         required
                       />
                     </div>

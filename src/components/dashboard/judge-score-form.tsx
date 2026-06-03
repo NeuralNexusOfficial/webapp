@@ -5,10 +5,10 @@ import { scoreSubmission } from '@/app/actions/judging';
 
 export default function JudgeScoreForm({ submissionId, existingScore }: { submissionId: string, existingScore: any }) {
   const [scores, setScores] = useState({
-    innovation: existingScore?.innovation_score?.toString() || '',
-    technical: existingScore?.technical_score?.toString() || '',
-    uiux: existingScore?.ui_ux_score?.toString() || '',
-    scalability: existingScore?.scalability_score?.toString() || '',
+    innovation: existingScore?.innovation_score?.toString() || '0',
+    technical: existingScore?.technical_score?.toString() || '0',
+    uiux: existingScore?.ui_ux_score?.toString() || '0',
+    scalability: existingScore?.scalability_score?.toString() || '0',
     comments: existingScore?.comments || '',
   });
   
@@ -26,10 +26,10 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
     setLoading(true);
     setToast(null);
 
-    const innovation = parseInt(scores.innovation) || 0;
-    const technical = parseInt(scores.technical) || 0;
-    const uiux = parseInt(scores.uiux) || 0;
-    const scalability = parseInt(scores.scalability) || 0;
+    const innovation = parseInt(scores.innovation) ?? 5;
+    const technical = parseInt(scores.technical) ?? 5;
+    const uiux = parseInt(scores.uiux) ?? 5;
+    const scalability = parseInt(scores.scalability) ?? 5;
 
     const res = await scoreSubmission(
       submissionId,
@@ -62,53 +62,73 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-        <label>
-          <span className="text-xs text-white/40 uppercase mb-1 block">Innovation (0-10)</span>
+        <label className="block">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-white/40 uppercase tracking-wider">Innovation (0-10)</span>
+            <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+              {scores.innovation}
+            </span>
+          </div>
           <input
-            type="number"
+            type="range"
             min="0"
             max="10"
-            placeholder="Innovation Score"
-            className="input-nn"
+            step="1"
+            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
             value={scores.innovation}
             onChange={(e) => handleChange('innovation', e.target.value)}
           />
         </label>
 
-        <label>
-          <span className="text-xs text-white/40 uppercase mb-1 block">Technical (0-10)</span>
+        <label className="block">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-white/40 uppercase tracking-wider">Technical (0-10)</span>
+            <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+              {scores.technical}
+            </span>
+          </div>
           <input
-            type="number"
+            type="range"
             min="0"
             max="10"
-            placeholder="Technical Score"
-            className="input-nn"
+            step="1"
+            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
             value={scores.technical}
             onChange={(e) => handleChange('technical', e.target.value)}
           />
         </label>
 
-        <label>
-          <span className="text-xs text-white/40 uppercase mb-1 block">UI/UX (0-10)</span>
+        <label className="block">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-white/40 uppercase tracking-wider">UI/UX (0-10)</span>
+            <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+              {scores.uiux}
+            </span>
+          </div>
           <input
-            type="number"
+            type="range"
             min="0"
             max="10"
-            placeholder="UI/UX Score"
-            className="input-nn"
+            step="1"
+            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
             value={scores.uiux}
             onChange={(e) => handleChange('uiux', e.target.value)}
           />
         </label>
 
-        <label>
-          <span className="text-xs text-white/40 uppercase mb-1 block">Scalability (0-10)</span>
+        <label className="block">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-white/40 uppercase tracking-wider">Scalability (0-10)</span>
+            <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+              {scores.scalability}
+            </span>
+          </div>
           <input
-            type="number"
+            type="range"
             min="0"
             max="10"
-            placeholder="Scalability Score"
-            className="input-nn"
+            step="1"
+            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
             value={scores.scalability}
             onChange={(e) => handleChange('scalability', e.target.value)}
           />

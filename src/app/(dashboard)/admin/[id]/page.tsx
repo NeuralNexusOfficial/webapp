@@ -3,9 +3,11 @@
 import { useParams } from 'next/navigation';
 import Sidebar from '@/components/dashboard/sidebar';
 import { submissions } from '@/lib/mock-admin-data';
+import { useState } from 'react';
 
 export default function AdminSubmissionPage() {
   const params = useParams();
+  const [score, setScore] = useState(0);
 
   const submission =
     submissions.find(
@@ -70,14 +72,23 @@ export default function AdminSubmissionPage() {
 
           <div className="card-cyber p-6">
 
-            <h2 className="text-white text-xl font-bold mb-4">
-              Judge Score
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-white text-xl font-bold">
+                Judge Score
+              </h2>
+              <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                {score}
+              </span>
+            </div>
 
             <input
-              type="number"
-              placeholder="Enter score"
-              className="input-nn mb-4"
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              value={score}
+              onChange={(e) => setScore(parseInt(e.target.value))}
+              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-4 focus:outline-none"
             />
 
             <textarea

@@ -14,10 +14,10 @@ export default function JudgeSubmissionPage() {
     );
 
   const [scores, setScores] = useState({
-    innovation: '',
-    technical: '',
-    uiux: '',
-    scalability: '',
+    innovation: '0',
+    technical: '0',
+    uiux: '0',
+    scalability: '0',
     comments: '',
   });
 
@@ -108,57 +108,97 @@ export default function JudgeSubmissionPage() {
 
           <div className="grid md:grid-cols-2 gap-5">
 
-            <input
-              type="number"
-              placeholder="Innovation Score"
-              className="input-nn"
-              value={scores.innovation}
-              onChange={(e) =>
-                handleChange(
-                  'innovation',
-                  e.target.value
-                )
-              }
-            />
+            <div className="block">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-white/40 uppercase tracking-wider">Innovation</span>
+                <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                  {scores.innovation}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="1"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
+                value={scores.innovation}
+                onChange={(e) =>
+                  handleChange(
+                    'innovation',
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="Technical Score"
-              className="input-nn"
-              value={scores.technical}
-              onChange={(e) =>
-                handleChange(
-                  'technical',
-                  e.target.value
-                )
-              }
-            />
+            <div className="block">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-white/40 uppercase tracking-wider">Technical</span>
+                <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                  {scores.technical}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="1"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
+                value={scores.technical}
+                onChange={(e) =>
+                  handleChange(
+                    'technical',
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="UI/UX Score"
-              className="input-nn"
-              value={scores.uiux}
-              onChange={(e) =>
-                handleChange(
-                  'uiux',
-                  e.target.value
-                )
-              }
-            />
+            <div className="block">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-white/40 uppercase tracking-wider">UI / UX</span>
+                <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                  {scores.uiux}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="1"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
+                value={scores.uiux}
+                onChange={(e) =>
+                  handleChange(
+                    'uiux',
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="Scalability Score"
-              className="input-nn"
-              value={scores.scalability}
-              onChange={(e) =>
-                handleChange(
-                  'scalability',
-                  e.target.value
-                )
-              }
-            />
+            <div className="block">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-white/40 uppercase tracking-wider">Scalability</span>
+                <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
+                  {scores.scalability}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="1"
+                className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white block my-3 focus:outline-none"
+                value={scores.scalability}
+                onChange={(e) =>
+                  handleChange(
+                    'scalability',
+                    e.target.value
+                  )
+                }
+              />
+            </div>
 
           </div>
 
