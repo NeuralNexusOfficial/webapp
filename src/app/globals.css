@@ -39,20 +39,13 @@ body {
 }
 
 /* ── Cyber Card ─────────────────────────────────────────────────────────────── */
-/* AngelHack-style card with diagonal corner cuts */
+/* Standard, clean rounded rectangle card style */
 .card-cyber {
   background: var(--bg-card);
   border: 1px solid var(--border);
   box-shadow: var(--glow);
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
-  clip-path: polygon(
-    1.5rem 0%,
-    100% 0%,
-    100% calc(100% - 1.5rem),
-    calc(100% - 1.5rem) 100%,
-    0% 100%,
-    0% 1.5rem
-  );
+  border-radius: var(--radius-card);
 }
 .card-cyber:hover {
   border-color: var(--border-hover);
