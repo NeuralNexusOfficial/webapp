@@ -27,16 +27,16 @@ export default function AdminSubmissionPage() {
 
       <Sidebar />
 
-      <section className="flex-1 overflow-y-auto p-6 md:p-10">
+      <section className="flex-1 overflow-y-auto pt-16 px-4 pb-6 md:pt-10 md:px-10 md:pb-10">
 
-        <div className="mb-10">
+        <div className="mb-8 md:mb-10">
 
-          <p className="text-white/30 text-sm mb-2">
+          <p className="text-white/30 text-xs md:text-sm mb-2">
             {submission.team}
           </p>
 
           <h1
-            className="text-4xl font-bold text-white"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-white break-words"
             style={{
               fontFamily: 'var(--font-display)',
             }}
@@ -46,14 +46,14 @@ export default function AdminSubmissionPage() {
 
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
 
-          <div className="card-cyber p-6">
-            <h2 className="text-white text-xl font-bold mb-4">
+          <div className="card-cyber p-4 md:p-6">
+            <h2 className="text-white text-lg md:text-xl font-bold mb-3 md:mb-4">
               Submission Details
             </h2>
 
-            <div className="space-y-3 text-white/60">
+            <div className="space-y-2 md:space-y-3 text-white/60 text-sm md:text-base">
 
               <p>
                 Track:
@@ -70,10 +70,10 @@ export default function AdminSubmissionPage() {
             </div>
           </div>
 
-          <div className="card-cyber p-6">
+          <div className="card-cyber p-4 md:p-6">
 
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-white text-xl font-bold">
+            <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
+              <h2 className="text-white text-lg md:text-xl font-bold">
                 Judge Score
               </h2>
               <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
@@ -93,10 +93,10 @@ export default function AdminSubmissionPage() {
 
             <textarea
               placeholder="Judge notes..."
-              className="input-nn min-h-[120px]"
+              className="input-nn min-h-[100px] md:min-h-[120px]"
             />
 
-            <button className="btn-pill btn-primary mt-5">
+            <button className="btn-pill btn-primary mt-4 md:mt-5 w-full sm:w-auto justify-center">
               Save Score →
             </button>
 

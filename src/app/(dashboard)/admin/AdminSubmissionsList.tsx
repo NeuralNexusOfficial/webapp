@@ -105,18 +105,16 @@ export default function AdminSubmissionsList({
                   href={`/admin/submissions/${submission.id}`}
                   className="block group"
                 >
-                  <div className="card-cyber p-6 hover:border-white/20 transition">
-                    <div className="flex items-start justify-between gap-6">
-                      <div>
-                        <p className="text-white/30 text-sm mb-2">
+                  <div className="card-cyber p-4 md:p-6 hover:border-white/20 transition overflow-hidden">
+                    <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-6">
+                      <div className="flex-1">
+                        <p className="text-white/30 text-sm mb-1">
                           {submission.team_name}
                         </p>
-                        <h2
-                          className="text-2xl font-bold text-white group-hover:text-blue-400 transition"
-                          style={{ fontFamily: 'var(--font-display)' }}
-                        >
+                        <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors truncate" style={{ fontFamily: 'var(--font-display)' }} title={submission.title}>
                           {submission.title}
-                        </h2>
+                        </h3>
+
                         <div className="flex items-center gap-3 mt-3">
                           <div className="tag-label">{submission.track}</div>
                           <div className="tag-label">{submission.status}</div>
@@ -127,7 +125,7 @@ export default function AdminSubmissionsList({
                           )}
                         </div>
                       </div>
-                      <div className="text-white/30 text-sm group-hover:text-blue-400 transition shrink-0">
+                      <div className="text-white/30 text-sm group-hover:text-blue-400 transition shrink-0 md:mt-2 whitespace-nowrap">
                         View Details →
                       </div>
                     </div>
