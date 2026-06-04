@@ -7,7 +7,7 @@ import {
   scoreSubmission,
 } from '@/app/actions/judging';
 import { Submission, Score } from '@/types';
-import { Inbox, X } from 'lucide-react';
+import { Inbox, X, Filter } from 'lucide-react';
 
 type SubmissionWithExtras = Submission & {
   team_name: string;
@@ -42,24 +42,23 @@ export default function JudgeDashboard() {
   const [innovation, setInnovation] =
     useState<number>(0);
 
-  const [technical, setTechnical] =
-    useState<number>(0);
+  const [technical, setTechnical] = useState<number>(0);
 
   const [uiUx, setUiUx] = useState<number>(0);
 
-  const [scalability, setScalability] =
-    useState<number>(0);
+  const [scalability, setScalability] = useState<number>(0);
 
-  const [comments, setComments] =
-    useState('');
+  const [comments, setComments] = useState('');
 
   const [toast, setToast] = useState<{
     msg: string;
     ok: boolean;
   } | null>(null);
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
+
+  // Filter state for judge panel: all, judged, unjudged
+  const [filter, setFilter] = useState<'all' | 'judged' | 'unjudged'>('all');
 
   useEffect(() => {
     fetchSubmissions();
@@ -160,62 +159,65 @@ export default function JudgeDashboard() {
 
         {/* HEADER */}
 
-        <div className="border-b border-white/[0.06] px-6 sm:px-6 md:px-10 pt-16 pb-5 md:pt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="border-b border-white/[0.06] px-4 sm:px-6 md:px-10 pt-16 pb-5 md:pt-5 space-y-4">
 
-          <div>
+          {/* Title row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1
+                className="text-2xl md:text-3xl font-bold"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                Judge Panel
+              </h1>
+              <p className="text-white/30 text-sm mt-1">
+                Review and score assigned hackathon projects
+              </p>
+            </div>
 
-            <h1
-              className="text-2xl md:text-3xl font-bold"
-              style={{
-                fontFamily:
-                  'var(--font-display)',
-              }}
-            >
-              Judge Panel
-            </h1>
-
-            <p className="text-white/30 text-sm mt-1">
-              Review and score assigned hackathon projects
-            </p>
-
-          </div>
-
-          {/* Stats — visible on all screens */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
-            <div className="flex items-center gap-4 sm:gap-6">
+            {/* Stats + Progress + Filter */}
+            <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+              {/* Assigned */}
               <div>
-                <p className="text-xs uppercase text-white/30 tracking-widest">
-                  Assigned
-                </p>
-                <p className="text-xl sm:text-2xl font-bold">
-                  {submissions.length}
-                </p>
+                <p className="text-[10px] sm:text-xs uppercase text-white/30 tracking-widest">Assigned</p>
+                <p className="text-lg sm:text-2xl font-bold">{submissions.length}</p>
               </div>
 
               <div className="h-8 w-px bg-white/10" />
 
+              {/* Scored */}
               <div>
-                <p className="text-xs uppercase text-white/30 tracking-widest">
-                  Scored
+                <p className="text-[10px] sm:text-xs uppercase text-white/30 tracking-widest">Scored</p>
+                <p className="text-lg sm:text-2xl font-bold text-white">
+                  {submissions.filter((s) => s.is_scored).length}
                 </p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {
-                    submissions.filter(
-                      (s) => s.is_scored
-                    ).length
-                  }
-                </p>
+              </div>
+
+              {/* Progress bar */}
+              {submissions.length > 0 && (
+                <div className="w-24 sm:w-32 lg:w-40 bg-white/10 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${(submissions.filter((s) => s.is_scored).length / submissions.length) * 100}%` }}
+                  />
+                </div>
+              )}
+
+              {/* Filter Dropdown */}
+              <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+                <Filter size={16} className="text-white/50 shrink-0" />
+                <select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value as typeof filter)}
+                  className="bg-white/5 text-white text-sm border border-white/10 rounded-lg px-3 py-1.5 focus:outline-none focus:border-white/30 transition-colors cursor-pointer appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5l3 3 3-3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', paddingRight: '28px' }}
+                >
+                  <option value="all">All</option>
+                  <option value="judged">Judged</option>
+                  <option value="unjudged">Unjudged</option>
+                </select>
               </div>
             </div>
-
-            {submissions.length > 0 && (
-              <div className="w-32 lg:w-40 bg-white/10 rounded-full h-1.5 overflow-hidden">
-                <div 
-                  className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${(submissions.filter((s) => s.is_scored).length / submissions.length) * 100}%` }}
-                />
-              </div>
-            )}
           </div>
 
         </div>
@@ -257,7 +259,7 @@ export default function JudgeDashboard() {
           ) : (
             <div className="grid gap-5">
 
-              {submissions.map((s) => (
+              {(filter === 'all' ? submissions : filter === 'judged' ? submissions.filter(s => s.is_scored) : submissions.filter(s => !s.is_scored)).map((s) => (
 
                 <div
                   key={s.id}
