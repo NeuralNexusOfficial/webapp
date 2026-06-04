@@ -288,7 +288,7 @@ export default function SubmitPage() {
 
       <section className="flex-1 overflow-y-auto min-w-0">
         {/* Top bar */}
-        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+        <div className="border-b border-white/[0.06] px-6 sm:px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <div className="pl-10 md:pl-0">
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Submit Project
@@ -304,7 +304,7 @@ export default function SubmitPage() {
         <div className="p-4 sm:p-6 md:p-10 space-y-8 max-w-3xl mx-auto w-full">
 
           {role === 'ADMIN' || role === 'JUDGE' ? (
-            <div className="card-cyber p-8 text-center border-red-500/30">
+            <div className="card-cyber p-5 sm:p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-400" />
               </div>
@@ -317,7 +317,7 @@ export default function SubmitPage() {
               </p>
             </div>
           ) : isTeam === false ? (
-            <div className="card-cyber p-8 text-center border-red-500/30">
+            <div className="card-cyber p-5 sm:p-8 text-center border-red-500/30">
               <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-400" />
               </div>
@@ -376,7 +376,7 @@ export default function SubmitPage() {
                 </div>
 
                 {loadingExisting ? (
-                  <div className="card-cyber p-10 flex items-center justify-center text-white/30 text-sm">
+                  <div className="card-cyber p-5 sm:p-10 flex items-center justify-center text-white/30 text-sm">
                     Loading…
                   </div>
                 ) : (
@@ -611,7 +611,7 @@ export default function SubmitPage() {
                       ) : (
                         <div
                           onClick={() => !isLocked && !isUploading && fileInputRef.current?.click()}
-                          className={`border-2 border-dashed rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center gap-3 text-center transition-all ${
+                          className={`border-2 border-dashed rounded-xl p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center gap-3 text-center transition-all ${
                             isLocked || isUploading
                               ? 'border-white/[0.06] opacity-30 cursor-not-allowed'
                               : 'border-white/[0.12] hover:border-white/30 cursor-pointer hover:bg-white/[0.02]'

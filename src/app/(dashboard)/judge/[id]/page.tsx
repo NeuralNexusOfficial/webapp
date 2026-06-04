@@ -23,7 +23,7 @@ export default function JudgeSubmissionPage() {
 
   if (!submission) {
     return (
-      <div className="p-10 text-white">
+      <div className="p-6 sm:p-6 md:p-10 text-white">
         Submission not found.
       </div>
     );
@@ -50,7 +50,7 @@ export default function JudgeSubmissionPage() {
 
       <Sidebar />
 
-      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
+      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-6 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
 
         {/* HEADER */}
 
@@ -74,7 +74,7 @@ export default function JudgeSubmissionPage() {
 
         {/* DETAILS */}
 
-        <div className="card-cyber p-6 mb-8">
+        <div className="card-cyber p-4 sm:p-6 mb-8">
 
           <h2 className="text-white text-xl font-bold mb-4">
             Submission Details
@@ -100,7 +100,7 @@ export default function JudgeSubmissionPage() {
 
         {/* SCORING */}
 
-        <div className="card-cyber p-6">
+        <div className="card-cyber p-4 sm:p-6">
 
           <h2 className="text-white text-xl font-bold mb-6">
             Judge Scoring

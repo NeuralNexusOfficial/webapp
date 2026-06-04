@@ -9,7 +9,7 @@ export default function Stats() {
   ];
 
   return (
-    <section className="py-8 px-6">
+    <section className="py-8 px-6 sm:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="glow-line mb-16" />
 
@@ -17,7 +17,7 @@ export default function Stats() {
           {stats.map((item) => (
             <div
               key={item.label}
-              className="bg-black/50 hover:bg-white/[0.04] transition-colors p-10 text-center"
+              className="bg-black/50 hover:bg-white/[0.04] transition-colors p-6 sm:p-10 text-center"
             >
               <p
                 className="text-4xl md:text-5xl font-bold mb-2 text-white"

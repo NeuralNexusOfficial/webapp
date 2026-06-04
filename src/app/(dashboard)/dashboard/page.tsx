@@ -45,7 +45,7 @@ export default function DashboardPage() {
       {/* Main content — offset on mobile to account for fixed sidebar toggle */}
       <section className="flex-1 overflow-y-auto min-w-0">
         {/* Top bar */}
-        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex items-center justify-between">
+        <div className="border-b border-white/[0.06] px-6 sm:px-6 md:px-10 py-5 flex items-center justify-between">
           {/* Left spacer for hamburger on mobile */}
           <div className="pl-10 md:pl-0">
             <h1
@@ -63,7 +63,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Content */}
-        <div className="p-5 md:p-10 space-y-8 md:space-y-12">
+        <div className="p-6 md:p-10 space-y-8 md:space-y-12">
 
           {/* Welcome card */}
           <div className="card-cyber p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">

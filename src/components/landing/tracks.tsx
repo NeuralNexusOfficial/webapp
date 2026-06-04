@@ -50,13 +50,13 @@ export default function Tracks() {
   ];
 
   return (
-    <section id="tracks" className="py-28 px-6">
+    <section id="tracks" className="py-20 sm:py-28 px-6 sm:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
           <div className="tag-label mb-4">Domains</div>
           <h2
-            className="text-5xl md:text-6xl font-bold text-white"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Choose Your Arena
@@ -72,7 +72,7 @@ export default function Tracks() {
           {tracks.map((track) => (
             <div
               key={track.tag}
-              className={`relative group card-cyber p-7 flex flex-col gap-4 bg-gradient-to-br ${track.color} border ${track.border} transition-all duration-300`}
+              className={`relative group card-cyber p-5 sm:p-7 flex flex-col gap-4 bg-gradient-to-br ${track.color} border ${track.border} transition-all duration-300`}
             >
               {/* Icon */}
               <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">{track.icon}</div>
@@ -109,7 +109,7 @@ export default function Tracks() {
           ))}
 
           {/* Prize pool callout — spans remaining grid space */}
-          <div className="card-cyber p-7 flex flex-col justify-between gap-6 border-white/10 hover:border-white/20 transition-all duration-300 md:col-span-2 lg:col-span-3 lg:flex-row lg:items-center">
+          <div className="card-cyber p-5 sm:p-7 flex flex-col justify-between gap-6 border-white/10 hover:border-white/20 transition-all duration-300 md:col-span-2 lg:col-span-3 lg:flex-row lg:items-center">
             <div>
               <p className="text-xs uppercase tracking-widest text-white/30 font-semibold mb-2">
                 Total Prize Pool

@@ -61,7 +61,7 @@ function LoginForm() {
         </div>
 
         {/* Card */}
-        <form onSubmit={handleLogin} className="card-cyber p-8 space-y-5">
+        <form onSubmit={handleLogin} className="card-cyber p-5 sm:p-8 space-y-5">
           <div className="tag-label mb-2 w-fit">Welcome Back</div>
           <h1
             className="text-2xl font-bold text-white"

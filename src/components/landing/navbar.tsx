@@ -68,7 +68,7 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-8 py-4">
         {/* Logo */}
         <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-3">
           <img src="/aot_white.png" alt="AOT Logo" className="h-8 w-auto object-contain" />
@@ -150,7 +150,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden border-t border-white/[0.06] bg-black/95 backdrop-blur-xl px-6 py-5 space-y-4">
+        <div className="lg:hidden border-t border-white/[0.06] bg-black/95 backdrop-blur-xl px-6 sm:px-8 py-5 space-y-4">
           <Link
             href="/#how-it-works"
             onClick={() => setMenuOpen(false)}

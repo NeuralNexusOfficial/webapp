@@ -18,7 +18,7 @@ export default async function Hero() {
   }
   
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 sm:px-8 pt-24 overflow-hidden">
 
       {/* Radial glow background */}
       <div
@@ -57,7 +57,7 @@ export default async function Hero() {
 
         {/* Headline */}
         <h1
-          className="text-6xl md:text-8xl font-bold leading-[1.02] tracking-tight mb-6 text-gradient"
+          className="text-4xl sm:text-6xl md:text-8xl font-bold leading-[1.02] tracking-tight mb-6 text-gradient"
           style={{ fontFamily: "var(--font-display)" }}
         >
           Build. Compete.

@@ -227,7 +227,7 @@ export default function SettingsPage() {
   return (
     <main className="min-h-screen flex bg-black text-white">
       <Sidebar />
-      <section className="flex-1 overflow-y-auto min-w-0 p-8">
+      <section className="flex-1 overflow-y-auto min-w-0 p-6 sm:p-6 md:p-10">
         <div className="max-w-xl mx-auto">
           <h1
           className="text-3xl font-bold mb-6 tracking-wide"
@@ -254,7 +254,7 @@ export default function SettingsPage() {
           )}
         </AnimatePresence>
 
-        <div className="card-cyber p-6 md:p-8 relative overflow-hidden">
+        <div className="card-cyber p-4 sm:p-6 md:p-8 relative overflow-hidden">
           {/* Subtle design element */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.01] pointer-events-none rounded-full blur-xl" />
 
@@ -525,7 +525,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Danger Zone ─────────────────────────────── */}
-        <div className="card-cyber p-6 md:p-8 mt-6 border-red-500/20">
+        <div className="card-cyber p-4 sm:p-6 md:p-8 mt-6 border-red-500/20">
           <div className="flex items-center gap-3 mb-4 pb-3 border-b border-red-500/10">
             <AlertTriangle className="w-5 h-5 text-red-400" />
             <div>
@@ -551,7 +551,7 @@ export default function SettingsPage() {
         {/* Delete confirmation modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="card-cyber p-6 md:p-8 max-w-md w-full border-red-500/30">
+            <div className="card-cyber p-5 sm:p-8 max-w-md w-full border-red-500/30">
               <div className="flex items-start gap-4 mb-6">
                 <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 shrink-0">
                   <AlertTriangle className="w-5 h-5" />

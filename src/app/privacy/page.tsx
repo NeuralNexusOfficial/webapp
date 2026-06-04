@@ -11,15 +11,15 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-white/20 selection:text-white">
       <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
+      <div className="pt-32 pb-20 px-6 sm:px-8 max-w-4xl mx-auto min-h-screen">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
           Privacy Policy
         </h1>
         <p className="text-sm text-white/30 mb-10">Last updated: May 29, 2026</p>
 
         <div className="space-y-8 text-white/70 leading-relaxed">
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
             <p>
               Welcome to AOT Hackathon (&quot;Architects of Tomorrow&quot;), organized by Fraylon (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;).
@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">2. Information We Collect</h2>
             <p className="mb-3">We collect the following types of information:</p>
             <ul className="list-disc pl-5 space-y-2">
@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">3. How We Use Your Information</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>To create and manage your account and team registrations.</li>
@@ -57,7 +57,7 @@ export default function PrivacyPolicyPage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">4. Data Sharing &amp; Third Parties</h2>
             <p className="mb-3">We do not sell your personal information. We may share your data with:</p>
             <ul className="list-disc pl-5 space-y-2">
@@ -68,7 +68,7 @@ export default function PrivacyPolicyPage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">5. Data Security</h2>
             <p>
               We implement industry-standard security measures to protect your personal information. Your data
@@ -81,7 +81,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">6. Data Retention</h2>
             <p>
               We retain your personal information for as long as your account is active or as needed to provide
@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">7. Your Rights</h2>
             <p className="mb-3">Depending on your jurisdiction, you may have the right to:</p>
             <ul className="list-disc pl-5 space-y-2">
@@ -106,7 +106,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">8. Cookies &amp; Tracking</h2>
             <p>
               The Platform uses essential cookies for authentication and session management. We do not use
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">9. Children&apos;s Privacy</h2>
             <p>
               The Platform is not intended for individuals under the age of 13. We do not knowingly collect
@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">10. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy from time to time. We will notify registered users of material
@@ -133,7 +133,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">11. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy or wish to exercise your data rights,

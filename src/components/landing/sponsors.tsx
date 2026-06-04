@@ -22,13 +22,13 @@ export default function Sponsors() {
   ];
 
   return (
-    <section id="sponsors" className="py-28 px-6">
+    <section id="sponsors" className="py-20 sm:py-28 px-6 sm:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="tag-label mb-4 mx-auto w-fit">Sponsors & Partners</div>
           <h2
-            className="text-5xl md:text-6xl font-bold text-white"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Backed By The Best
@@ -50,7 +50,7 @@ export default function Sponsors() {
             {goldSponsors.map((s) => (
               <div
                 key={s.name}
-                className="group card-cyber p-7 flex flex-col items-center text-center gap-3
+                className="group card-cyber p-5 sm:p-7 flex flex-col items-center text-center gap-3
                            border-amber-500/20 hover:border-amber-500/50 bg-gradient-to-br from-amber-500/[0.04] to-transparent
                            transition-all duration-300"
               >
@@ -77,7 +77,7 @@ export default function Sponsors() {
             {silverSponsors.map((s) => (
               <div
                 key={s.name}
-                className="group card-cyber p-5 flex flex-col items-center text-center gap-3
+                className="group card-cyber p-4 sm:p-5 flex flex-col items-center text-center gap-3
                            border-white/10 hover:border-white/30 bg-gradient-to-br from-white/[0.02] to-transparent
                            transition-all duration-300"
               >
@@ -114,7 +114,7 @@ export default function Sponsors() {
         </div>
 
         {/* Become a sponsor CTA */}
-        <div className="mt-14 card-cyber p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-white/10 relative z-10">
+        <div className="mt-14 card-cyber p-5 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-white/10 relative z-10">
           <div>
             <p className="text-white font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>
               Become a Sponsor

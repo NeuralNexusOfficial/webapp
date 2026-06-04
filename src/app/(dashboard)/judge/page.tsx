@@ -146,7 +146,7 @@ export default function JudgeDashboard() {
 
         {/* HEADER */}
 
-        <div className="border-b border-white/[0.06] px-4 sm:px-6 md:px-10 pt-16 pb-5 md:pt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="border-b border-white/[0.06] px-6 sm:px-6 md:px-10 pt-16 pb-5 md:pt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
           <div>
 
@@ -218,11 +218,11 @@ export default function JudgeDashboard() {
           {/* LOADING */}
 
           {loading ? (
-            <div className="card-cyber p-20 flex items-center justify-center text-white/30">
+            <div className="card-cyber p-6 sm:p-10 md:p-20 flex items-center justify-center text-white/30">
               Loading submissions...
             </div>
           ) : submissions.length === 0 ? (
-            <div className="card-cyber p-20 flex flex-col items-center justify-center text-center text-white/30">
+            <div className="card-cyber p-6 sm:p-10 md:p-20 flex flex-col items-center justify-center text-center text-white/30">
               <span className="text-5xl mb-4">
                 <Inbox className="w-12 h-12 text-white/20" />
               </span>

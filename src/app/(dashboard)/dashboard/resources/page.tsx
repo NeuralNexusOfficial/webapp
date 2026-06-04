@@ -157,7 +157,7 @@ export default function ResourcesPage() {
 
       <section className="flex-1 overflow-y-auto min-w-0">
         {/* Top bar */}
-        <div className="border-b border-white/[0.06] px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+        <div className="border-b border-white/[0.06] px-6 sm:px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <div className="pl-10 md:pl-0">
             <h1 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>
               Resources &amp; Problem Statements
