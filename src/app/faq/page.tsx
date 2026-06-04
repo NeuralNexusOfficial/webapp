@@ -54,7 +54,7 @@ function FAQItem({ question, answer, isOpen, onClick }: { question: string, answ
     <div className="card-cyber border border-white/10 rounded-lg overflow-hidden transition-colors hover:border-white/20">
       <button
         onClick={onClick}
-        className="w-full flex justify-between items-center p-6 text-left focus:outline-none"
+        className="w-full flex justify-between items-center p-5 sm:p-6 text-left focus:outline-none"
       >
         <h3 className="text-xl font-bold text-white pr-4">{question}</h3>
         <motion.div
@@ -73,7 +73,7 @@ function FAQItem({ question, answer, isOpen, onClick }: { question: string, answ
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="px-6 pb-6 pt-0">
+            <div className="px-6 sm:px-8 pb-5 sm:pb-6 pt-0">
               <p className="text-white/70">{answer}</p>
             </div>
           </motion.div>
@@ -93,8 +93,8 @@ export default function FAQPage() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-white/20 selection:text-white">
       <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center" style={{ fontFamily: "var(--font-display)" }}>
+      <div className="pt-32 pb-20 px-6 sm:px-8 max-w-4xl mx-auto min-h-screen">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-center" style={{ fontFamily: "var(--font-display)" }}>
           Frequently Asked Questions
         </h1>
         

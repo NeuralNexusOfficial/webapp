@@ -172,7 +172,7 @@ export default function JudgeManagementClient({
                           transition={{ duration: 0.25, ease: 'easeInOut' }}
                           className="overflow-hidden"
                         >
-                          <div className="px-6 pb-6 pt-0 border-t border-white/[0.06]">
+                          <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 border-t border-white/[0.06]">
                             {/* Assigned Submissions List */}
                             <div className="mt-5 mb-5">
                               <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Assigned Submissions</p>

@@ -27,7 +27,7 @@ export default async function JudgeSubmissionPage({ params }: { params: Promise<
   return (
     <main className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden bg-black">
       <Sidebar />
-      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
+      <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-6 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
         <div className="mb-8">
           <Link href="/panel" className="text-white/50 hover:text-white transition">
             ← Back to Submissions

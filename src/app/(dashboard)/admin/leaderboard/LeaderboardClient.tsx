@@ -166,7 +166,7 @@ export default function LeaderboardClient({
 
       {/* Leaderboard */}
       {filteredEntries.length === 0 ? (
-        <div className="card-cyber p-10 sm:p-16 flex flex-col items-center justify-center text-center">
+        <div className="card-cyber p-5 sm:p-10 md:p-16 flex flex-col items-center justify-center text-center">
           <Trophy className="w-12 h-12 text-white/10 mb-4" />
           <p className="text-white/50 text-lg font-semibold">No scored submissions yet</p>
           <p className="text-white/25 text-sm mt-1">Scores from judges will appear here as a ranked leaderboard.</p>

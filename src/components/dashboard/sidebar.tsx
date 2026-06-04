@@ -14,10 +14,10 @@ type NavItem = {
 };
 
 const userItems: NavItem[] = [
-  { label: "Dashboard",      href: "/dashboard" },
-  { label: "My Team",        href: "/dashboard/team" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "My Team", href: "/dashboard/team" },
   { label: "Submit Project", href: "/dashboard/submit" },
-  { label: "Resources",      href: "/dashboard/resources" },
+  { label: "Resources", href: "/dashboard/resources" },
 ];
 
 const adminItems: NavItem[] = [
@@ -28,7 +28,7 @@ const adminItems: NavItem[] = [
 ];
 
 const judgeItems: NavItem[] = [
-  { label: "Judging",        href: "/panel", match: (p: string) => p.startsWith("/panel") },
+  { label: "Judging", href: "/panel", match: (p: string) => p.startsWith("/panel") },
 ];
 
 export default function Sidebar() {
@@ -157,11 +157,10 @@ export default function Sidebar() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                      active
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${active
                         ? "bg-white text-black"
                         : "text-white/50 hover:text-white hover:bg-white/5"
-                    }`}
+                      }`}
                   >
                     {item.label}
                   </Link>
@@ -199,11 +198,10 @@ export default function Sidebar() {
           <Link
             href="/dashboard/settings"
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${
-              pathname === "/dashboard/settings"
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${pathname === "/dashboard/settings"
                 ? "bg-white text-black"
                 : "text-white/40 hover:text-white hover:bg-white/5"
-            }`}
+              }`}
           >
             <Settings size={15} />
             Settings

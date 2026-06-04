@@ -23,13 +23,13 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-28 px-6">
+    <section id="how-it-works" className="py-20 sm:py-28 px-6 sm:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
           <div className="tag-label mb-4">Process</div>
           <h2
-            className="text-5xl md:text-6xl font-bold text-white"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
             How It Works
@@ -45,7 +45,7 @@ export default function HowItWorks() {
                 <div className="hidden md:block absolute top-8 left-full w-4 h-px bg-white/10 z-10" />
               )}
 
-              <div className="card-cyber p-8 h-full flex flex-col gap-4">
+              <div className="card-cyber p-5 sm:p-8 h-full flex flex-col gap-4">
                 <span
                   className="text-5xl font-bold text-white/[0.4] group-hover:text-white/60 transition-colors"
                   style={{ fontFamily: "var(--font-display)" }}

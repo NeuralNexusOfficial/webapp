@@ -11,15 +11,15 @@ export default function TermsOfServicePage() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-white/20 selection:text-white">
       <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
+      <div className="pt-32 pb-20 px-6 sm:px-8 max-w-4xl mx-auto min-h-screen">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
           Terms of Service
         </h1>
         <p className="text-sm text-white/30 mb-10">Last updated: May 29, 2026</p>
 
         <div className="space-y-8 text-white/70 leading-relaxed">
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Acceptance of Terms</h2>
             <p>
               By accessing or using the AOT Hackathon platform (&quot;Platform&quot;), operated by Fraylon (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;),
@@ -32,7 +32,7 @@ export default function TermsOfServicePage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">2. Eligibility</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>You must be at least 13 years old to create an account. Participants aged 13–17 must have parental or guardian consent.</li>
@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">3. Registration &amp; Payment</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>Participation requires registration and payment of the applicable registration fee based on your chosen track and team type (solo/team).</li>
@@ -53,7 +53,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">4. Teams &amp; Participation</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>Teams can have between 1 and 4 members.</li>
@@ -64,7 +64,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">5. Submissions</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>All submissions must be made before the published deadline. Late submissions will not be accepted.</li>
@@ -75,7 +75,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">6. Intellectual Property</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>You retain ownership of all intellectual property in your submission.</li>
@@ -85,7 +85,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">7. Judging &amp; Prizes</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>Submissions will be evaluated by a panel of judges selected by the organizers.</li>
@@ -96,7 +96,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">8. Code of Conduct</h2>
             <p className="mb-3">All participants must adhere to the following:</p>
             <ul className="list-disc pl-5 space-y-2">
@@ -108,7 +108,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">9. Limitation of Liability</h2>
             <p>
               The Platform is provided &quot;as is&quot; without warranties of any kind, express or implied. We are not liable
@@ -121,7 +121,7 @@ export default function TermsOfServicePage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">10. Disqualification</h2>
             <p className="mb-3">We reserve the right to disqualify any participant or team for:</p>
             <ul className="list-disc pl-5 space-y-2">
@@ -135,7 +135,7 @@ export default function TermsOfServicePage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">11. Governing Law</h2>
             <p>
               These Terms shall be governed by and construed in accordance with the laws of India.
@@ -144,7 +144,7 @@ export default function TermsOfServicePage() {
             </p>
           </section>
 
-          <section className="card-cyber p-8">
+          <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">12. Contact Us</h2>
             <p>
               If you have any questions about these Terms of Service, please contact us at:

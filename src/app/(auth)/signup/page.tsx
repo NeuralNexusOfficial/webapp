@@ -72,7 +72,7 @@ function SignupForm() {
         </div>
 
         {/* Card */}
-        <form onSubmit={handleSignup} className="card-cyber p-8 space-y-5">
+        <form onSubmit={handleSignup} className="card-cyber p-5 sm:p-8 space-y-5">
           <div className="tag-label mb-2 w-fit">New Account</div>
           <h1
             className="text-2xl font-bold text-white"

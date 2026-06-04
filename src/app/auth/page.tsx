@@ -36,7 +36,7 @@ function AuthContent() {
         </div>
 
         {/* Card */}
-        <div className="card-cyber p-8 space-y-4">
+        <div className="card-cyber p-5 sm:p-8 space-y-4">
           <div className="tag-label mb-2 w-fit">Get Started</div>
           <h1
             className="text-2xl font-bold text-white mb-6"

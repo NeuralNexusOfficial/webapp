@@ -16,7 +16,7 @@ export default function AdminSubmissionPage() {
 
   if (!submission) {
     return (
-      <div className="p-10 text-white">
+      <div className="p-6 sm:p-6 md:p-10 text-white">
         Submission not found.
       </div>
     );
@@ -27,7 +27,7 @@ export default function AdminSubmissionPage() {
 
       <Sidebar />
 
-      <section className="flex-1 overflow-y-auto pt-16 px-4 pb-6 md:pt-10 md:px-10 md:pb-10">
+      <section className="flex-1 overflow-y-auto pt-16 px-6 pb-6 md:pt-10 md:px-10 md:pb-10">
 
         <div className="mb-8 md:mb-10">
 
