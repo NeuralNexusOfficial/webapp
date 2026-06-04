@@ -22,18 +22,45 @@ export async function getAllPayments(): Promise<AdminActionResult<Payment[]>> {
     return { success: false, error: 'Access denied' };
   }
   const adminSupabase = createAdminClient();
+
+  // Fetch all team memberships and team names
+  const { data: teamMembers } = await adminSupabase
+    .from('team_members')
+    .select('user_id, teams(name, max_members)');
+
+  const userTeamMap = new Map();
+  if (teamMembers) {
+    for (const member of teamMembers) {
+      if (member.teams) {
+        const teamName = (member.teams as any).name;
+        const maxMembers = (member.teams as any).max_members;
+        const isSolo = maxMembers === 1 || teamName.startsWith('Solo – ');
+        userTeamMap.set(member.user_id, {
+          teamName,
+          type: isSolo ? 'Solo' : 'Team',
+        });
+      }
+    }
+  }
+
   // Join profiles to get full_name (user name)
   const { data, error } = await adminSupabase
     .from('payments')
     .select('*, profiles(full_name)')
     .order('created_at', { ascending: false });
   if (error) return { success: false, error: error.message };
-  // Map to include user_name field and ensure currency has a default
-  const payments = (data as any[]).map((p) => ({
-    ...p,
-    user_name: p.profiles?.full_name ?? null,
-    currency: p.currency || 'INR', // Default to INR if missing
-  }));
+
+  // Map to include user_name, team_name, and registration_type fields
+  const payments = (data as any[]).map((p) => {
+    const teamInfo = userTeamMap.get(p.user_id);
+    return {
+      ...p,
+      user_name: p.profiles?.full_name ?? null,
+      currency: p.currency || 'INR', // Default to INR if missing
+      team_name: teamInfo?.teamName ?? 'N/A',
+      registration_type: teamInfo?.type ?? 'Solo',
+    };
+  });
   return { success: true, data: payments as Payment[] };
 }
 

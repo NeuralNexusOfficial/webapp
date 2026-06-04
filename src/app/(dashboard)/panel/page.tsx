@@ -16,6 +16,20 @@ type SubmissionWithExtras = Submission & {
   judge_score: Score | null;
 };
 
+const getFileExtension = (url: string) => {
+  try {
+    const cleanUrl = url.split('?')[0];
+    const parts = cleanUrl.split('.');
+    if (parts.length > 1) {
+      const ext = parts.pop()?.toUpperCase();
+      if (ext && ext.length <= 4) {
+        return ext;
+      }
+    }
+  } catch (e) {}
+  return 'FILE';
+};
+
 export default function JudgeDashboard() {
   const [submissions, setSubmissions] = useState<
     SubmissionWithExtras[]
@@ -168,32 +182,41 @@ export default function JudgeDashboard() {
           </div>
 
           {/* Stats — visible on all screens */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div>
+                <p className="text-xs uppercase text-white/30 tracking-widest">
+                  Assigned
+                </p>
+                <p className="text-xl sm:text-2xl font-bold">
+                  {submissions.length}
+                </p>
+              </div>
 
-            <div>
-              <p className="text-xs uppercase text-white/30 tracking-widest">
-                Assigned
-              </p>
-              <p className="text-xl sm:text-2xl font-bold">
-                {submissions.length}
-              </p>
+              <div className="h-8 w-px bg-white/10" />
+
+              <div>
+                <p className="text-xs uppercase text-white/30 tracking-widest">
+                  Scored
+                </p>
+                <p className="text-xl sm:text-2xl font-bold text-white">
+                  {
+                    submissions.filter(
+                      (s) => s.is_scored
+                    ).length
+                  }
+                </p>
+              </div>
             </div>
 
-            <div className="h-8 w-px bg-white/10" />
-
-            <div>
-              <p className="text-xs uppercase text-white/30 tracking-widest">
-                Scored
-              </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-400">
-                {
-                  submissions.filter(
-                    (s) => s.is_scored
-                  ).length
-                }
-              </p>
-            </div>
-
+            {submissions.length > 0 && (
+              <div className="w-32 lg:w-40 bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${(submissions.filter((s) => s.is_scored).length / submissions.length) * 100}%` }}
+                />
+              </div>
+            )}
           </div>
 
         </div>
@@ -319,7 +342,7 @@ export default function JudgeDashboard() {
                           rel="noreferrer"
                           className="btn-outline text-center text-sm flex-1 lg:flex-none"
                         >
-                          View File
+                          View File ({getFileExtension(s.file_url)})
                         </a>
                       )}
 
@@ -331,9 +354,12 @@ export default function JudgeDashboard() {
                       </Link>
 
                       <button
-                        onClick={() =>
-                          openScoringModal(s)
-                        }
+                        onClick={() => {
+                          if (s.is_scored && !window.confirm('Are you sure you want to re-score this project? The existing scores will be overwritten.')) {
+                            return;
+                          }
+                          openScoringModal(s);
+                        }}
                         className={`btn-pill w-full ${s.is_scored
                             ? 'btn-outline border-emerald-500/30 text-emerald-400'
                             : 'btn-primary'

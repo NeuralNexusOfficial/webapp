@@ -42,6 +42,9 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
 
     if (res.success) {
       setToast({ msg: 'Scores saved successfully!', ok: true });
+      setTimeout(() => {
+        setToast(null);
+      }, 3000);
     } else {
       setToast({ msg: res.error || 'Failed to save scores', ok: false });
     }
@@ -64,7 +67,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         <label className="block">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-white/40 uppercase tracking-wider">Innovation (0-10)</span>
+            <span className="text-xs text-white/40 uppercase tracking-wider">Innovation</span>
             <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
               {scores.innovation}
             </span>
@@ -82,7 +85,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
 
         <label className="block">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-white/40 uppercase tracking-wider">Technical (0-10)</span>
+            <span className="text-xs text-white/40 uppercase tracking-wider">Technical</span>
             <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
               {scores.technical}
             </span>
@@ -100,7 +103,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
 
         <label className="block">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-white/40 uppercase tracking-wider">UI/UX (0-10)</span>
+            <span className="text-xs text-white/40 uppercase tracking-wider">UI/UX</span>
             <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
               {scores.uiux}
             </span>
@@ -118,7 +121,7 @@ export default function JudgeScoreForm({ submissionId, existingScore }: { submis
 
         <label className="block">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-white/40 uppercase tracking-wider">Scalability (0-10)</span>
+            <span className="text-xs text-white/40 uppercase tracking-wider">Scalability</span>
             <span className="text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded min-w-[2rem] text-center border border-white/10">
               {scores.scalability}
             </span>

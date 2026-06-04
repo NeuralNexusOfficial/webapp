@@ -263,7 +263,7 @@ export async function createTeam(
 
     if (teamError) {
       // If the team name already exists (unique constraint violation), provide a friendly message.
-      if (teamError.code === '23505' && teamError.message?.toLowerCase()?.includes('name')) {
+      if (teamError.code === '23505') {
         return { success: false, error: 'Team name already exists. Please choose a different team name.', code: 409 }
       }
       return { success: false, error: teamError.message }

@@ -6,8 +6,12 @@ import { X } from 'lucide-react';
 import { Payment } from '@/types';
 import { formatCurrency, isValidCurrency } from '@/lib/currency';
 
-// Extend payment with optional user_name from server join
-type PaymentItem = Payment & { user_name?: string | null };
+// Extend payment with optional fields from server join
+type PaymentItem = Payment & { 
+  user_name?: string | null;
+  team_name?: string;
+  registration_type?: 'Solo' | 'Team';
+};
 
 /**
  * Client component that displays a searchable and filterable list of payments.
@@ -148,6 +152,9 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
 
                 {/* Badges */}
                 <div className="flex flex-wrap gap-2 items-center">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${p.registration_type === 'Team' ? 'bg-purple-600/30 text-purple-200' : 'bg-amber-600/30 text-amber-200'}`}>
+                    {p.registration_type ?? 'Solo'}
+                  </span>
                   <span className="px-2.5 py-1 rounded-full bg-blue-600/30 text-blue-200 text-xs font-medium">
                     {p.razorpay_order_id
                       ? p.razorpay_order_id.toLowerCase().includes('upi')
@@ -199,6 +206,14 @@ export default function PaymentsList({ payments }: { payments: PaymentItem[] }) 
                   <div>
                     <p className="font-medium text-white/70">User</p>
                     <p className="font-bold text-white">{selected.user_name ?? selected.user_id}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Registration Type</p>
+                    <p className="font-bold text-white">{selected.registration_type ?? 'Solo'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-white/70">Team Name</p>
+                    <p className="font-bold text-white">{selected.team_name ?? 'N/A'}</p>
                   </div>
                   <div>
                     <p className="font-medium text-white/70">Amount</p>

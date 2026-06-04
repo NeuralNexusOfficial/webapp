@@ -56,6 +56,13 @@ export default function SubmitPage() {
   const [isTeam, setIsTeam] = useState<boolean | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED' | null>(null);
   const [paidTrack, setPaidTrack] = useState<Track | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<{
+    id?: string;
+    amount?: number;
+    currency?: string;
+    razorpay_payment_id?: string | null;
+    created_at?: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing submission on mount
@@ -79,6 +86,15 @@ export default function SubmitPage() {
       setPaymentStatus(paymentRes.status);
       const pTrack = paymentRes.track ?? null;
       setPaidTrack(pTrack);
+      if (paymentRes.status === 'SUCCESS') {
+        setPaymentDetails({
+          id: paymentRes.id,
+          amount: paymentRes.amount,
+          currency: paymentRes.currency,
+          razorpay_payment_id: paymentRes.razorpay_payment_id,
+          created_at: paymentRes.created_at,
+        });
+      }
 
       // 4. Fetch submission
       const res = await getMySubmission();
@@ -270,9 +286,121 @@ export default function SubmitPage() {
       if (lockRes.success) {
         setExisting(lockRes.data);
         setPaymentStatus('SUCCESS');
+        const paymentRes = await getPaymentStatus();
+        if (paymentRes.status === 'SUCCESS') {
+          setPaymentDetails({
+            id: paymentRes.id,
+            amount: paymentRes.amount,
+            currency: paymentRes.currency,
+            razorpay_payment_id: paymentRes.razorpay_payment_id,
+            created_at: paymentRes.created_at,
+          });
+        }
         showToast('Payment confirmed & submission finalized!', true);
       }
     }
+  }
+
+  function printReceipt() {
+    if (!paymentDetails) return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    const receiptHtml = `
+      <html>
+        <head>
+          <title>Payment Receipt - NeuralNexus Hackathon</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #111; padding: 40px; line-height: 1.6; }
+            .receipt-box { max-width: 600px; margin: auto; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); padding: 30px; border-radius: 8px; }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: bold; color: #10b981; }
+            .title { text-align: right; }
+            .title h2 { margin: 0; color: #10b981; }
+            .title p { margin: 5px 0 0 0; font-size: 12px; color: #666; }
+            .grid { display: grid; grid-template-cols: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+            .col h4 { margin: 0 0 8px 0; color: #4b5563; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+            .col p { margin: 0; font-size: 14px; font-weight: 600; color: #1f2937; }
+            .col p.mono { font-family: monospace; font-size: 13px; color: #374151; }
+            .details-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+            .details-table th { background: #f3f4f6; color: #4b5563; font-size: 12px; text-transform: uppercase; text-align: left; padding: 12px; }
+            .details-table td { padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+            .total-section { display: flex; justify-content: flex-end; font-size: 18px; font-weight: bold; padding-top: 10px; }
+            .total-label { margin-right: 20px; color: #4b5563; }
+            .total-val { color: #10b981; }
+            .footer { border-top: 1px solid #e5e7eb; padding-top: 20px; text-align: center; font-size: 12px; color: #9ca3af; margin-top: 50px; }
+            @media print {
+              body { padding: 0; }
+              .receipt-box { border: none; box-shadow: none; padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt-box">
+            <div class="header">
+              <div class="logo">NeuralNexus</div>
+              <div class="title">
+                <h2>RECEIPT</h2>
+                <p>Reference: ${paymentDetails.id || 'N/A'}</p>
+              </div>
+            </div>
+            
+            <div class="grid">
+              <div class="col">
+                <h4>Transaction Date</h4>
+                <p>${paymentDetails.created_at ? new Date(paymentDetails.created_at).toLocaleString() : new Date().toLocaleString()}</p>
+              </div>
+              <div class="col">
+                <h4>Payment Status</h4>
+                <p style="color: #10b981;">SUCCESSFULLY CAPTURED</p>
+              </div>
+              <div class="col">
+                <h4>Registered Track</h4>
+                <p>${existing?.track || paidTrack || 'N/A'}</p>
+              </div>
+              <div class="col">
+                <h4>Payment Method</h4>
+                <p>${paymentDetails.razorpay_payment_id ? 'Razorpay (' + paymentDetails.razorpay_payment_id + ')' : 'Manual Payment'}</p>
+              </div>
+            </div>
+            
+            <table class="details-table">
+               <thead>
+                 <tr>
+                   <th>Description</th>
+                   <th style="text-align: right;">Amount</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 <tr>
+                   <td>NeuralNexus Hackathon Registration Fee</td>
+                   <td style="text-align: right;">${paymentDetails.currency === 'USD' ? '$' : '₹'}${paymentDetails.amount ? paymentDetails.amount.toFixed(2) : '0.00'} ${paymentDetails.currency || 'USD'}</td>
+                 </tr>
+               </tbody>
+            </table>
+            
+            <div class="total-section">
+              <span class="total-label">Total Paid:</span>
+              <span class="total-val">${paymentDetails.currency === 'USD' ? '$' : '₹'}${paymentDetails.amount ? paymentDetails.amount.toFixed(2) : '0.00'} ${paymentDetails.currency || 'USD'}</span>
+            </div>
+            
+            <div class="footer">
+              Thank you for registering for AOT Hackathon 2026. See you at the event!<br>
+              This is a computer-generated receipt and requires no signature.
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            }
+          </script>
+        </body>
+      </html>
+    `;
+    
+    printWindow.document.write(receiptHtml);
+    printWindow.document.close();
   }
 
   const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE
@@ -349,6 +477,48 @@ export default function SubmitPage() {
                         : '—'}
                       {' '}· Status: <span className="text-white/60 font-mono tracking-tight">{existing.status}</span>
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Receipt */}
+              {isPaid && paymentDetails && (
+                <div className="card-cyber p-6 border-emerald-500/30 bg-emerald-500/5 space-y-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/[0.06] pb-4">
+                    <div>
+                      <h3 className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-display)' }}>
+                        Registration Receipt
+                      </h3>
+                      <p className="text-xs text-white/40 mt-0.5">Payment Captured Successfully</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={printReceipt}
+                      className="btn-pill btn-primary text-xs flex items-center gap-2 py-2 px-4"
+                    >
+                      <FileText size={14} /> Download Receipt (PDF)
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <span className="text-white/40 uppercase tracking-wider block mb-0.5">Receipt Reference</span>
+                      <span className="text-white font-mono break-all">{paymentDetails.id}</span>
+                    </div>
+                    <div>
+                      <span className="text-white/40 uppercase tracking-wider block mb-0.5">Transaction ID</span>
+                      <span className="text-white font-mono break-all">{paymentDetails.razorpay_payment_id || 'Manual Payment'}</span>
+                    </div>
+                    <div>
+                      <span className="text-white/40 uppercase tracking-wider block mb-0.5">Registration Track</span>
+                      <span className="text-white">{existing?.track || paidTrack || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-white/40 uppercase tracking-wider block mb-0.5">Amount Paid</span>
+                      <span className="text-emerald-400 font-bold">
+                        {paymentDetails.currency === 'USD' ? '$' : '₹'}{paymentDetails.amount?.toFixed(2)} {paymentDetails.currency || 'USD'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}

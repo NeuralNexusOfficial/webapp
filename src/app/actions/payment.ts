@@ -10,6 +10,11 @@ import { Track } from '@/types'
 export async function getPaymentStatus(): Promise<{
   status: 'NONE' | 'INITIATED' | 'SUCCESS' | 'FAILED'
   track?: Track | null
+  id?: string
+  amount?: number
+  currency?: string
+  razorpay_payment_id?: string | null
+  created_at?: string
 }> {
   const supabase = await createClient()
   const {
@@ -35,7 +40,7 @@ export async function getPaymentStatus(): Promise<{
       const userIds = teamMembers.map(m => m.user_id)
       const { data: teamPayments } = await supabase
         .from('payments')
-        .select('status, track')
+        .select('id, status, track, amount, currency, razorpay_payment_id, created_at')
         .in('user_id', userIds)
         .eq('status', 'SUCCESS')
         .order('created_at', { ascending: false })
@@ -46,6 +51,11 @@ export async function getPaymentStatus(): Promise<{
         return {
           status: 'SUCCESS',
           track: (teamPayments.track as Track) ?? null,
+          id: teamPayments.id,
+          amount: teamPayments.amount,
+          currency: teamPayments.currency,
+          razorpay_payment_id: teamPayments.razorpay_payment_id,
+          created_at: teamPayments.created_at,
         }
       }
     }
@@ -54,7 +64,7 @@ export async function getPaymentStatus(): Promise<{
   // Get the latest payment for this user, ordered by most recent
   const { data, error } = await supabase
     .from('payments')
-    .select('status, track')
+    .select('id, status, track, amount, currency, razorpay_payment_id, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -65,5 +75,10 @@ export async function getPaymentStatus(): Promise<{
   return {
     status: data.status as 'INITIATED' | 'SUCCESS' | 'FAILED',
     track: (data.track as Track) ?? null,
+    id: data.id,
+    amount: data.amount,
+    currency: data.currency,
+    razorpay_payment_id: data.razorpay_payment_id,
+    created_at: data.created_at,
   }
 }
