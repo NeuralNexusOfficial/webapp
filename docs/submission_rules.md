@@ -148,11 +148,13 @@ if (new Date() > SUBMISSION_DEADLINE) {
 
 | Variable | Description |
 |----------|-------------|
-| `SUBMISSION_DEADLINE` | ISO 8601 deadline, e.g. `2026-06-01T18:00:00+05:30` |
+| `SUBMISSION_DEADLINE` | ISO 8601 deadline, e.g. `2026-10-21T18:00:00+05:30` |
+| `NEXT_PUBLIC_SUBMISSION_DEADLINE` | Client-accessible copy of the deadline |
 
 Add to `.env.local`:
 ```env
-SUBMISSION_DEADLINE=2026-06-01T18:00:00+05:30
+SUBMISSION_DEADLINE=2026-10-21T18:00:00+05:30
+NEXT_PUBLIC_SUBMISSION_DEADLINE=2026-10-21T18:00:00+05:30
 ```
 
 ---
