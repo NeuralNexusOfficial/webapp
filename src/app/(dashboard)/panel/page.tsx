@@ -200,11 +200,16 @@ export default function JudgeDashboard() {
 
               {/* Progress bar */}
               {submissions.length > 0 && (
-                <div className="w-24 sm:w-32 lg:w-40 bg-white/10 rounded-full h-1.5 overflow-hidden">
-                  <div
-                    className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${(submissions.filter((s) => s.is_scored).length / submissions.length) * 100}%` }}
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="w-24 sm:w-32 lg:w-40 bg-white/10 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${(submissions.filter((s) => s.is_scored).length / submissions.length) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-white/50 font-medium whitespace-nowrap">
+                    {submissions.filter((s) => s.is_scored).length} of {submissions.length} scored
+                  </span>
                 </div>
               )}
 
@@ -312,6 +317,36 @@ export default function JudgeDashboard() {
                       <p className="text-sm text-white/50 leading-relaxed">
                         {s.description}
                       </p>
+
+                      {s.is_scored && s.judge_score && (
+                        <div className="text-xs bg-white/[0.02] border border-white/[0.06] rounded-xl p-3 sm:p-4 space-y-2 max-w-xl">
+                          <div className="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Your Score Breakdown</div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-white/70">
+                            <div>
+                              <span className="text-white/40 block">Innovation</span>
+                              <strong className="text-sm text-white">{s.judge_score.innovation_score}</strong>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block">Technical</span>
+                              <strong className="text-sm text-white">{s.judge_score.technical_score}</strong>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block">UI/UX</span>
+                              <strong className="text-sm text-white">{s.judge_score.ui_ux_score}</strong>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block">Scalability</span>
+                              <strong className="text-sm text-white">{s.judge_score.scalability_score}</strong>
+                            </div>
+                          </div>
+                          <div className="border-t border-white/[0.06] pt-2 flex items-center justify-between text-xs text-white/60">
+                            <span>Formula: {s.judge_score.innovation_score} + {s.judge_score.technical_score} + {s.judge_score.ui_ux_score} + {s.judge_score.scalability_score} / 4</span>
+                            <span className="text-emerald-400 font-bold text-sm">
+                              Average: {((s.judge_score.innovation_score + s.judge_score.technical_score + s.judge_score.ui_ux_score + s.judge_score.scalability_score) / 4).toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
 
                     </div>
 
