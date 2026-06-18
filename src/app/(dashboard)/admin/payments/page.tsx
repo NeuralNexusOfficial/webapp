@@ -16,7 +16,7 @@ export default async function PaymentsPage() {
     <main className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden bg-black">
       <Sidebar />
       <section className="flex-1 min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-4 pt-16 pb-6 sm:px-6 md:px-10 md:pt-10 md:pb-10">
-        <div className="p-4 sm:p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
+        <div className="py-4 sm:p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
           <h1 className="text-4xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-display)' }}>Payments</h1>
           <PaymentsList payments={payments} />
         </div>

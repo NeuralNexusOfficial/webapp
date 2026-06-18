@@ -339,8 +339,7 @@ export default function JudgeDashboard() {
                               <strong className="text-sm text-white">{s.judge_score.scalability_score}</strong>
                             </div>
                           </div>
-                          <div className="border-t border-white/[0.06] pt-2 flex items-center justify-between text-xs text-white/60">
-                            <span>Formula: {s.judge_score.innovation_score} + {s.judge_score.technical_score} + {s.judge_score.ui_ux_score} + {s.judge_score.scalability_score} / 4</span>
+                          <div className="border-t border-white/[0.06] pt-2 flex items-center justify-end text-xs text-white/60">
                             <span className="text-emerald-400 font-bold text-sm">
                               Average: {((s.judge_score.innovation_score + s.judge_score.technical_score + s.judge_score.ui_ux_score + s.judge_score.scalability_score) / 4).toFixed(1)}
                             </span>

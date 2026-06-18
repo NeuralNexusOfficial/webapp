@@ -19,7 +19,7 @@ export default async function TeamPage() {
   // Determine the current user's role in the team
   const currentMember = team?.members.find(m => m.user_id === user?.id);
   const userRole = currentMember?.role ?? 'MEMBER';
-  const isSolo = team ? team.max_members === 1 : false;
+  const isSolo = team ? team.name.startsWith('Solo – ') : false;
 
   return (
     <main className="min-h-screen flex bg-black text-white">
@@ -48,35 +48,36 @@ export default async function TeamPage() {
                 className="text-2xl font-bold text-white"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {team.name}
+                {isSolo ? (currentMember?.full_name ?? user?.user_metadata?.full_name ?? user?.email ?? 'Solo User') : team.name}
               </h2>
             </div>
 
             <div className="space-y-6">
-              {/* Invite Code + Stats (Hidden for Solo) */}
-              {!isSolo && (
-                <div className="card-cyber p-4 sm:p-6 md:p-8">
+              {/* Team Stats */}
+              <div className="card-cyber p-4 sm:p-6 md:p-8">
+                {/* Invite Code (hidden for Solo) */}
+                {!isSolo && (
                   <div className="mb-6">
                     <h3 className="text-sm uppercase tracking-widest text-white/30 mb-2">
                       Invite Code
                     </h3>
                     <InviteCodeCopy code={team.invite_code} />
                   </div>
+                )}
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-xl">
-                      <p className="text-xs text-white/40 uppercase mb-1">Status</p>
-                      <p className="font-semibold text-white">{team.status}</p>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-xl">
-                      <p className="text-xs text-white/40 uppercase mb-1">Capacity</p>
-                      <p className="font-semibold text-white">
-                        {team.members.length} / {team.max_members} members
-                      </p>
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-white/40 uppercase mb-1">Status</p>
+                    <p className="font-semibold text-white">{team.status}</p>
+                  </div>
+                  <div className="bg-white/5 p-4 rounded-xl">
+                    <p className="text-xs text-white/40 uppercase mb-1">Capacity</p>
+                    <p className="font-semibold text-white">
+                      {isSolo ? 'Solo' : `${team.members.length} / ${team.max_members} members`}
+                    </p>
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Payment Status */}
               <div className={`card-cyber p-4 sm:p-6 md:p-8 ${isPaid ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
@@ -143,11 +144,10 @@ export default async function TeamPage() {
 
                         {/* Role badge */}
                         <div
-                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                            member.role === "LEADER"
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${member.role === "LEADER"
                               ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
                               : "bg-white/[0.04] border-white/10 text-white/40"
-                          }`}
+                            }`}
                         >
                           {member.role === "LEADER" && (
                             <Crown size={11} className="text-amber-400" />
