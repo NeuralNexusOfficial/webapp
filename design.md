@@ -8,52 +8,79 @@ Everything below is designed to be super easy to translate directly into PowerPo
 
 ---
 
-## 1. Our Brand Color Palette
+## 1. Core Presentation Color Palette (High-Contrast Dark Mode)
 
-We use a high-contrast, ultra-modern dark theme. To set these in PowerPoint, select a shape or text, go to **Shape Fill** or **Font Color** -> **More Colors**, and paste the Hex code.
+On projectors and large screens, extremely dark grays (like `#0A0A0A`) blend completely into pure black, making cards invisible. Similarly, dark gray text becomes impossible to read. 
+
+Here is our **presentation-optimized** palette. These colors maintain the premium dark tech aesthetic while ensuring 100% legibility on any screen:
 
 | Role | Color Name | Hex Code | How to Use in PPT |
 | :--- | :--- | :--- | :--- |
-| **Main Canvas** | Pure Black | `#000000` | **Slide Background**: Always use this as your solid slide background to make text and elements pop. |
-| **Containers** | Cyber Card Black | `#0A0A0A` | **Content Boxes**: Use this for content card shapes, tables, or text container backgrounds. |
-| **Alt Containers**| Dark Charcoal | `#111111` | **Alternate Boxes**: Use this to create contrast or separation between card sections. |
-| **Primary Text** | Pure White | `#FFFFFF` | **Headings & Main Titles**: Clear, bright, and easy to read. |
-| **Muted Text** | Medium Gray | `#888888` | **Subheadings & Bullets**: Keeps paragraphs readable without competing with main titles. |
-| **Subtle Text** | Dark Gray | `#555555` | **Captions & Footnotes**: Use for secondary details or metadata. |
+| **Main Canvas** | Pure Black | `#000000` | **Slide Background**: Always use this as your solid slide background. |
+| **Containers** | Tech Slate Gray | `#18181C` | **Content Cards & Boxes**: Lighter than website cards so they actually stand out against the pure black background. |
+| **Alt Containers**| Medium Tech Slate | `#232329` | **Alternate Boxes**: Use for highlighted cards or to separate sections within a slide. |
+| **Primary Text** | Pure White | `#FFFFFF` | **Headings & Main Titles**: Maximum visibility. |
+| **Muted Text** | High-Contrast Gray | `#E5E7EB` | **Body Text & Bullet Points**: Highly readable on dark backgrounds (previously `#888888`, which was too dark). |
+| **Subtle Text** | Slate Gray | `#9CA3AF` | **Captions, Labels & Footnotes**: Clearly legible but secondary (previously `#555555`, which was invisible). |
 
 ---
 
-## 2. Text Gradients (The "Pro" Touch)
+## 2. The Hackathon Track Accent Colors (Matches Website Theme)
+
+To make the presentation feel alive and fully match the **AOT Hackathon** theme, you can use the official domain accent colors. Use these for card borders, glow effects, charts, metric highlights, or text focus words!
+
+| Domain / Track | Accent Color Name | Hex Code | Brand Vibe & Usage in PPT |
+| :--- | :--- | :--- | :--- |
+| **SaaS** | Cyber Sky | `#38BDF8` | **Vibrant Sky Blue**: Perfect for technical details, cloud architectures, or metrics. |
+| **AI** | Radical Rose | `#FB7185` | **Rose Pink**: Sleek future-tech vibe. Use for AI capabilities, intelligence, or key highlights. |
+| **Gaming** | Electric Violet | `#A78BFA` | **Lavender Purple**: Creative and playful. Use for interactive elements or game dev tracks. |
+| **Storytelling** | Neon Emerald | `#34D399` | **Emerald Green**: Highly visible. Great for user impacts, success metrics, or growth stats. |
+| **Animation** | Sunset Amber | `#FBBF24` | **Warm Amber Gold**: Cinematic look. Great for design-focused slides, motion notes, or callouts. |
+
+---
+
+## 3. Text Gradients (The "Pro" Touch)
 On the web, we use a premium, metallic-looking text gradient for major headings. You can recreate this easily in PowerPoint:
 
 1. Select your title text.
 2. Right-click and choose **Format Text Effects**.
 3. Under **Text Fill**, select **Gradient Fill**.
 4. Set the angle to **135°** (diagonal top-left to bottom-right).
-5. Set two gradient stops:
-   - **Stop 1 (Left)**: Pure White (`#FFFFFF`)
-   - **Stop 2 (Right)**: Medium Gray (`#888888`)
-*This makes your main presentation titles look incredibly polished and glossy!*
+5. Choose one of these gradient stop recipes:
+   * **Classic Silver (Brand Default)**: 
+     - **Stop 1 (Left)**: Pure White (`#FFFFFF`)
+     - **Stop 2 (Right)**: Slate Gray (`#9CA3AF`)
+   * **SaaS/Cloud Vibe**: 
+     - **Stop 1 (Left)**: Pure White (`#FFFFFF`)
+     - **Stop 2 (Right)**: Cyber Sky (`#38BDF8`)
+   * **AI Vibe**: 
+     - **Stop 1 (Left)**: Pure White (`#FFFFFF`)
+     - **Stop 2 (Right)**: Radical Rose (`#FB7185`)
+   * **Gaming Vibe**: 
+     - **Stop 1 (Left)**: Pure White (`#FFFFFF`)
+     - **Stop 2 (Right)**: Electric Violet (`#A78BFA`)
+
+*These make your main presentation titles look incredibly polished, glossy, and thematic!*
 
 ---
 
-## 3. Creating Our "Cyber Cards" in PowerPoint
-To group text or show key metrics, we use rounded rectangle cards that look like they are floating. Here’s how to make them in PPT:
+## 4. Creating Our "Cyber Cards" in PowerPoint
+To group text or show key metrics, we use rounded rectangle cards that look like they are floating. Here’s how to make them in PPT so they stand out beautifully:
 
 1. Draw a **Rounded Rectangle** shape.
-2. **Fill**: Set to **Cyber Card Black** (`#0A0A0A`) or **Dark Charcoal** (`#111111`).
+2. **Fill**: Set to **Tech Slate Gray** (`#18181C`) or **Medium Tech Slate** (`#232329`). *Do not use solid black, otherwise the card will be invisible!*
 3. **Border/Outline**:
-   - Set the outline color to **Pure White** (`#FFFFFF`).
-   - Increase the **Transparency** of the outline to **92%** (this matches our subtle `rgba(255,255,255,0.08)` border on the website).
-   - Set the line width to **1 pt** or **1.5 pt**.
-4. **Subtle Glow (Optional)**:
+   - For a clean look: Set the outline color to **Pure White** (`#FFFFFF`) and set **Transparency** to **80%** (so it's subtle but visible, 92% is too faint on projectors).
+   - For a themed look: Set the outline to one of our **Track Accent Colors** (e.g., Cyber Sky `#38BDF8` or Electric Violet `#A78BFA`) and set **Transparency** to **75%**.
+   - Set the line width to **1 pt** or **1.25 pt**.
+4. **Subtle Neon Glow**:
    - Right-click the shape -> **Format Shape** -> **Effects** (the pentagon icon) -> **Glow**.
-   - Set the Glow color to **White** (`#FFFFFF`).
-   - Set the size to **30pt - 40pt** and pull the **Transparency** way up to **95%** (so it's just a faint, soft light behind the card).
+   - Set the Glow color to a matching **Track Accent Color** (e.g., Cyber Sky `#38BDF8` or Electric Violet `#A78BFA`).
+   - Set the size to **15pt - 25pt** and pull the **Transparency** to **85% - 90%** (this makes the cards look like they are floating over a modern glowing grid).
 
 ---
 
-## 4. Typography & Fonts
+## 5. Typography & Fonts
 To maintain a tech-forward look, we use clean, modern, geometric typefaces. 
 
 * **For Headings & Display Titles**: **Space Grotesk** (If you don't have it, you can download it for free from Google Fonts. Alternative standard system fonts: *Century Gothic* or *Trebuchet MS* in bold).
@@ -61,43 +88,43 @@ To maintain a tech-forward look, we use clean, modern, geometric typefaces.
 
 ---
 
-## 5. Buttons & Call-to-Actions (CTAs)
+## 6. Buttons & Call-to-Actions (CTAs)
 When you want to emphasize a key takeaway, next step, or register button, use our signature pill shape:
 
 ### Primary CTA (High Contrast)
 * **Shape**: Rounded Rectangle with fully rounded corners (a pill shape).
-* **Fill**: Solid White (`#FFFFFF`).
+* **Fill**: Solid White (`#FFFFFF`) OR any of the solid **Track Accent Colors** (e.g., solid Electric Violet `#A78BFA`).
 * **Text**: Pure Black (`#000000`), bold, centered.
 * **Border**: None.
 
 ### Secondary CTA (Subtle Outline)
 * **Shape**: Pill shape.
 * **Fill**: No Fill (Transparent).
-* **Text**: Pure White (`#FFFFFF`), bold.
-* **Border**: Solid White (`#FFFFFF`) with **70% transparency** (to look faint but active).
+* **Text**: Pure White (`#FFFFFF`) or a matching **Track Accent Color** (e.g., `#38BDF8`).
+* **Border**: Solid matching color (White or Accent) with **60% transparency** (slightly more visible than before).
 
 ---
 
-## 6. Background Visuals & Textures
+## 7. Background Visuals & Textures
 To break up solid black slides and add depth, you can draw or insert these decorative elements:
 
-### Faint Ambient Orbs (Soft Glows)
-Our website has slowly drifting, semi-transparent white bubbles in the background. In PPT:
+### Faint Ambient Orbs (Soft Glows - Hackathon Theme Edition)
+Our website has drifting, semi-transparent colored orbs that reflect the hackathon track themes. In PPT:
 1. Draw a large **Oval/Circle** (e.g., covering 1/3 of the slide).
 2. Go to **Format Shape** -> **Fill** -> **Gradient Fill** -> Select **Radial**.
-3. Set the center stop to **White** with **94% transparency** (only 6% visible).
-4. Set the outer stop to **White** with **100% transparency** (completely invisible).
+3. Set the center stop to one of our **Track Accent Colors** (e.g., Electric Violet `#A78BFA` or Cyber Sky `#38BDF8`) with **90% transparency** (only 10% visible).
+4. Set the outer stop to the same color with **100% transparency** (completely invisible).
 5. Remove the outline.
-6. Send it to the back (behind all text and cards) and place it in a corner. It creates a beautiful, soft cloud of light!
+6. Send it to the back (behind all text and cards) and place it in a corner. This creates a beautiful, atmospheric ambient glow that matches the site's design!
 
 ### Thin Floating Paths
 We use thin, flowing waves that look like digital architecture. 
 * Use PPT's **Curve** drawing tool to draw soft, winding lines across the background.
-* Style the lines: **White** (`#FFFFFF`), very thin (**0.5 pt** or **0.75 pt** weight), and **80% to 90% transparent**.
+* Style the lines: **Pure White** (`#FFFFFF`) or a **Track Accent Color** (e.g., `#38BDF8`), very thin (**0.5 pt** or **0.75 pt** weight), and **80% to 90% transparent**.
 
 ---
 
-## 7. Slide Transitions & Animations
+## 8. Slide Transitions & Animations
 To capture the smooth, fluid feel of the website:
 
 * **Slide Transitions**: Use the **Morph** transition! It is your best friend. If you duplicate a slide, move a card or bullet point, and apply Morph, PPT will smoothly slide them into place, matching our website's premium feel.
