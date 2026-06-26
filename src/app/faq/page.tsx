@@ -29,7 +29,7 @@ const faqData = [
   },
   {
     question: "What are the prizes?",
-    answer: "The total prize pool is $37,000+ in cash prizes. AI 1st place wins $15,000, Gaming 1st place wins $10,000, SaaS 1st place wins $7,000, Animation 1st place wins $5,000. Additionally, winners receive full-time roles, internships, and annual subscriptions to tools like ChatGPT, Midjourney, and RunwayML."
+    answer: "The total prize pool is $50K+ in cash prizes. AI 1st place wins $20,000, Gaming 1st place wins $15,000, SaaS 1st place wins $10,000, Animation 1st place wins $5,000. Additionally, winners receive full-time roles, internships, and annual subscriptions to tools like ChatGPT, Midjourney, and RunwayML."
   },
   {
     question: "When does the hackathon run?",

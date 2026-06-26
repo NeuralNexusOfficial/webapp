@@ -115,9 +115,9 @@ const RULES = [
 ];
 
 const PRIZES = [
-  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'AI — 1st Place', reward: '$15,000 + Annual ChatGPT, Midjourney & RunwayML Subscriptions' },
-  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'Gaming — 1st Place', reward: '$10,000 + Official game launch under Fraylon' },
-  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'SaaS — 1st Place', reward: '$7,000 + Annual CRM, Marketing, Product & Ops Tools' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'AI — 1st Place', reward: '$20,000 + Annual ChatGPT, Midjourney & RunwayML Subscriptions' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'Gaming — 1st Place', reward: '$15,000 + Official game launch under Fraylon' },
+  { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'SaaS — 1st Place', reward: '$10,000 + Annual CRM, Marketing, Product & Ops Tools' },
   { place: <Medal className="w-6 h-6 text-amber-400" />, label: 'Animation — 1st Place', reward: '$5,000 Cash Prize' },
   { place: <Star className="w-6 h-6 text-emerald-400" />, label: 'Storytelling Winner', reward: 'Story transformed into an animated film + Official Writer/Creator credit' },
   { place: <Award className="w-6 h-6 text-violet-400" />, label: '2nd & 3rd Place (All Domains)', reward: 'Full-Time Roles, Internships + Premium Software Subscriptions' },

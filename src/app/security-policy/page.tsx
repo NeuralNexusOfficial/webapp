@@ -73,12 +73,44 @@ export default function SecurityPolicyPage() {
                 https://aothackathon.com/pgp-key.txt
               </Link>
             </p>
-            <p className="mt-4 mb-2 text-white/90">Your report should ideally include:</p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>A description of the vulnerability and its potential impact.</li>
-              <li>Detailed steps to reproduce the vulnerability (proof-of-concept scripts or screenshots are highly appreciated).</li>
-              <li>Your contact information and how you would like to be credited.</li>
-            </ul>
+
+            <p className="mt-4 mb-2 text-white/90">To help us quickly verify and resolve reports, please use the following submission template:</p>
+            
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5 my-4 font-mono text-xs text-white/80 space-y-3 leading-relaxed">
+              <div>
+                <span className="text-emerald-400 font-bold">1. Vulnerability Type / Class</span>
+                <p className="text-white/40 mt-1">Specify the bug category (e.g., Cross-Site Scripting (XSS), IDOR / Privilege Escalation, SQL Injection, SSRF, CSRF, Authentication Bypass, Sensitive Information Disclosure).</p>
+              </div>
+              
+              <div>
+                <span className="text-emerald-400 font-bold">2. Affected URL &amp; Parameter</span>
+                <p className="text-white/40 mt-1">Provide the exact page URL, API endpoint, or payload parameter that is vulnerable (e.g., GET /api/user?id=[vulnerable_parameter]).</p>
+              </div>
+
+              <div>
+                <span className="text-emerald-400 font-bold">3. Attack Vector &amp; Impact Description</span>
+                <p className="text-white/40 mt-1">Explain the realistic security impact. What can an attacker achieve? (e.g., read private data of other participants, hijack administrative user sessions, bypass gatekeeping controls).</p>
+              </div>
+
+              <div>
+                <span className="text-emerald-400 font-bold">4. Step-by-Step Proof of Concept (PoC)</span>
+                <ul className="list-disc pl-5 mt-1 space-y-1.5 text-white/40">
+                  <li>List the exact sequential steps needed to trigger the bug.</li>
+                  <li>Include request headers/payloads, curl commands, or script code if applicable.</li>
+                  <li>For authorization issues (IDOR/Auth Bypass), outline steps demonstrating access from one test account to another test account's data.</li>
+                  <li>For client-side vulnerabilities like XSS, please include a screenshot showing the alert/prompt execution with your browser/OS version.</li>
+                </ul>
+              </div>
+
+              <div>
+                <span className="text-emerald-400 font-bold">5. Remediation Suggestion (Optional)</span>
+                <p className="text-white/40 mt-1">Provide any specific recommendations or library references to fix the flaw.</p>
+              </div>
+            </div>
+            
+            <p className="text-xs text-white/40 mt-4">
+              Failure to provide a working Proof of Concept (PoC) or sufficient detail to reproduce the bug may delay response times or result in the report being marked as incomplete.
+            </p>
           </section>
 
           <section className="card-cyber p-5 sm:p-8">

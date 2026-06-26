@@ -1,24 +1,22 @@
 export default function Sponsors() {
   const goldSponsors = [
-    { name: "AWS", logo: "AWS", sub: "Cloud Infrastructure Partner" },
-    { name: "Google", logo: "Google", sub: "AI & Developer Tools Partner" },
-    { name: "Microsoft", logo: "Microsoft", sub: "Platform & Azure Partner" },
+    { name: "Google Cloud", logo: "Google Cloud", sub: "Cloud Partner" },
+    { name: "Vercel", logo: "Vercel", sub: "Deployment Partner" },
+    { name: "GitHub", logo: "GitHub", sub: "DevOps Partner" },
   ];
 
   const silverSponsors = [
-    { name: "OpenAI", logo: "OpenAI", sub: "AI Research Partner" },
-    { name: "GitHub", logo: "GitHub", sub: "DevOps Partner" },
-    { name: "Vercel", logo: "Vercel", sub: "Deployment Partner" },
+    { name: "Groq", logo: "Groq", sub: "AI Inference Partner" },
+    { name: "Firebase", logo: "Firebase", sub: "Backend Partner" },
     { name: "Supabase", logo: "Supabase", sub: "Database Partner" },
+    { name: "Razorpay", logo: "Razorpay", sub: "Payment Partner" },
+    { name: "Resend", logo: "Resend", sub: "Email Partner" },
   ];
 
   const communitySponsors = [
+    { name: "Figma" },
     { name: "Postman" },
     { name: "Notion" },
-    { name: "Figma" },
-    { name: "Stripe" },
-    { name: "Auth0" },
-    { name: "Twilio" },
   ];
 
   return (
@@ -73,7 +71,7 @@ export default function Sponsors() {
             Silver Sponsors
             <span className="w-8 h-px bg-slate-400/40" />
           </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 relative z-10">
             {silverSponsors.map((s) => (
               <div
                 key={s.name}

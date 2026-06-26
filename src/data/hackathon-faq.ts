@@ -16,7 +16,7 @@ DOMAINS / TRACKS:
    Build: AI SaaS products, automation systems, AI assistants, computer vision, NLP apps, Healthcare AI, FinTech AI, productivity tools, generative AI apps.
    Registration: Individual $25 | Team $35
    Prizes:
-   - 1st Place: $15,000 cash + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
+   - 1st Place: $20,000 cash + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
    - 2nd Place: Full-Time Role Opportunity + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
    - 3rd Place: Internship Opportunity + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
 
@@ -25,7 +25,7 @@ DOMAINS / TRACKS:
    Build: CRM systems, productivity software, operations platforms, business automation products, analytics dashboards, workflow systems.
    Registration: Individual $15 | Team $25
    Prizes:
-   - 1st Place: $7,000 cash + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
+   - 1st Place: $10,000 cash + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
    - 2nd Place: Full-Time Role Opportunity + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
    - 3rd Place: Internship Opportunity + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
 
@@ -34,7 +34,7 @@ DOMAINS / TRACKS:
    Build: Mobile games, multiplayer games, story-based games, indie games, simulation games, AI-powered games, competitive gaming experiences.
    Registration: Individual $18 | Team $30
    Prizes:
-   - 1st Place: $10,000 cash. Winning game gets official launch under Fraylon platform. Winners receive official credit as game developers.
+   - 1st Place: $15,000 cash. Winning game gets official launch under Fraylon platform. Winners receive official credit as game developers.
    - 2nd – 15th Ranked Teams: Full-Time Role Opportunities
 
 4. Storytelling Domain
@@ -54,7 +54,7 @@ DOMAINS / TRACKS:
 
 ---
 
-TOTAL PRIZE POOL: $37,000+ in cash prizes, plus full-time roles, internships, software subscriptions, and product launch opportunities.
+TOTAL PRIZE POOL: $50,000+ in cash prizes, plus full-time roles, internships, software subscriptions, and product launch opportunities.
 
 ---
 
@@ -152,7 +152,7 @@ Q: When are university promotions?
 A: University promotional campaigns run from June 20 to August 20, 2026.
 
 Q: What are the prizes?
-A: Total prize pool is $37,000+ in cash. Top prizes: AI domain 1st place gets $15,000, Gaming 1st place gets $10,000, SaaS 1st place gets $7,000, Animation 1st place gets $5,000. Plus full-time roles, internships, and premium software subscriptions.
+A: Total prize pool is $50,000+ in cash. Top prizes: AI domain 1st place gets $20,000, Gaming 1st place gets $15,000, SaaS 1st place gets $10,000, Animation 1st place gets $5,000. Plus full-time roles, internships, and premium software subscriptions.
 
 Q: Can I use AI tools during the hackathon?
 A: Yes — AI assistance for coding and ideation is allowed, but core logic must be authored by your team during the event.

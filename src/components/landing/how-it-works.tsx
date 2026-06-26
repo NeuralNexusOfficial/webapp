@@ -18,7 +18,7 @@ export default function HowItWorks() {
     {
       num: "04",
       title: "Win Big",
-      desc: "Top projects win from a $37,000+ prize pool, plus roles, internships & subscriptions.",
+      desc: "Top projects win from a $50K+ prize pool, plus roles, internships & subscriptions.",
     },
   ];
 

@@ -3,7 +3,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 export default function Stats() {
   const stats = [
     { value: 5, suffix: "", label: "Domains" },
-    { value: 37, prefix: "$", suffix: "K+", label: "Prize Pool" },
+    { value: 50, prefix: "$", suffix: "K+", label: "Prize Pool" },
     { value: 60, suffix: "", label: "Days of Hacking" },
     { value: 5, suffix: "+", label: "Career Opportunities" },
   ];

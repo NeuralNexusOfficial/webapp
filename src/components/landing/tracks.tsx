@@ -62,7 +62,7 @@ export default function Tracks() {
             Choose Your Arena
           </h2>
           <p className="text-white/40 mt-4 text-lg max-w-2xl leading-relaxed">
-            Five domains, $37,000+ in prizes. Pick the domain
+            Five domains, $50K+ in prizes. Pick the domain
             that fires you up and build the future.
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function Tracks() {
                 className="text-5xl font-bold text-white"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                $37,000+
+                $50K+
               </p>
               <p className="text-white/40 text-sm mt-2">
                 Cash prizes + full-time roles, internships &amp; premium subscriptions across all domains
