@@ -1,0 +1,7 @@
+Contact: aothackathonfraylon@gmail.com
+Encryption: https://neuralnexushackathon.vercel.app/pgp-key.txt
+Acknowledgements: https://neuralnexushackathon.vercel.app/acknowledgements
+Policy: https://neuralnexushackathon.vercel.app/security-policy
+Signature: https://neuralnexushackathon.vercel.app/.well-known/security.txt
+Hiring: https://neuralnexushackathon.vercel.app/hiring
+OpenBugBounty: https://openbugbounty.org/bugbounty/AOTHackathon/
