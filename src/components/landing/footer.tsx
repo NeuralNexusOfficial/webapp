@@ -14,7 +14,19 @@ export default function Footer() {
           <p className="text-xs text-white/30 mt-1">© 2026 AOT Hackathon. All rights reserved.</p>
         </div>
 
-        <div className="flex items-center gap-6 text-xs text-white/40">
+        <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 text-xs text-white/40">
+          <Link href="/hiring" className="hover:text-white/70 transition-colors">
+            Hiring
+          </Link>
+          <span className="text-white/10">|</span>
+          <Link href="/security-policy" className="hover:text-white/70 transition-colors">
+            Security Policy
+          </Link>
+          <span className="text-white/10">|</span>
+          <Link href="/acknowledgements" className="hover:text-white/70 transition-colors">
+            Acknowledgements
+          </Link>
+          <span className="text-white/10">|</span>
           <Link href="/privacy" className="hover:text-white/70 transition-colors">
             Privacy Policy
           </Link>

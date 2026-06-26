@@ -1,0 +1,20 @@
+# Security disclosure contact details
+Contact: mailto:aothackathonfraylon@gmail.com
+
+# Link to the encryption key page
+Encryption: https://aothackathon.com/pgp-key.txt
+
+# Link to our security policy
+Policy: https://aothackathon.com/security-policy
+
+# Link to our security acknowledgements (Hall of Fame)
+Acknowledgements: https://aothackathon.com/acknowledgements
+
+# Link to our careers page
+Hiring: https://aothackathon.com/hiring
+
+# Expiry date (1 year from now)
+Expires: 2027-06-26T14:00:00.000Z
+
+# Preferred communication languages
+Preferred-Languages: en

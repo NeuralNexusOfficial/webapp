@@ -1,0 +1,12 @@
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: REPLACE THIS ENTIRE BLOCK WITH YOUR ACTUAL PUBLIC KEY FROM KLEOPATRA
+Comment: Fingerprint: AF43 13AB EC89 C6F0 6AFF 71F2 E5AC 96E9 F8BD 44DB
+
+[INSTRUCTIONS TO REPLACE THIS KEY]
+1. Open Kleopatra on your machine.
+2. Select your certificate (Fingerprint: AF43 13AB EC89 C6F0 6AFF 71F2 E5AC 96E9 F8BD 44DB).
+3. Right-click on it and choose "Export" (or click "Export" in the toolbar).
+4. Save the file, or open it in a text editor like Notepad.
+5. Copy the entire contents of that exported file (which starts with -----BEGIN PGP PUBLIC KEY BLOCK----- and ends with -----END PGP PUBLIC KEY BLOCK-----).
+6. Paste it here, replacing all of this text, and save this file.
+-----END PGP PUBLIC KEY BLOCK-----
