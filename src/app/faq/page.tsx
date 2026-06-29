@@ -17,11 +17,11 @@ const faqData = [
   },
   {
     question: "How much does it cost?",
-    answer: "Registration fees vary by domain and participation type. Individual fees range from $8 (Storytelling) to $25 (AI). Team fees range from $18 (Animation) to $35 (AI). One payment per team covers all members."
+    answer: "Registration fees vary by domain and participation type. Individual fees range from $8 (Storytelling) to $25 (AI). Team fees range from $36 (Animation) to $75 (AI). Storytelling is a Solo-only track. One payment per team covers all members."
   },
   {
     question: "Can I participate alone?",
-    answer: "Absolutely. All domains allow individual participation. You can also form a team of up to 4 members. Note that pricing differs for teams vs individuals."
+    answer: "Absolutely. All domains allow individual participation. You can also form a team of up to 4 members for AI, SaaS, Gaming, and Animation. Storytelling is a Solo-only track."
   },
   {
     question: "What happens if my team leader pays?",
@@ -29,7 +29,7 @@ const faqData = [
   },
   {
     question: "What are the prizes?",
-    answer: "The total prize pool is $50K+ in cash prizes. AI 1st place wins $20,000, Gaming 1st place wins $15,000, SaaS 1st place wins $10,000, Animation 1st place wins $5,000. Additionally, winners receive full-time roles, internships, and annual subscriptions to tools like ChatGPT, Midjourney, and RunwayML."
+    answer: "The total prize pool is $50K+ in cash prizes across 4 cash domains: AI ($15,000), SaaS ($10,000), Gaming ($10,000), and Animation ($15,000), while Storytelling is a non-cash track where top stories are adapted into animated films. Additionally, winners receive full-time roles, internships, PPOs, and premium tools/software subscriptions."
   },
   {
     question: "When does the hackathon run?",

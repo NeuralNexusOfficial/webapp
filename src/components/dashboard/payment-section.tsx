@@ -76,7 +76,8 @@ export default function PaymentSection({
         if (pStatus.status !== 'SUCCESS' && registrationType === undefined) {
           const teamRes = await getMyTeamWithMembers();
           if (teamRes.success && teamRes.data) {
-            setDbIsTeam(true);
+            const isSoloTeam = teamRes.data.name.startsWith('Solo – ');
+            setDbIsTeam(!isSoloTeam);
             setTeamSize(teamRes.data.members.length);
           }
         }
@@ -173,11 +174,11 @@ export default function PaymentSection({
   }
 
   const prices: Record<Track, { ind: number; team?: number }> = {
-    'SaaS': { ind: 15, team: 25 },
-    'Animation': { ind: 12, team: 18 },
-    'Storytelling': { ind: 8, team: 12 },
-    'Gaming': { ind: 18, team: 30 },
-    'AI': { ind: 25, team: 35 },
+    'SaaS': { ind: 15, team: 45 },
+    'Animation': { ind: 12, team: 36 },
+    'Storytelling': { ind: 8 },
+    'Gaming': { ind: 15, team: 45 },
+    'AI': { ind: 25, team: 75 },
   };
 
   const currentPriceUSD = domain
@@ -227,15 +228,26 @@ export default function PaymentSection({
 
         <div className="text-left sm:text-right flex flex-col sm:items-end w-full sm:w-auto">
           {domain ? (
-            <>
-              <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                ${currentPriceUSD}
-              </p>
-              <p className="text-sm text-white/40 mb-4">
-                One-time fee · Includes swag kit, meals, and access
-              </p>
-              <PayButton amount={currentPriceUSD ?? 0} currency="USD" label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
-            </>
+            domain === 'Storytelling' && isTeam ? (
+              <div className="text-left sm:text-right">
+                <p className="text-sm text-red-400 font-semibold mb-1" style={{ fontFamily: "var(--font-display)" }}>
+                  Storytelling is Solo-only
+                </p>
+                <p className="text-xs text-white/40 max-w-xs leading-normal">
+                  You cannot register a team for the Storytelling track. Please disband your team or leave it to continue solo.
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
+                  ${currentPriceUSD}
+                </p>
+                <p className="text-sm text-white/40 mb-4">
+                  One-time fee · Includes swag kit, meals, and access
+                </p>
+                <PayButton amount={currentPriceUSD ?? 0} currency="USD" label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
+              </>
+            )
           ) : (
             <>
               <p className="text-xl font-bold text-white/30 mb-1" style={{ fontFamily: "var(--font-display)" }}>

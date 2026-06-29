@@ -1,0 +1,24 @@
+
+--- Page 1 ---
+Day 5 – Payments Flow to PAID 
+ME (done) 
+ Review Razorpay integration skeleton; ensure payment_status FSM (INITIATED, SUCCESS, FAILED) is 
+clear in docs. 
+ Define front-end states: pending, success, failed. 
+Santhosh (done) 
+ Implement Razorpay test integration: 
+o Order creation endpoint. 
+o Webhook endpoint updating payments + team status to PAID. 
+ Ensure idempotent handling of webhooks. 
+Debojeet 
+ Add “Pay registration fee” section in dashboard. 
+ Integrate Razorpay checkout with test keys and show basic status message on return. 
+Smriti 
+ Design payment section states: not paid, in progress, paid (with clear messaging). 
+Harshita 
+ Confirm payment flow matches ops needs (who pays? per team/person? messaging). 
+ Flag any copy changes needed for clarity. 
+ Check progress on everyone at 17:00 
+Nikhil 
+ Share the Razorpay Keys 
+ Find Santosh’s replacement  

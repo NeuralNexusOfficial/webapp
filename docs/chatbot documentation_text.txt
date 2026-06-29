@@ -1,0 +1,96 @@
+
+--- Page 1 ---
+AI  Chatbot  Module  Documentation  
+Overview  
+The  AI  chatbot  is  integrated  into  the  hackathon  landing  page  to  provide  instant  responses  
+related
+ 
+to
+ 
+registration,
+ 
+tracks,
+ 
+rules,
+ 
+prizes,
+ 
+timelines,
+ 
+and
+ 
+submissions.
+ 
+Architecture  
+Frontend  (Next.js  Chat  UI)  →  API  Route  →  OpenRouter  API  →  LLM  +  Hackathon  
+Knowledge
+ 
+Context
+ 
+→
+ 
+AI
+ 
+Response
+ 
+Technologies  Used  
+●  Next.js  /  React  ●  TypeScript  ●  Tailwind  CSS  ●  OpenRouter  API  ●  Large  Language  Model  (LLM)  
+Current  Model  
+Currently,  the  chatbot  uses  the  GPT  OSS  20B  model  through  OpenRouter  because  it  
+provides:
+ 
+●  Good  response  quality  ●  Fast  inference  speed  ●  Lower  API  cost  ●  Suitable  performance  for  hackathon  FAQ/chatbot  use  cases  
+RAG  (Retrieval-Augmented  Generation)  
+A  lightweight  RAG-style  approach  is  implemented  by  injecting  predefined  hackathon  
+context/knowledge
+ 
+into
+ 
+the
+ 
+AI
+ 
+prompt
+ 
+before
+ 
+generating
+ 
+responses.
+ 
+This
+ 
+allows
+ 
+the
+ 
+chatbot
+ 
+to
+ 
+answer
+ 
+event-specific
+ 
+questions
+ 
+accurately.
+ 
+API  Key  Setup  
+Store  the  API  key  inside:  
+OPENROUTER_API_KEY=your_api_key_here   
+--- Page 2 ---
+File  location:  
+.env.local   
+Changing  the  AI  Model  
+To  switch  models,  update  the  model field  inside:  
+src/app/api/chatbot/route.ts   
+Example:  
+model:  "openai/gpt-oss-20b"   
+You  can  replace  it  with  other  supported  models  such  as:  
+●  openai/gpt-oss-120b  ●  meta-llama/llama-3.3-70b  ●  qwen/qwen3-32b  
+Chatbot  Component  Location  
+Frontend  chatbot  UI  is  located  at:  
+src/components/chatbot/chatbot.tsx   
+Backend  API  logic  is  located  at:  
+src/app/api/chatbot/route.ts    

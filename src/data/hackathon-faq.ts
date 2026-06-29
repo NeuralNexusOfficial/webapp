@@ -12,45 +12,46 @@ The hackathon focuses on real-world innovation, industry-level execution, produc
 DOMAINS / TRACKS:
 
 1. Artificial Intelligence (AI)
-   Focus: Next-generation intelligent systems, machine learning, automation, generative AI, AI agents, problem-solving using AI.
-   Build: AI SaaS products, automation systems, AI assistants, computer vision, NLP apps, Healthcare AI, FinTech AI, productivity tools, generative AI apps.
-   Registration: Individual $25 | Team $35
+   Focus: Automation, ML, GenAI, NLP, Computer Vision.
+   Registration: Individual $25 | Team $75
    Prizes:
-   - 1st Place: $20,000 cash + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
-   - 2nd Place: Full-Time Role Opportunity + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
-   - 3rd Place: Internship Opportunity + Annual subscriptions (ChatGPT, Midjourney, RunwayML)
+   - Prize Pool: $15,000
+   - 1st Place: Full-Time Role + Premium Tools Subscription
+   - 2nd Place: Full-Time Role Opportunity
+   - 3rd Place: Internship / PPO Opportunity
 
 2. SaaS Domain
-   Focus: Scalable software products, B2B solutions, productivity platforms, cloud-based systems, workflow automation, CRM tools, business management.
-   Build: CRM systems, productivity software, operations platforms, business automation products, analytics dashboards, workflow systems.
-   Registration: Individual $15 | Team $25
+   Focus: Scalable software solving real business problems.
+   Registration: Individual $15 | Team $45
    Prizes:
-   - 1st Place: $10,000 cash + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
-   - 2nd Place: Full-Time Role Opportunity + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
-   - 3rd Place: Internship Opportunity + Annual subscriptions (CRM Tools, Marketing Tools, Product Tools, Ops Tools)
+   - Prize Pool: $10,000
+   - 1st Place: Full-Time Role + Premium Tools Subscription
+   - 2nd Place: Full-Time Role Opportunity
+   - 3rd Place: Internship / PPO Opportunity
 
 3. Gaming Domain
-   Focus: Game development, immersive experiences, multiplayer systems, storytelling games, indie game concepts, entertainment innovation.
-   Build: Mobile games, multiplayer games, story-based games, indie games, simulation games, AI-powered games, competitive gaming experiences.
-   Registration: Individual $18 | Team $30
+   Focus: Mobile/PC game creation for official publishing.
+   Registration: Individual $15 | Team $45
    Prizes:
-   - 1st Place: $15,000 cash. Winning game gets official launch under Fraylon platform. Winners receive official credit as game developers.
-   - 2nd – 15th Ranked Teams: Full-Time Role Opportunities
+   - Prize Pool: $10,000
+   - 1st Place: Full-Time Role + Premium Tools Subscription
+   - Top 20 Teams: Hiring opportunities
+   - Special: Winning games polished and launched under Fraylon with creator credits
 
 4. Storytelling Domain
-   Focus: Writers, creators, visionaries, narrative designers creating compelling original stories for animated cinematic experiences.
-   Submit: Original stories, screenplays, story-driven scripts.
-   Registration: Individual $8 (Individual only)
+   Focus: Scripts and concepts for professional animated films.
+   Registration: Individual $8 (Solo only)
    Prizes:
-   - Winning story selected as official entry. Story transformed into a professional animated film. Winner receives official credit as Writer/Creator. Film published under Fraylon platform.
+   - Prize Pool: Non-cash track
+   - Special: Top 30 stories adapted into professional animated films under Fraylon with writer credits
 
 5. Animation Domain
-   Focus: Visual storytelling, motion graphics, cinematic experiences, VFX, character animation, digital creativity.
-   Build: 2D animation, 3D animation, motion graphics, cinematic trailers, anime-style content, character design animation, experimental visual storytelling.
-   Registration: Individual $12 | Team $18
+   Focus: 2-3 minute animated teasers, characters, and concepts.
+   Registration: Individual $12 | Team $36
    Prizes:
-   - 1st Place: $5,000 cash
-   - 2nd – 10th Ranked Teams: Full-Time Role Opportunities
+   - Prize Pool: $15,000
+   - 1st Place: Full-Time Role + Premium Tools Subscription
+   - Top 15 Teams: Hiring opportunities
 
 ---
 
@@ -74,17 +75,17 @@ Official Hackathon:
 ---
 
 REGISTRATION FEES (Summary):
-- AI Domain: Individual $25 | Team $35
-- SaaS Domain: Individual $15 | Team $25
-- Gaming Domain: Individual $18 | Team $30
-- Storytelling Domain: Individual $8
-- Animation Domain: Individual $12 | Team $18
+- AI Domain: Individual $25 | Team $75
+- SaaS Domain: Individual $15 | Team $45
+- Gaming Domain: Individual $15 | Team $45
+- Storytelling Domain: Individual $8 (Solo only)
+- Animation Domain: Individual $12 | Team $36
 
 ---
 
 TEAM SIZE:
 - Minimum 1 member (individual participation allowed in all domains)
-- Maximum 4 members per team
+- Maximum 4 members per team (Storytelling is Solo only)
 
 ---
 
@@ -137,10 +138,10 @@ Q: Who can participate?
 A: Anyone with a passion for building — developers, designers, writers, animators, innovators. Open to all worldwide.
 
 Q: Can I participate alone?
-A: Yes! All domains allow individual participation. Team sizes range from 1–4 members.
+A: Yes! All domains allow individual participation. Team sizes range from 1–4 members (except Storytelling which is Solo only).
 
 Q: How much does it cost?
-A: Registration fees vary by domain: $8 (Storytelling) to $35 (AI Team). See the domain details for exact pricing.
+A: Registration fees vary by domain: $8 (Storytelling Solo) to $75 (AI Team). See the domain details for exact pricing.
 
 Q: What if my team leader pays?
 A: If one member (usually the leader) pays the registration fee, it covers the entire team.
@@ -152,7 +153,7 @@ Q: When are university promotions?
 A: University promotional campaigns run from June 20 to August 20, 2026.
 
 Q: What are the prizes?
-A: Total prize pool is $50,000+ in cash. Top prizes: AI domain 1st place gets $20,000, Gaming 1st place gets $15,000, SaaS 1st place gets $10,000, Animation 1st place gets $5,000. Plus full-time roles, internships, and premium software subscriptions.
+A: Total prize pool is $50,000+ in cash. Domain prize pools: AI ($15,000), SaaS ($10,000), Gaming ($10,000), Animation ($15,000), Storytelling (Non-cash track). Plus full-time roles, internships, and premium tools/software subscriptions.
 
 Q: Can I use AI tools during the hackathon?
 A: Yes — AI assistance for coding and ideation is allowed, but core logic must be authored by your team during the event.

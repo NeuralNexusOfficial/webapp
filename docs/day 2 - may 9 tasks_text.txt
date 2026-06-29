@@ -1,0 +1,24 @@
+
+--- Page 1 ---
+Day 2 (May 9) – Wiring Basics & Design Kickoff 
+Me (Kishlaya) 
+ Finalize and commit: 
+o Supabase schema v1 (users, teams, team_members, payments, submissions) as 
+SQL/markdown in /docs. 
+o Env setup. 
+ Create basic routes: /, /auth, /dashboard, /admin as empty pages. 
+Santhosh 
+ Pull repo, connect to Supabase instance. 
+ Implement Supabase auth helpers (signup/login/logout) server-side (no UI yet). 
+Debojeet 
+ Implement very simple landing layout (navbar, hero placeholder, CTA buttons). 
+ Implement basic auth pages structure (/auth/login, /auth/signup) without integrating Supabase yet. 
+Smriti 
+ Start Figma: rough wireframes for 
+o Landing 
+o Participant dashboard 
+ Share low-fidelity draft in group. 
+Harshita 
+ End of day: ping each person to confirm Day 2 tasks done or blocked. 
+Nikhil 
+ Async: skim current docs and drop any comments on must-have items for MVP.  

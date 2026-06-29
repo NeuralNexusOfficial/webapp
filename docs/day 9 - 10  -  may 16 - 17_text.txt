@@ -1,0 +1,37 @@
+
+--- Page 1 ---
+Day 9 – Judge View & Polishing 
+Me (done along with some of day 8 tasks) 
+ Define judge assignment model (even if manual for MVP) and document. 
+Shivam (before 18:00 and merge to main) 
+ Implement simple judge assignment (even a mapping table judge_assignments per submission). 
+ Ensure judge queries only return their assigned submissions. 
+Debojeet (after Shivam is done) 
+ Add judge‑ only view (could be under /admin or /judge): 
+o List of assigned submissions. 
+o Score entry form (innovation, technical, UI/UX, scalability, comments). 
+Day 10 – End‑ to‑ End Testing & MVP Freeze 
+Vinith (Sunday Morning) 
+ Coordinate an E2E walkthrough: 
+o New user → signup → email verify (if wired) → team → payment → submission → admin 
+view → scoring.  
+ Log bugs and prioritize must‑ fix vs later. 
+Shivam 
+ Fix critical backend issues found in E2E testing (auth, payments, submissions, admin). 
+Debojeet 
+ Fix critical UI/UX issues (navigation, broken states, confusing flows). 
+ Ensure no obvious console errors. 
+Nikhil 
+ Final async review: 
+o Sign off on MVP for internal testing. 
+o Decide what goes into Phase 2 (rate limiting, advanced admin tools, analytics, etc.). 
+--- Page 2 ---
+Harshita 
+ Give us the name for hackathon (today’s task), .com available (with no other webapps/events 
+with similar name) 
+ Design the logo, banner, and create the Linkedin Account (invite me as admin) 
+ Schedule a meeting on 18th May, between 1100 – 1300, after Nikhil share contracts – to discuss 
+what’s next and why 
+ 
+ 
+  

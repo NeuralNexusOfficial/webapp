@@ -1,0 +1,31 @@
+
+--- Page 1 ---
+Day 6 – Submission Model & Resources 
+ME (done) 
+ Define submission schema & statuses (MVP): fields + deadline, submitted_at. 
+ Document submission rules and deadline behavior in /docs. 
+Shivam (done by me for today, just pull the code and check that your tasks are 
+completed) 
+ Implement submissions table and basic rules: 
+o One submission per team. 
+o Enforce deadline check in backend. 
+ Implement backend endpoint for creating/updating a submission pre‑ deadline. 
+ Share me your Github, So I can invite you in repo 
+ Also, check the docs and make sure all the tasks are completed till day 6 
+Debojeet (completed by me, both yesterdays and today’s – you should fix all the minor 
+issues till day 6) 
+ Create /dashboard/submit page structure: 
+o Fields: title, description, track, repo, demo, file upload placeholder. 
+ Add resources/statements page route. 
+Smriti (no response from 48 hours, today is day 3 without any activity, if you are 
+available today design the UI and convert that in code) 
+ Design submission page in Figma (form layout, success messages, error states). 
+Harshita 
+ Start drafting content for: 
+o Tracks list 
+o Prizes 
+o FAQs / rules 
+ Share with Debojeet for later integration. 
+Nikhil 
+--- Page 2 ---
+ Async: approve submission fields and confirm what’s mandatory.  

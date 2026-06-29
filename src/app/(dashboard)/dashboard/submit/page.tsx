@@ -78,7 +78,7 @@ export default function SubmitPage() {
 
       // 2. Fetch team status
       const teamRes = await getMyTeam();
-      const hasTeam = teamRes.success && !!teamRes.data;
+      const hasTeam = teamRes.success && !!teamRes.data && !teamRes.data.name.startsWith('Solo – ');
       setIsTeam(hasTeam);
 
       // 3. Fetch payment status
@@ -262,11 +262,12 @@ export default function SubmitPage() {
 
   // Compute USD price for Pay & Submit button
   const prices: Record<Track, { ind: number; team?: number }> = {
-    'SaaS': { ind: 15, team: 25 }, 'Animation': { ind: 12, team: 18 },
-    'Storytelling': { ind: 8, team: 12 }, 'Gaming': { ind: 18, team: 30 }, 'AI': { ind: 25, team: 35 },
+    'SaaS': { ind: 15, team: 45 }, 'Animation': { ind: 12, team: 36 },
+    'Storytelling': { ind: 8 }, 'Gaming': { ind: 15, team: 45 }, 'AI': { ind: 25, team: 75 },
   };
   const selectedTrack = ((isPaid && paidTrack) ? paidTrack : form.track) as Track | '';
   const priceUSD = selectedTrack ? (isTeam && prices[selectedTrack]?.team ? prices[selectedTrack].team : prices[selectedTrack]?.ind) ?? 0 : 0;
+  const isStorytellingTeamError = selectedTrack === 'Storytelling' && !!isTeam;
 
   // Handle Pay & Submit: save draft first, then on payment success lock it
   async function handlePayAndSubmitSuccess() {
@@ -672,6 +673,11 @@ export default function SubmitPage() {
                           );
                         })}
                       </div>
+                      {isStorytellingTeamError && (
+                        <p className="text-xs text-red-400 mt-3 flex items-center gap-1.5 font-medium animate-pulse">
+                          <AlertTriangle size={14} /> The Storytelling domain is Solo-only. You cannot submit a team project for this track. Please disband your team or leave it to participate solo.
+                        </p>
+                      )}
                     </div>
 
                     {/* Links */}
@@ -806,15 +812,15 @@ export default function SubmitPage() {
                         <button
                           id="save-submission-btn"
                           type="submit"
-                          disabled={isPending}
-                          className={`btn-pill w-full sm:w-auto justify-center ${isPending ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
+                          disabled={isPending || isStorytellingTeamError}
+                          className={`btn-pill w-full sm:w-auto justify-center ${isPending || isStorytellingTeamError ? 'btn-outline opacity-60 cursor-not-allowed' : 'btn-primary'}`}
                         >
                           {isPending ? 'Saving…' : `${existing ? 'Update' : 'Save'} Draft →`}
                         </button>
                       )}
 
                       {/* Pay & Submit (when unpaid) */}
-                      {existing && !isLocked && !isPaid && selectedTrack && (
+                      {existing && !isLocked && !isPaid && selectedTrack && !isStorytellingTeamError && (
                         <div className="flex flex-col gap-2 w-full sm:w-auto">
                           <p className="text-xs text-amber-400/70 flex items-center gap-1.5 justify-center sm:justify-start">
                             <CreditCard size={12} /> Payment required to finalize submission

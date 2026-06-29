@@ -1,0 +1,27 @@
+
+--- Page 1 ---
+Day 8 – Admin Panel MVP 
+Me (done) 
+ Define admin panel MVP: filters by track + status, view submission details, enter scores. 
+ Document scoring criteria and data model for scores. 
+Santhosh (complete before 18:00 and merge to main) 
+ Implement scores table and admin API endpoints: 
+o List submissions with filters. 
+o Save/update scores per judge/submission. 
+Debojeet (start after Santosh is done and branch is merged) 
+ Build /admin view: 
+o List of teams/submissions. 
+o Filter UI (track, status). 
+o Link to individual submission detail page. 
+Smriti 
+ Unresponsive 
+Vinith 
+ Completeness: 
+o Share your github (I’ll invite you to repo). 
+o Filter UI (track, status) go to /docs  folder and make sure all tasks are completed till day 7. 
+o Help Santosh and Debojeet, and make sure no merge conflicts. 
+o Validate admin flow against judging process (how judges will actually use it). 
+Harshita 
+ Check for Smriti 
+Nikhil 
+ Async: review admin panel MVP when screenshots/links are ready, Vinith will share. 

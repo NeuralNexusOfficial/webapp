@@ -1,0 +1,83 @@
+
+--- Page 1 ---
+Hackathon Platform – Infra Cost Estimate (Aug–Oct 2026) 
+Prepared by: Kishlaya (System Architect) 
+ 
+This is a transparent estimate of the infrastructure cost to run the hackathon platform during the 
+three active months: August, September, and October 2026. Development is 80% done; this budget 
+focuses on running the live platform during hackathon months, not the earlier build phase. 
+As discussed by Nikhil, company can transfer this budget once, and I’ll handle purchasing and managing 
+the subscriptions (Supabase, Resend, Vercel, domain, analytics) and keep all invoices/receipts organized. 
+ 
+1. Email Infrastructure – Resend 
+ Service: Resend (transactional email API) 
+ Usage: registration emails, team invites, submission confirmations, result notifications 
+ Plan: Pro – $20/month 
+ Duration: 3 months (Aug–Oct) 
+ Cost: $20 × 3 = $60 
+This covers up to ~50,000 emails/month, which is more than enough for >10k participants and all 
+transactional/notification mail during the hackathon period.  
+ 
+2. Database / Auth / Storage – Supabase 
+ Service: Supabase (Postgres + Auth + Storage) 
+ Usage: core database, authentication, and file storage for submissions 
+ Plan: Pro – $25/month 
+ Duration: 3 months (Aug–Oct) 
+ Cost: $25 × 3 = $75 
+The Pro plan gives us a production‑grade Postgres instance with higher limits and better stability during 
+peaks in registrations and submissions.  
+--- Page 2 ---
+ 
+3. Hosting – Vercel 
+ Service: Vercel (Next.js hosting) 
+ Usage: hosting frontend + API routes (single codebase) 
+ Plan: Pro – $20/month (1 active seat) 
+ Duration: 3 months (Aug–Oct) 
+ Cost: $20 × 3 = $60 
+The Hobby plan is free, but Pro removes important limits and is more appropriate for a serious global 
+hackathon platform during live traffic.  
+ 
+4. Domain 
+ Service: Domain (e.g. .com) 
+ Usage: primary public URL for the platform 
+ Cost: $25 (1 year, including taxes/SSL variations) 
+Typical .com domains are in the $10–20 range; budgeting $25 is a safe upper bound including taxes, SSL 
+and registrar differences.  
+ 
+5. Analytics – Plausible 
+ Service: Plausible Analytics 
+ Usage: privacy‑friendly analytics for visits, conversions, and funnels during the hackathon 
+ Plan & usage: 
+o $9/month if we stay under 10k pageviews/month 
+o $19–39/month if we reach higher traffic tiers (up to ~200k pageviews/month)  
+ Budget assumption for 3 months: $50–$100 total 
+--- Page 3 ---
+This covers a mix of lower and higher traffic months during August–October, giving us enough visibility 
+into traffic, conversion, and performance without over‑spending. 
+ 
+6. Miscellaneous / Rounding / Fees 
+ Item: Payment processor GST, FX rounding, pricing quirks 
+ Reason: 
+o Most services bill in X.99 formats, and payment gateways add small currency conversion 
+spreads. 
+o There may be minor variations in tax/VAT and invoice rounding between months/providers. 
+ Buffer: $20 
+This buffer ensures small variations (like $0.99 extra on multiple invoices) don’t break the budget. 
+ 
+7. Summary (Aug–Oct 2026) 
+ Resend Pro (3 months): $60 
+ Supabase Pro (3 months): $75 
+ Vercel Pro (3 months): $60 
+ Domain (1 year): $25 
+ Plausible (3 months, est.): $50–$100 
+ Misc. buffer (GST/FX/rounding): $20 
+Total budget range for the 3 hackathon months: 
+ Lower bound: about $290 
+ Upper bound: about $340 
+If you’re okay with this range (we can take the upper bound for safety), you can transfer a single amount 
+once, and I’ll handle: 
+ Activating and managing Pro plans during August–October 
+--- Page 4 ---
+ Keeping invoices/receipts organized 
+ Making sure we stay within or under this budget while running the platform reliably for the 
+hackathon.  

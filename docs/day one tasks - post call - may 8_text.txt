@@ -1,0 +1,67 @@
+
+--- Page 1 ---
+Post‑ Call Summary – Hackathon Platform (08 May) 
+Attendees: Me (Kishlaya), Harshita, Santhosh, Debojeet 
+Absent: Nikhil (in meetings), Smriti 
+1. Working Style & Communication 
+ Instead of frequent long calls, we’ll use task‑ based async updates. 
+ As System Architect, I (Kishlaya) will post daily or frequent task lists; others focus on 
+execution and brief status updates. 
+ Larger discussions (scope changes, big architectural decisions) will happen async in writing; 
+calls only when absolutely needed. 
+2. Infra & Environment (MVP Phase) 
+ For MVP / build phase we will use free tiers: 
+o Supabase Free (DB/Auth/Storage) 
+o Vercel Hobby (Next.js hosting) 
+o GitHub free org/private repo 
+o Resend free tier for testing emails 
+o Skip Plausible for now 
+ Domain and production‑ grade hosting later will be handled via Fraylon Technologies, as 
+Nikhil mentioned. 
+3. Architecture & Safeguards – Status 
+ We keep the architecture & safeguards you drafted as the technical source of truth (roles, 
+FSMs, abuse protection), but we will: 
+o Implement the core flows and basic safety in MVP. 
+o Layer advanced safeguards (rate limiting, full admin tooling, advanced analytics) after we 
+have the basic system running. 
+ Nikhil and Smriti still need to review the two PDFs asynchronously: 
+o architecture-and-safeguards.pdf 
+o infra-costs.pdf (now treated as “future scaling plan” rather than immediate spend) 
+--- Page 2 ---
+ 
+Next Tasks – Per Person 
+Harshita 
+ Collect GitHub usernames of everyone (you, Santhosh, Debojeet, Smriti, Nikhil if needed). 
+ Share a consolidated list with you in the group or DM today. 
+ Keep tracking availability and surfacing any blockers from people. 
+Kishlaya (Me) – Today / Next 1–2 days 
+ Once I have the GitHub usernames: 
+o Create a GitHub organization (and initiate the Next.js + Supabase + razorpay, so others 
+can start coding). 
+o Create a private repo for the hackathon platform in that org. 
+o Add all devs as collaborators. 
+ Set up core infra for MVP: 
+o Create a Supabase project (free tier) for this platform. 
+o Create a Vercel project connected to the GitHub repo (Hobby). 
+o Define and commit initial repo structure (Next.js + TypeScript + Supabase client). 
+o Add a /docs folder and drop the architecture/state‑ machine/RBAC notes there. 
+Santhosh 
+ Wait for repo + Supabase project details from me. 
+ Once ready, start with backend foundations: 
+o Implement initial Supabase schema for users, teams, team_members, payments, submissions. 
+o Start drafting the Razorpay integration skeleton (test keys, order creation function, 
+webhook handler entrypoints). 
+Debojeet 
+ After repo is ready, pull and: 
+--- Page 3 ---
+o Implement the landing page shell (navbar, hero placeholder, basic sections). 
+o Implement auth flow scaffolding (login/signup pages using Supabase auth once wired). 
+o Set up basic routing for Landing, Dashboard, and Admin routes (empty stubs are fine). 
+Smriti 
+ Async task (to be shared in group): 
+o Start Figma for landing + dashboard with rough layout and design system. 
+o Ping you & Debojeet when a first draft is ready so you can align components. 
+Nikhil 
+ Async task: 
+o Review the Architecture & Safeguards when free. (if not already reviewed)  
+o Confirm any must‑ have safeguards for MVP vs what can wait for phase 2. 

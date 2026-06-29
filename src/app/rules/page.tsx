@@ -16,7 +16,7 @@ export default function RulesPage() {
             <ul className="list-disc pl-5 space-y-2">
               <li>AOT Hackathon: Architects of Tomorrow is open to all developers, designers, writers, animators, and innovators worldwide.</li>
               <li>Participants must be at least 18 years old or have parental consent.</li>
-              <li>Teams can consist of 1 to 4 members. Individual participation is allowed in all domains.</li>
+              <li>Teams can consist of 1 to 4 members (except for Storytelling, which is Solo only). Individual participation is allowed in all domains.</li>
             </ul>
           </section>
 
@@ -42,7 +42,7 @@ export default function RulesPage() {
           <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">4. Registration &amp; Fees</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Registration fees vary by domain: AI ($25/$35), SaaS ($15/$25), Gaming ($18/$30), Storytelling ($8), Animation ($12/$18).</li>
+              <li>Registration fees vary by domain: AI ($25/$75), SaaS ($15/$45), Gaming ($15/$45), Storytelling ($8 Solo only), Animation ($12/$36).</li>
               <li>Individual and team pricing differs. If one team member pays, it covers the entire team.</li>
               <li>All team members must have completed registration to be eligible for prizes.</li>
             </ul>

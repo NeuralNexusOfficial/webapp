@@ -1,0 +1,81 @@
+
+--- Page 1 ---
+Hackathon Platform – Testing & Launch 
+Timeline 
+Start: 19 May 2026 · Target: MVP ready & migrated by ~18 June 2026 
+Phase 1 – Stabilization & Internal QA 
+Dates: 19 May – 25 May (Week 1) 
+Goals: 
+ Fix obvious bugs, stabilize core flows, get app into “internally usable” shape. 
+Focus Areas: 
+ Verify all core flows manually end‑ to‑ end: 
+o Signup/login, profile update. 
+o Team creation/joining, team constraints. 
+o Payment initiation + test webhooks, status changes to PAID. 
+o Project submission + file upload + deadline behavior. 
+o Admin list views and basic scoring. 
+ Fix high‑ priority bugs (crashes, broken navigation, wrong state transitions). 
+ Add missing loading, empty, and error states where the UX is currently confusing. 
+Output: 
+ Stable MVP build that the whole team can use without major breakages. 
+ 
+Phase 2 – Hardening & Safeguards (MVP Level) 
+Dates: 26 May – 1 June (Week 2) 
+Goals: 
+ Make the platform safer and more robust for real participants. 
+Focus Areas: 
+--- Page 2 ---
+ Enforce schema‑ level and API‑ level constraints: 
+o One active team per user. 
+o team_owner_id + max_members enforced consistently. 
+o Basic payment_status and submission state machine logic working. 
+ Implement MVP safeguards: 
+o Email verification required before key actions (team creation, payment, submission). 
+o Validation for file formats and max file size. 
+ Clean up RBAC: 
+o Confirm USER / ADMIN / JUDGE routes and permissions are correctly enforced. 
+Output: 
+ MVP that is not just working, but also safe enough to expose to a closed test group. 
+ 
+Phase 3 – UAT, Content & Ops Integration 
+Dates: 2 June – 8 June (Week 3) 
+Goals: 
+ Run User Acceptance Testing with a small internal/alpha group, finalize content, and align 
+operations. 
+Focus Areas: 
+ Invite a small set of trusted users (friends/team) to: 
+o Register, create/join teams, simulate payments (test mode), submit dummy projects. 
+o Admins and judges test their flows (viewing, scoring). 
+ Collect feedback and fix: 
+o Critical UX issues. 
+o Any remaining logic gaps (e.g., weird edge cases in team/payment/submissions). 
+ Finalize content: 
+o Tracks, prizes, FAQs, rules, timelines, contact info. 
+--- Page 3 ---
+ Align with ops: 
+o Confirm that flows match the real judging, support, and communication processes. 
+Output: 
+ UAT‑ validated MVP with real content, ready to be moved under company infra. 
+ 
+Phase 4 – Migration to Company GitHub & Launch Prep 
+Dates: 9 June – ~18 June (Week 4) 
+Goals: 
+ Migrate code to the company’s GitHub/org and prepare for production deployment and launch. 
+Focus Areas: 
+ Code & Repo Migration: 
+o Clean up repo (remove dead code, add clear README and /docs with architecture, RBAC, 
+and setup instructions). 
+o Migrate repo from your personal/org GitHub to company GitHub (Fraylon or whatever 
+org Nikhil decides). 
+o Ensure CI / build pipelines are updated to point to the new repo. 
+ Infra Alignment: 
+o Connect app to company’s hosting/domain setup (Fraylon infra). 
+o Configure environment variables and secrets in the company environment. 
+o Smoke‑ test the app in the new environment. 
+ Final Checks: 
+o Run one last full end‑ to‑ end test on the company deployment. 
+o Freeze MVP: only critical hotfixes after this point. 
+o Prepare a simple “runbook” (how to restart, how to handle common issues) for the ops 
+team. 
+Output: 
+ MVP fully migrated to company GitHub and infra, tested and ready for public hackathon launch.  

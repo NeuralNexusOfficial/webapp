@@ -1,6 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot } from "lucide-react";
 
 export default function Tracks() {
+  const [activeTab, setActiveTab] = useState<'AI' | 'SaaS' | 'Gaming' | 'Animation' | 'Storytelling'>('AI');
+
   const tracks = [
     {
       icon: <Cloud className="w-8 h-8 text-sky-400" />,
@@ -132,6 +137,216 @@ export default function Tracks() {
             </a>
           </div>
         </div>
+
+        {/* Comparison Matrix */}
+        <div className="mt-20 relative z-10">
+          <div className="mb-8">
+            <div className="tag-label mb-2">Matrix</div>
+            <h3
+              className="text-2xl sm:text-4xl font-bold text-white mb-2"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Domain Details
+            </h3>
+            <p className="text-white/40 text-sm leading-relaxed max-w-xl">
+              Compare focus areas, pricing models, total prize allocations, and strategic career opportunities.
+            </p>
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-hidden card-cyber border border-white/10 bg-black/40 backdrop-blur-xl rounded-2xl">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/[0.01]">
+                  <th className="p-5 text-white/40 font-medium text-xs uppercase tracking-wider">Metrics</th>
+                  <th className="p-5 text-rose-400 font-bold text-base font-display">AI</th>
+                  <th className="p-5 text-sky-400 font-bold text-base font-display">SaaS</th>
+                  <th className="p-5 text-violet-400 font-bold text-base font-display">Gaming</th>
+                  <th className="p-5 text-amber-400 font-bold text-base font-display">Animation</th>
+                  <th className="p-5 text-emerald-400 font-bold text-base font-display">Storytelling</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-5 font-semibold text-white/80 whitespace-nowrap text-xs uppercase tracking-wider">Focus</td>
+                  <td className="p-5 text-white/50 leading-relaxed">Automation, ML, GenAI, NLP, Computer Vision</td>
+                  <td className="p-5 text-white/50 leading-relaxed">Scalable software solving real business problems</td>
+                  <td className="p-5 text-white/50 leading-relaxed">Mobile/PC game creation for official publishing</td>
+                  <td className="p-5 text-white/50 leading-relaxed">2-3 minute animated teasers, characters, and concepts</td>
+                  <td className="p-5 text-white/50 leading-relaxed">Scripts and concepts for professional animated films</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-5 font-semibold text-white/80 whitespace-nowrap text-xs uppercase tracking-wider">Prize Pool</td>
+                  <td className="p-5 font-bold text-white text-lg">$15,000</td>
+                  <td className="p-5 font-bold text-white text-lg">$10,000</td>
+                  <td className="p-5 font-bold text-white text-lg">$10,000</td>
+                  <td className="p-5 font-bold text-white text-lg">$15,000</td>
+                  <td className="p-5 font-bold text-emerald-400/90 text-sm">Non-cash track</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-5 font-semibold text-white/80 whitespace-nowrap text-xs uppercase tracking-wider">Entry Fee</td>
+                  <td className="p-5">
+                    <span className="block text-white font-semibold text-sm">$25 <span className="text-white/30 text-xs font-normal font-sans">Solo</span></span>
+                    <span className="block text-white/40 text-xs mt-0.5">$75 Team</span>
+                  </td>
+                  <td className="p-5">
+                    <span className="block text-white font-semibold text-sm">$15 <span className="text-white/30 text-xs font-normal font-sans">Solo</span></span>
+                    <span className="block text-white/40 text-xs mt-0.5">$45 Team</span>
+                  </td>
+                  <td className="p-5">
+                    <span className="block text-white font-semibold text-sm">$15 <span className="text-white/30 text-xs font-normal font-sans">Solo</span></span>
+                    <span className="block text-white/40 text-xs mt-0.5">$45 Team</span>
+                  </td>
+                  <td className="p-5">
+                    <span className="block text-white font-semibold text-sm">$12 <span className="text-white/30 text-xs font-normal font-sans">Solo</span></span>
+                    <span className="block text-white/40 text-xs mt-0.5">$36 Team</span>
+                  </td>
+                  <td className="p-5">
+                    <span className="block text-white font-semibold text-sm">$8 <span className="text-white/30 text-xs font-normal font-sans">Solo</span></span>
+                    <span className="block text-emerald-400/80 text-[10px] uppercase font-bold tracking-wider mt-0.5">Solo only</span>
+                  </td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-5 font-semibold text-white/80 whitespace-nowrap text-xs uppercase tracking-wider">Strategic Perks</td>
+                  <td className="p-5 text-white/50 text-xs leading-relaxed">
+                    <div className="space-y-1">
+                      <p><strong className="text-rose-400">1st:</strong> Full-time + tools sub.</p>
+                      <p><strong className="text-white/80">2nd:</strong> Full-time roles.</p>
+                      <p><strong className="text-white/80">3rd:</strong> Internships/PPOs.</p>
+                    </div>
+                  </td>
+                  <td className="p-5 text-white/50 text-xs leading-relaxed">
+                    <div className="space-y-1">
+                      <p><strong className="text-sky-400">1st:</strong> Full-time + tools sub.</p>
+                      <p><strong className="text-white/80">2nd:</strong> Full-time roles.</p>
+                      <p><strong className="text-white/80">3rd:</strong> Internships/PPOs.</p>
+                    </div>
+                  </td>
+                  <td className="p-5 text-white/50 text-xs leading-relaxed">
+                    <div className="space-y-1">
+                      <p><strong className="text-violet-400">1st:</strong> Full-time + tools sub.</p>
+                      <p>Top 20 teams hiring.</p>
+                      <p className="text-white/70">Winning games polished and launched officially under Fraylon.</p>
+                    </div>
+                  </td>
+                  <td className="p-5 text-white/50 text-xs leading-relaxed">
+                    <div className="space-y-1">
+                      <p><strong className="text-amber-400">1st:</strong> Full-time + tools sub.</p>
+                      <p>Top 15 teams hiring.</p>
+                    </div>
+                  </td>
+                  <td className="p-5 text-white/50 text-xs leading-relaxed">
+                    <p className="text-emerald-400/90 font-medium">Adapted to Films:</p>
+                    <p className="mt-1">Top 30 stories adapted into professional animated films under Fraylon with writer credits.</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Tabbed View */}
+          <div className="md:hidden mt-6">
+            <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-none">
+              {(['AI', 'SaaS', 'Gaming', 'Animation', 'Storytelling'] as const).map((tab) => {
+                const isSelected = activeTab === tab;
+                const colors = {
+                  AI: "border-rose-500/30 text-rose-400 bg-rose-500/5",
+                  SaaS: "border-sky-500/30 text-sky-400 bg-sky-500/5",
+                  Gaming: "border-violet-500/30 text-violet-400 bg-violet-500/5",
+                  Animation: "border-amber-500/30 text-amber-400 bg-amber-500/5",
+                  Storytelling: "border-emerald-500/30 text-emerald-400 bg-emerald-500/5",
+                };
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+                      isSelected
+                        ? colors[tab]
+                        : "border-white/[0.08] text-white/40 bg-transparent"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Tab Card Content */}
+            <div className="card-cyber p-6 mt-4 border border-white/10 bg-black/40 backdrop-blur-xl rounded-2xl flex flex-col gap-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Focus</p>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  {activeTab === 'AI' && "Automation, ML, GenAI, NLP, Computer Vision"}
+                  {activeTab === 'SaaS' && "Scalable software solving real business problems"}
+                  {activeTab === 'Gaming' && "Mobile/PC game creation for official publishing"}
+                  {activeTab === 'Animation' && "2-3 minute animated teasers, characters, and concepts"}
+                  {activeTab === 'Storytelling' && "Scripts and concepts for professional animated films"}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-t border-b border-white/5 py-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Prize Pool</p>
+                  <p className="text-base font-bold text-white">
+                    {activeTab === 'AI' && "$15,000"}
+                    {activeTab === 'SaaS' && "$10,000"}
+                    {activeTab === 'Gaming' && "$10,000"}
+                    {activeTab === 'Animation' && "$15,000"}
+                    {activeTab === 'Storytelling' && "Non-cash track"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Entry Fee</p>
+                  <p className="text-base font-bold text-white">
+                    {activeTab === 'AI' && "$25 Solo / $75 Team"}
+                    {activeTab === 'SaaS' && "$15 Solo / $45 Team"}
+                    {activeTab === 'Gaming' && "$15 Solo / $45 Team"}
+                    {activeTab === 'Animation' && "$12 Solo / $36 Team"}
+                    {activeTab === 'Storytelling' && "$8 (Solo only)"}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-2">Strategic Career Perks</p>
+                <div className="text-xs text-white/70 leading-relaxed space-y-2">
+                  {activeTab === 'AI' && (
+                    <>
+                      <p><strong className="text-rose-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
+                      <p><strong className="text-white/90">2nd Place:</strong> Full-time role opportunities.</p>
+                      <p><strong className="text-white/90">3rd Place:</strong> Internships / PPOs.</p>
+                    </>
+                  )}
+                  {activeTab === 'SaaS' && (
+                    <>
+                      <p><strong className="text-sky-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
+                      <p><strong className="text-white/90">2nd Place:</strong> Full-time role opportunities.</p>
+                      <p><strong className="text-white/90">3rd Place:</strong> Internships / PPOs.</p>
+                    </>
+                  )}
+                  {activeTab === 'Gaming' && (
+                    <>
+                      <p><strong className="text-violet-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
+                      <p><strong className="text-white/90">Top 20 Teams:</strong> Dedicated hiring channels.</p>
+                      <p className="text-white/60">Winning game entries polished and launched officially under Fraylon officially with creator credits.</p>
+                    </>
+                  )}
+                  {activeTab === 'Animation' && (
+                    <>
+                      <p><strong className="text-amber-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
+                      <p><strong className="text-white/90">Top 15 Teams:</strong> Dedicated hiring channels.</p>
+                    </>
+                  )}
+                  {activeTab === 'Storytelling' && (
+                    <p>Top 30 original stories/scripts adapted into professional animated film productions under Fraylon with writer credits.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

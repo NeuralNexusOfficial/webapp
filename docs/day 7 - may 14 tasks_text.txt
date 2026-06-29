@@ -1,0 +1,26 @@
+
+--- Page 1 ---
+Day 7 – File Uploads & Submission Lock 
+ 
+Kishlaya (done) 
+ Clarify file constraints: allowed formats + max size; document in /docs. 
+Shivam 
+ Use Supabase Storage to: 
+o Upload PPT/docs. 
+o Save file URL in submissions. 
+ Enforce deadline in backend: after deadline, reject updates. 
+Debojeet 
+ Connect file upload UI to backend; handle size/format errors gracefully. 
+ Show “Submission locked after deadline” state in the UI. 
+ 
+Shivam & Debojeet: You both should discuss beforehand pushing the changes, like who going to 
+push first, so other can pull before start coding – to minimize the merge conflicts unlike yesterday’s 
+ 
+Smriti 
+ Refine all submission‑ related states in Figma (empty, in progress, submitted, locked). 
+Harshita 
+ Confirm submission deadline logic works with operational plan (time zones, communication).  
+ Make sure everyone joins today’s meeting at 1100 
+ 
+ 
+ 

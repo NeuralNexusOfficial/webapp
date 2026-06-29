@@ -1,0 +1,22 @@
+
+--- Page 1 ---
+ 
+Day 4 – Teams: Data & Basic UI 
+Me (done) 
+ Finalize team FSM details and write short doc: one team per user, team_owner_id, max_members. 
+ Define simple API contract for “create team” and “join team by code”. 
+Santhosh (done by me, he will be replaced by Nikhil today, due to lack of 
+communication and contribution) 
+ Implement DB constraints: 
+o One active team per user. 
+o team_owner_id, max_members. 
+ Implement backend handlers: create team, generate invite code, join via code. 
+Debojeet 
+ On /dashboard, add: 
+o “Participate Solo” and “Create/Join Team” UI. 
+o Forms wired to the backend APIs (or placeholders if APIs land end of day). 
+Smriti 
+ Refine team-related dashboard UI in Figma (cards, forms, empty states). 
+Harshita 
+ Check progress on teams: can everyone explain how team creation/joining will work? 
+ Note any UX issues from ops perspective and share with Me + Smriti. 

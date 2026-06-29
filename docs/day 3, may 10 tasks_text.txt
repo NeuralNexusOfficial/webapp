@@ -1,0 +1,23 @@
+
+--- Page 1 ---
+Day 3 – Auth Working, Figma v1 
+You (done already) 
+ Integrate Supabase client into Next.js (shared supabaseClient / server helpers). 
+ Review / refine auth flow (where we redirect after login, required profile fields). 
+Santhosh (done my me, you should check the functionality of this today) 
+ Implement backend pieces for: 
+o profiles table and link to auth user. 
+o API route or server action to update profile (name, phone, college/company). 
+Debojeet 
+ Hook up login/signup forms to Supabase auth. 
+ After login, redirect to /dashboard. 
+ Show simple “Welcome, {name}” in dashboard. 
+Smriti (all tasks pending, day 1-3 – completed them all today) 
+ Turn wireframes into Figma v1 with basic design system (colors, fonts, buttons). 
+ Share components with you + Debojeet for implementation. 
+Harshita 
+ Confirm everyone can run the app locally. 
+ Check if anyone is stuck on env or tooling and bring it to me quickly. 
+Nikhil 
+ Async: review Figma v1 when Smriti shares, give fast feedback. 
+  
