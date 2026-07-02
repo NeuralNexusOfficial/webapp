@@ -225,14 +225,13 @@ export default function Tracks() {
                   <td className="p-5 text-white/50 text-xs leading-relaxed">
                     <div className="space-y-1">
                       <p><strong className="text-violet-400">1st:</strong> Full-time + tools sub.</p>
-                      <p>Top 20 teams hiring.</p>
                       <p className="text-white/70">Winning games polished and launched officially under Fraylon.</p>
                     </div>
                   </td>
                   <td className="p-5 text-white/50 text-xs leading-relaxed">
                     <div className="space-y-1">
                       <p><strong className="text-amber-400">1st:</strong> Full-time + tools sub.</p>
-                      <p>Top 15 teams hiring.</p>
+                      <p className="mt-1">Winning story adapted into professional animated films under Fraylon with writer credits.</p>
                     </div>
                   </td>
                   <td className="p-5 text-white/50 text-xs leading-relaxed">
@@ -328,14 +327,12 @@ export default function Tracks() {
                   {activeTab === 'Gaming' && (
                     <>
                       <p><strong className="text-violet-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
-                      <p><strong className="text-white/90">Top 20 Teams:</strong> Dedicated hiring channels.</p>
                       <p className="text-white/60">Winning game entries polished and launched officially under Fraylon officially with creator credits.</p>
                     </>
                   )}
                   {activeTab === 'Animation' && (
                     <>
                       <p><strong className="text-amber-400">1st Place:</strong> Full-time employment offer + premium tools subscription.</p>
-                      <p><strong className="text-white/90">Top 15 Teams:</strong> Dedicated hiring channels.</p>
                     </>
                   )}
                   {activeTab === 'Storytelling' && (
