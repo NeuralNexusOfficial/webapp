@@ -225,7 +225,7 @@ export default function Tracks() {
                   <td className="p-5 text-white/50 text-xs leading-relaxed">
                     <div className="space-y-1">
                       <p><strong className="text-violet-400">1st:</strong> Full-time + tools sub.</p>
-                      <p className="text-white/70">Winning games polished and launched officially under Fraylon.</p>
+                      <p className="text-white/70">Winning game polished and launched officially under Fraylon.</p>
                     </div>
                   </td>
                   <td className="p-5 text-white/50 text-xs leading-relaxed">
