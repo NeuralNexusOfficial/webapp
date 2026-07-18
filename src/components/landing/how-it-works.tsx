@@ -3,7 +3,7 @@ export default function HowItWorks() {
     {
       num: "01",
       title: "Register",
-      desc: "Sign up, choose your domain, and complete your profile. Fees start at just $8.",
+      desc: "Sign up, choose your domain, and complete your profile. Fees start at just ₹500.",
     },
     {
       num: "02",
@@ -18,7 +18,7 @@ export default function HowItWorks() {
     {
       num: "04",
       title: "Win Big",
-      desc: "Top projects win from a $50K+ prize pool, plus roles, internships & subscriptions.",
+      desc: "Top projects win from a ₹12,00,000 prize pool, plus roles, internships & career perks.",
     },
   ];
 

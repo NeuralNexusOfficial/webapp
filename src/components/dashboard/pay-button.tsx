@@ -33,7 +33,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PayButton({ amount, currency = 'USD', label, track, onPaymentVerified, className }: PayButtonProps) {
+export default function PayButton({ amount, currency = 'INR', label, track, onPaymentVerified, className }: PayButtonProps) {
   const [state, setState] = useState<PaymentState>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 

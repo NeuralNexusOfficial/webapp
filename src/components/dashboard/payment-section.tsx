@@ -7,6 +7,13 @@ import { getMyTeamWithMembers, createTeam, goSolo } from '@/app/actions/team';
 import { getPaymentStatus } from '@/app/actions/payment';
 import { Track } from '@/types';
 import { Check, Cloud, Clapperboard, BookOpen, Gamepad2, Bot } from 'lucide-react';
+import {
+  REGISTRATION_FEES,
+  CURRENCY,
+  CURRENCY_SYMBOL,
+  getRegistrationFee,
+  formatINR,
+} from '@/lib/pricing';
 
 const TRACK_OPTIONS: { value: Track; label: string; icon: React.ReactNode }[] = [
   { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={14} /> },
@@ -44,28 +51,6 @@ export default function PaymentSection({
   const [processingPendingAction, setProcessingPendingAction] = useState(false);
   const [polling, setPolling] = useState(false);
   const router = useRouter();
-
-  // Local currency hint (non-blocking, shown as secondary info)
-  const [localRate, setLocalRate] = useState<number | null>(null);
-  const [localSymbol, setLocalSymbol] = useState('');
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        // Detect if user is in India via timezone
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (tz !== 'Asia/Kolkata' && tz !== 'Asia/Calcutta') return;
-        setLocalSymbol('₹');
-        const res = await fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=INR');
-        const data = await res.json();
-        if (!cancelled && data.rates?.INR) {
-          setLocalRate(data.rates.INR);
-        }
-      } catch { /* no local hint, USD is fine */ }
-    })();
-    return () => { cancelled = true; };
-  }, []);
 
   useEffect(() => {
     async function load() {
@@ -173,16 +158,9 @@ export default function PaymentSection({
     );
   }
 
-  const prices: Record<Track, { ind: number; team?: number }> = {
-    'SaaS': { ind: 15, team: 45 },
-    'Animation': { ind: 12, team: 36 },
-    'Storytelling': { ind: 8 },
-    'Gaming': { ind: 15, team: 45 },
-    'AI': { ind: 25, team: 75 },
-  };
-
-  const currentPriceUSD = domain
-    ? (isTeam && prices[domain as Track].team ? prices[domain as Track].team : prices[domain as Track].ind)
+  // Compute price from centralized config
+  const currentPrice = domain
+    ? getRegistrationFee(domain as Track, isTeam)
     : null;
 
 
@@ -240,18 +218,18 @@ export default function PaymentSection({
             ) : (
               <>
                 <p className="text-3xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  ${currentPriceUSD}
+                  {CURRENCY_SYMBOL}{formatINR(currentPrice ?? 0)}
                 </p>
                 <p className="text-sm text-white/40 mb-4">
                   One-time fee · Includes swag kit, meals, and access
                 </p>
-                <PayButton amount={currentPriceUSD ?? 0} currency="USD" label={`Pay $${currentPriceUSD}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
+                <PayButton amount={currentPrice ?? 0} currency={CURRENCY} label={`Pay ${CURRENCY_SYMBOL}${formatINR(currentPrice ?? 0)}`} track={domain || undefined} onPaymentVerified={onPaymentSuccess} />
               </>
             )
           ) : (
             <>
               <p className="text-xl font-bold text-white/30 mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                $—
+                {CURRENCY_SYMBOL}—
               </p>
               <p className="text-sm text-white/40">Select a domain to view price</p>
             </>

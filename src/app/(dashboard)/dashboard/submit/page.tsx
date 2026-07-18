@@ -16,6 +16,12 @@ import {
 } from '@/lib/validation/submission-text';
 import { Cloud, Clapperboard, BookOpen, Gamepad2, Bot, AlertTriangle, Lock, Check, FileText, FolderOpen, CreditCard, Trash2, Plus } from 'lucide-react';
 import PayButton from '@/components/dashboard/pay-button';
+import {
+  CURRENCY,
+  CURRENCY_SYMBOL,
+  getRegistrationFee,
+  formatINR,
+} from '@/lib/pricing';
 
 const TRACKS: { value: Track; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'SaaS',         label: 'SaaS',         icon: <Cloud size={16} />,         desc: 'Software as a Service, productivity tools, enterprise solutions' },
@@ -260,13 +266,9 @@ export default function SubmitPage() {
   const isLocked = existing?.status === 'SUBMITTED' || existing?.status === 'JUDGED';
   const isPaid = paymentStatus === 'SUCCESS';
 
-  // Compute USD price for Pay & Submit button
-  const prices: Record<Track, { ind: number; team?: number }> = {
-    'SaaS': { ind: 15, team: 45 }, 'Animation': { ind: 12, team: 36 },
-    'Storytelling': { ind: 8 }, 'Gaming': { ind: 15, team: 45 }, 'AI': { ind: 25, team: 75 },
-  };
+  // Compute INR price for Pay & Submit button
   const selectedTrack = ((isPaid && paidTrack) ? paidTrack : form.track) as Track | '';
-  const priceUSD = selectedTrack ? (isTeam && prices[selectedTrack]?.team ? prices[selectedTrack].team : prices[selectedTrack]?.ind) ?? 0 : 0;
+  const priceINR = selectedTrack ? getRegistrationFee(selectedTrack as Track, !!isTeam) : 0;
   const isStorytellingTeamError = selectedTrack === 'Storytelling' && !!isTeam;
 
   // Handle Pay & Submit: save draft first, then on payment success lock it
@@ -376,14 +378,14 @@ export default function SubmitPage() {
                <tbody>
                  <tr>
                    <td>NeuralNexus Hackathon Registration Fee</td>
-                   <td style="text-align: right;">${paymentDetails.currency === 'USD' ? '$' : '₹'}${paymentDetails.amount ? paymentDetails.amount.toFixed(2) : '0.00'} ${paymentDetails.currency || 'USD'}</td>
+                   <td style="text-align: right;">₹${paymentDetails.amount ? paymentDetails.amount.toLocaleString('en-IN') : '0'} INR</td>
                  </tr>
                </tbody>
             </table>
             
             <div class="total-section">
               <span class="total-label">Total Paid:</span>
-              <span class="total-val">${paymentDetails.currency === 'USD' ? '$' : '₹'}${paymentDetails.amount ? paymentDetails.amount.toFixed(2) : '0.00'} ${paymentDetails.currency || 'USD'}</span>
+              <span class="total-val">₹${paymentDetails.amount ? paymentDetails.amount.toLocaleString('en-IN') : '0'} INR</span>
             </div>
             
             <div class="footer">
@@ -517,7 +519,7 @@ export default function SubmitPage() {
                     <div>
                       <span className="text-white/40 uppercase tracking-wider block mb-0.5">Amount Paid</span>
                       <span className="text-emerald-400 font-bold">
-                        {paymentDetails.currency === 'USD' ? '$' : '₹'}{paymentDetails.amount?.toFixed(2)} {paymentDetails.currency || 'USD'}
+                        {CURRENCY_SYMBOL}{paymentDetails.amount?.toLocaleString('en-IN')} {CURRENCY}
                       </span>
                     </div>
                   </div>
@@ -826,9 +828,9 @@ export default function SubmitPage() {
                             <CreditCard size={12} /> Payment required to finalize submission
                           </p>
                           <PayButton
-                            amount={priceUSD}
-                            currency="USD"
-                            label={`Pay $${priceUSD} & Submit`}
+                            amount={priceINR}
+                            currency={CURRENCY}
+                            label={`Pay ${CURRENCY_SYMBOL}${formatINR(priceINR)} & Submit`}
                             track={selectedTrack}
                             onPaymentVerified={handlePayAndSubmitSuccess}
                             className="w-full sm:w-auto justify-center"

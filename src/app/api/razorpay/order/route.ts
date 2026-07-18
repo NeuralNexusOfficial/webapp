@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { razorpay } from '@/lib/razorpay';
 import { createClient } from '@/lib/supabase/server';
+import { REGISTRATION_FEES, CURRENCY } from '@/lib/pricing';
 
 export async function POST(req: Request) {
   try {
@@ -14,18 +15,19 @@ export async function POST(req: Request) {
     const body = await req.json();
     const amount = Number(body.amount);
     const track = body.track ?? null;
-    const currency = body.currency ?? 'INR';
 
-    if (!amount || amount <= 0) {
+    // Server-side price validation: only allow known registration fees
+    const validAmounts: number[] = [REGISTRATION_FEES.solo, REGISTRATION_FEES.team];
+    if (!amount || !validAmounts.includes(amount)) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
     }
 
     const receipt = `nn_${user.id.slice(0, 8)}_${Date.now()}`;
 
-    // Create order in Razorpay (amount in cents: $25 = 2500 cents)
+    // Create order in Razorpay (amount in paise: ₹500 = 50000 paise)
     const order = await razorpay.orders.create({
       amount: Math.round(amount * 100),
-      currency: 'USD',
+      currency: CURRENCY,
       receipt,
     });
 
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
       user_id: user.id,
       razorpay_order_id: order.id,
       amount,
-      currency,
+      currency: CURRENCY,
       receipt,
       status: 'INITIATED',
     };

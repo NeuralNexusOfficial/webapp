@@ -42,7 +42,7 @@ export default function RulesPage() {
           <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">4. Registration &amp; Fees</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Registration fees vary by domain: AI ($25/$75), SaaS ($15/$45), Gaming ($15/$45), Storytelling ($8 Solo only), Animation ($12/$36).</li>
+              <li>Registration fees are uniform across all domains: ₹500 for Solo entry and ₹1,200 for Team entry. Storytelling is Solo only (₹500).</li>
               <li>Individual and team pricing differs. If one team member pays, it covers the entire team.</li>
               <li>All team members must have completed registration to be eligible for prizes.</li>
             </ul>

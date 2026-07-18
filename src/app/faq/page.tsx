@@ -17,7 +17,7 @@ const faqData = [
   },
   {
     question: "How much does it cost?",
-    answer: "Registration fees vary by domain and participation type. Individual fees range from $8 (Storytelling) to $25 (AI). Team fees range from $36 (Animation) to $75 (AI). Storytelling is a Solo-only track. One payment per team covers all members."
+    answer: "Registration fees are uniform across all domains: ₹500 for Solo entry and ₹1,200 for Team entry. Storytelling is a Solo-only track (₹500). One payment per team covers all members."
   },
   {
     question: "Can I participate alone?",
@@ -29,7 +29,7 @@ const faqData = [
   },
   {
     question: "What are the prizes?",
-    answer: "The total prize pool is $50K+ in cash prizes across 4 cash domains: AI ($15,000), SaaS ($10,000), Gaming ($10,000), and Animation ($15,000), while Storytelling is a non-cash track where top stories are adapted into animated films. Additionally, winners receive full-time roles, internships, PPOs, and premium tools/software subscriptions."
+    answer: "The total prize pool is ₹12,00,000 across 4 cash domains: AI (₹2,50,000), Gaming (₹2,50,000), Animation (₹2,00,000), and SaaS (₹1,00,000). Each domain has separate Solo and Team prize tracks. The Overall Grand Prize is ₹2,50,000 and Special Awards total ₹1,50,000. Storytelling is a non-cash track where top stories are adapted into animated films. Career perks include: 1st Place — Cash + Rewards + Full-Time Role, 2nd — Cash + Full-Time Role, 3rd — Cash + Internship + PPO, 4th-10th — Internship, and all participants receive a Certificate of Participation."
   },
   {
     question: "When does the hackathon run?",

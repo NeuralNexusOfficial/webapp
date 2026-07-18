@@ -45,11 +45,10 @@ export default function TermsOfServicePage() {
           <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">3. Registration &amp; Payment</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Participation requires registration and payment of the applicable registration fee based on your chosen track and team type (solo/team).</li>
-              <li>All payments are processed through Razorpay. By making a payment, you also agree to <a href="https://razorpay.com/terms/" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-2 hover:text-emerald-300 transition-colors">Razorpay&apos;s Terms of Service</a>.</li>
+              <li>Participation requires registration and payment of the applicable registration fee: ₹500 for Solo entry or ₹1,200 for Team entry.</li>
+              <li>All payments are processed through Razorpay in Indian Rupees (INR). By making a payment, you also agree to <a href="https://razorpay.com/terms/" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-2 hover:text-emerald-300 transition-colors">Razorpay&apos;s Terms of Service</a>.</li>
               <li>Registration fees are <strong className="text-white/90">non-refundable</strong> once payment is successfully processed, except at our sole discretion in cases of event cancellation.</li>
               <li>One payment per team covers all team members for that track.</li>
-              <li>Prices are displayed in your local currency where possible. The actual charge is based on the USD equivalent at the time of payment.</li>
             </ul>
           </section>
 

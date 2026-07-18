@@ -1,11 +1,19 @@
 export const hackathonFAQ = `
 Hackathon Name: AOT Hackathon — Architects of Tomorrow
 Organized by: Fraylon
+Region: India Only
 
 Overview:
-AOT Hackathon is a global innovation-driven hackathon designed to empower creators, developers, storytellers, designers, and innovators to build the future through technology and creativity. The hackathon is structured across five major domains.
+AOT Hackathon is India's largest innovation-driven hackathon designed to empower creators, developers, storytellers, designers, and innovators to build the future through technology and creativity. The hackathon is structured across five major domains.
 
 The hackathon focuses on real-world innovation, industry-level execution, product development, and career opportunities. Participants gain exposure to mentorship, networking, internships, full-time opportunities, and publication opportunities under the Fraylon platform.
+
+---
+
+REGISTRATION FEES:
+- Solo Entry: ₹500 (applies to all domains)
+- Team Entry: ₹1,200 (applies to all domains except Storytelling which is Solo only)
+- One payment per team covers all members
 
 ---
 
@@ -13,49 +21,64 @@ DOMAINS / TRACKS:
 
 1. Artificial Intelligence (AI)
    Focus: Automation, ML, GenAI, NLP, Computer Vision.
-   Registration: Individual $25 | Team $75
+   Registration: ₹500 Solo | ₹1,200 Team
    Prizes:
-   - Prize Pool: $15,000
-   - 1st Place: Full-Time Role + Premium Tools Subscription
-   - 2nd Place: Full-Time Role Opportunity
-   - 3rd Place: Internship / PPO Opportunity
+   - Solo Pool: ₹1,25,000 (1st: ₹75,000 | 2nd: ₹30,000 | 3rd: ₹20,000)
+   - Team Pool: ₹1,25,000 (1st: ₹75,000 | 2nd: ₹30,000 | 3rd: ₹20,000)
+   - Total Domain Pool: ₹2,50,000
 
-2. SaaS Domain
-   Focus: Scalable software solving real business problems.
-   Registration: Individual $15 | Team $45
-   Prizes:
-   - Prize Pool: $10,000
-   - 1st Place: Full-Time Role + Premium Tools Subscription
-   - 2nd Place: Full-Time Role Opportunity
-   - 3rd Place: Internship / PPO Opportunity
-
-3. Gaming Domain
+2. Gaming Domain
    Focus: Mobile/PC game creation for official publishing.
-   Registration: Individual $15 | Team $45
+   Registration: ₹500 Solo | ₹1,200 Team
    Prizes:
-   - Prize Pool: $10,000
-   - 1st Place: Full-Time Role + Premium Tools Subscription
-   - Top 20 Teams: Hiring opportunities
+   - Solo Pool: ₹1,25,000 (1st: ₹70,000 | 2nd: ₹30,000 | 3rd: ₹25,000)
+   - Team Pool: ₹1,25,000 (1st: ₹70,000 | 2nd: ₹30,000 | 3rd: ₹25,000)
+   - Total Domain Pool: ₹2,50,000
    - Special: Winning games polished and launched under Fraylon with creator credits
 
-4. Storytelling Domain
-   Focus: Scripts and concepts for professional animated films.
-   Registration: Individual $8 (Solo only)
-   Prizes:
-   - Prize Pool: Non-cash track
-   - Special: Top 30 stories adapted into professional animated films under Fraylon with writer credits
-
-5. Animation Domain
+3. Animation Domain
    Focus: 2-3 minute animated teasers, characters, and concepts.
-   Registration: Individual $12 | Team $36
+   Registration: ₹500 Solo | ₹1,200 Team
    Prizes:
-   - Prize Pool: $15,000
-   - 1st Place: Full-Time Role + Premium Tools Subscription
-   - Top 15 Teams: Hiring opportunities
+   - Solo Pool: ₹1,00,000 (1st: ₹60,000 | 2nd: ₹25,000 | 3rd: ₹15,000)
+   - Team Pool: ₹1,00,000 (1st: ₹60,000 | 2nd: ₹25,000 | 3rd: ₹15,000)
+   - Total Domain Pool: ₹2,00,000
+
+4. SaaS Domain
+   Focus: Scalable software solving real business problems.
+   Registration: ₹500 Solo | ₹1,200 Team
+   Prizes:
+   - Solo Pool: ₹50,000 (1st: ₹30,000 | 2nd: ₹12,500 | 3rd: ₹7,500)
+   - Team Pool: ₹50,000 (1st: ₹30,000 | 2nd: ₹12,500 | 3rd: ₹7,500)
+   - Total Domain Pool: ₹1,00,000
+
+5. Storytelling Domain
+   Focus: Scripts and concepts for professional animated films.
+   Registration: ₹500 (Solo only)
+   Format: Solo Only
+   Prizes:
+   - Cash Prize: ₹0
+   - Rewards: Recognition + film/IP adaptation + creator credits + mentorship
+   - Special: Top 30 stories adapted into professional animated films under Fraylon with writer credits
 
 ---
 
-TOTAL PRIZE POOL: $50,000+ in cash prizes, plus full-time roles, internships, software subscriptions, and product launch opportunities.
+CAREER & PLACEMENT PERKS (Standardized for AI, Gaming, Animation, SaaS):
+- 1st Place: Cash Prize + Rewards + Full-Time Role
+- 2nd Place: Cash Prize + Full-Time Role
+- 3rd Place: Cash Prize + Internship + Pre-Placement Offer (PPO) with Stipend
+- 4th to 10th Place: Internship
+- All Other Participants: Certificate of Participation
+
+---
+
+OVERALL EVENT AWARDS:
+- Overall Grand Prize: ₹2,50,000 (Awarded to the best project across all domains)
+- Special Awards: ₹1,50,000 (6 awards of ₹25,000 each for: Student, Women-Led, Rookie, Impact, Design/Storytelling, and Campus/Community Champion)
+
+---
+
+TOTAL PRIZE POOL: ₹12,00,000 in cash prizes, plus full-time roles, internships, and career opportunities.
 
 ---
 
@@ -74,15 +97,6 @@ Official Hackathon:
 
 ---
 
-REGISTRATION FEES (Summary):
-- AI Domain: Individual $25 | Team $75
-- SaaS Domain: Individual $15 | Team $45
-- Gaming Domain: Individual $15 | Team $45
-- Storytelling Domain: Individual $8 (Solo only)
-- Animation Domain: Individual $12 | Team $36
-
----
-
 TEAM SIZE:
 - Minimum 1 member (individual participation allowed in all domains)
 - Maximum 4 members per team (Storytelling is Solo only)
@@ -90,15 +104,13 @@ TEAM SIZE:
 ---
 
 PARTICIPANT BENEFITS:
-- Global exposure
+- Career opportunities (full-time roles, internships, PPOs)
 - Networking opportunities
-- Internship opportunities
-- Full-time role opportunities
 - Product launch opportunities
 - Publishing opportunities under Fraylon
-- Access to premium software subscriptions (ChatGPT, Midjourney, RunwayML, CRM tools, etc.)
 - Real-world project experience
 - Portfolio enhancement
+- Certificate of Participation for all
 
 ---
 
@@ -135,13 +147,13 @@ support@neuralnexus.dev
 FREQUENTLY ASKED QUESTIONS:
 
 Q: Who can participate?
-A: Anyone with a passion for building — developers, designers, writers, animators, innovators. Open to all worldwide.
+A: Anyone in India with a passion for building — developers, designers, writers, animators, innovators.
 
 Q: Can I participate alone?
 A: Yes! All domains allow individual participation. Team sizes range from 1–4 members (except Storytelling which is Solo only).
 
 Q: How much does it cost?
-A: Registration fees vary by domain: $8 (Storytelling Solo) to $75 (AI Team). See the domain details for exact pricing.
+A: Registration fees are uniform across all domains: ₹500 for Solo and ₹1,200 for Team entry. Storytelling is Solo only (₹500).
 
 Q: What if my team leader pays?
 A: If one member (usually the leader) pays the registration fee, it covers the entire team.
@@ -153,7 +165,10 @@ Q: When are university promotions?
 A: University promotional campaigns run from June 20 to August 20, 2026.
 
 Q: What are the prizes?
-A: Total prize pool is $50,000+ in cash. Domain prize pools: AI ($15,000), SaaS ($10,000), Gaming ($10,000), Animation ($15,000), Storytelling (Non-cash track). Plus full-time roles, internships, and premium tools/software subscriptions.
+A: Total prize pool is ₹12,00,000. Domain prize pools: AI (₹2,50,000), Gaming (₹2,50,000), Animation (₹2,00,000), SaaS (₹1,00,000), Storytelling (Non-cash track). Plus Overall Grand Prize (₹2,50,000) and Special Awards (₹1,50,000). Winners also receive full-time roles, internships, PPOs, and career opportunities.
+
+Q: What career perks are available?
+A: 1st Place gets Cash + Rewards + Full-Time Role. 2nd Place gets Cash + Full-Time Role. 3rd Place gets Cash + Internship + PPO with Stipend. 4th-10th Place get Internships. All participants receive a Certificate of Participation.
 
 Q: Can I use AI tools during the hackathon?
 A: Yes — AI assistance for coding and ideation is allowed, but core logic must be authored by your team during the event.
