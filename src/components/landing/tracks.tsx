@@ -179,7 +179,7 @@ export default function Tracks() {
                   <td className="p-5 text-white/50 leading-relaxed">Automation, ML, GenAI, NLP, Computer Vision</td>
                   <td className="p-5 text-white/50 leading-relaxed">Scalable software solving real business problems</td>
                   <td className="p-5 text-white/50 leading-relaxed">Mobile/PC game creation for official publishing</td>
-                  <td className="p-5 text-white/50 leading-relaxed">2-3 minute animated teasers, characters, and concepts</td>
+                  <td className="p-5 text-white/50 leading-relaxed">3-5 minute animated teasers, characters, and concepts</td>
                   <td className="p-5 text-white/50 leading-relaxed">Scripts and concepts for professional animated films</td>
                 </tr>
                 <tr className="hover:bg-white/[0.02] transition-colors">
@@ -272,7 +272,7 @@ export default function Tracks() {
                   {activeTab === 'AI' && "Automation, ML, GenAI, NLP, Computer Vision"}
                   {activeTab === 'SaaS' && "Scalable software solving real business problems"}
                   {activeTab === 'Gaming' && "Mobile/PC game creation for official publishing"}
-                  {activeTab === 'Animation' && "2-3 minute animated teasers, characters, and concepts"}
+                  {activeTab === 'Animation' && "3-5 minute animated teasers, characters, and concepts"}
                   {activeTab === 'Storytelling' && "Scripts and concepts for professional animated films"}
                 </p>
               </div>
