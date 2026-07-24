@@ -223,11 +223,11 @@ export async function createTeam(
   if (!user) return { success: false, error: 'Not authenticated', code: 401 }
 
   // Validate max_members
-  const maxMembers = input.max_members ?? 4
-  if (maxMembers < 2 || maxMembers > 5) {
+  const maxMembers = input.max_members ?? 3
+  if (maxMembers < 2 || maxMembers > 3) {
     return {
       success: false,
-      error: 'max_members must be between 2 and 5',
+      error: 'max_members must be between 2 and 3',
       code: 400,
     }
   }

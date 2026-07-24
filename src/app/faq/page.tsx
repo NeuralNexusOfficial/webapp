@@ -21,7 +21,7 @@ const faqData = [
   },
   {
     question: "Can I participate alone?",
-    answer: "Absolutely. All domains allow individual participation. You can also form a team of up to 4 members for AI, SaaS, Gaming, and Animation. Storytelling is a Solo-only track."
+    answer: "Absolutely. All domains allow individual participation. You can also form a team of up to 3 members for AI, SaaS, Gaming, and Animation. Storytelling is a Solo-only track."
   },
   {
     question: "What happens if my team leader pays?",
@@ -33,7 +33,7 @@ const faqData = [
   },
   {
     question: "When does the hackathon run?",
-    answer: "University promotions run from June 20 to August 20, 2026. The official hackathon runs from August 21 to October 21, 2026 — approximately 2 months including registrations, submissions, evaluations, and winner announcements."
+    answer: "University promotions run from June 20 to August 20, 2026. The official hackathon runs from January 1 to March 1, 2027 — approximately 2 months including registrations, submissions, evaluations, and winner announcements."
   },
   {
     question: "What is Fraylon?",
@@ -45,7 +45,7 @@ const faqData = [
   },
   {
     question: "What do I need to submit?",
-    answer: "For most domains: a working prototype, GitHub repository link, and a short demo video. For Storytelling: original stories, screenplays, or scripts. All submissions must be completed before the October 21st deadline."
+    answer: "For most domains: a working prototype, GitHub repository link, and a short demo video. For Storytelling: original stories, screenplays, or scripts. All submissions must be completed before the March 1st deadline."
   }
 ];
 

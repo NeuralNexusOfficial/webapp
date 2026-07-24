@@ -16,7 +16,7 @@ export default function RulesPage() {
             <ul className="list-disc pl-5 space-y-2">
               <li>AOT Hackathon: Architects of Tomorrow is open to all developers, designers, writers, animators, and innovators worldwide.</li>
               <li>Participants must be at least 18 years old or have parental consent.</li>
-              <li>Teams can consist of 1 to 4 members (except for Storytelling, which is Solo only). Individual participation is allowed in all domains.</li>
+              <li>Teams can consist of 1 to 3 members (except for Storytelling, which is Solo only). Individual participation is allowed in all domains.</li>
             </ul>
           </section>
 
@@ -32,7 +32,7 @@ export default function RulesPage() {
           <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">3. Code &amp; Submissions</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>All project code must be written during the hackathon period (Aug 21 – Oct 21, 2026).</li>
+              <li>All project code must be written during the hackathon period (Jan 1 – Mar 1, 2027).</li>
               <li>Use of open-source libraries, APIs, and frameworks is encouraged, but the core logic must be original.</li>
               <li>A working prototype, GitHub repository link, and a short demo video are required for a valid submission (except Storytelling domain which requires original stories/screenplays).</li>
               <li>AI tools (e.g., ChatGPT) may be used for assistance, but all core logic must be authored by your team.</li>
@@ -52,7 +52,7 @@ export default function RulesPage() {
             <h2 className="text-2xl font-bold text-white mb-4">5. Timeline</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>University Promotions: June 20 – August 20, 2026.</li>
-              <li>Hackathon Period: August 21 – October 21, 2026 (approx. 2 months).</li>
+              <li>Hackathon Period: January 1 – March 1, 2027 (approx. 2 months).</li>
               <li>Includes registrations, team formations, submission rounds, evaluations, final presentations, and winner announcements.</li>
             </ul>
           </section>

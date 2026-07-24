@@ -55,7 +55,7 @@ export default function TermsOfServicePage() {
           <section className="card-cyber p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">4. Teams &amp; Participation</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Teams can have between 1 and 4 members.</li>
+              <li>Teams can have between 1 and 3 members.</li>
               <li>Solo participants are treated as a one-person team.</li>
               <li>Once a team has paid, members cannot leave or disband the team.</li>
               <li>Team leaders are responsible for their team&apos;s submissions and compliance with these Terms.</li>
@@ -67,7 +67,7 @@ export default function TermsOfServicePage() {
             <h2 className="text-2xl font-bold text-white mb-4">5. Submissions</h2>
             <ul className="list-disc pl-5 space-y-2">
               <li>All submissions must be made before the published deadline. Late submissions will not be accepted.</li>
-              <li>Submissions must be original work created during the hackathon period (August 21 – October 21, 2026).</li>
+              <li>Submissions must be original work created during the hackathon period (January 1 – March 1, 2027).</li>
               <li>Use of open-source libraries, APIs, frameworks, and AI assistance tools is permitted, provided the core logic and creative work is authored by your team.</li>
               <li>Submissions must not contain malicious code, illegal content, or material that infringes on third-party intellectual property rights.</li>
               <li>Once a submission is finalized and locked, it cannot be edited.</li>

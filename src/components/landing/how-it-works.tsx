@@ -8,12 +8,12 @@ export default function HowItWorks() {
     {
       num: "02",
       title: "Build Your Team",
-      desc: "Form a team of up to 4 or compete solo — your call.",
+      desc: "Form a team of up to 3 or compete solo — your call.",
     },
     {
       num: "03",
       title: "Hack & Submit",
-      desc: "Build your project over 2 months (Aug 21 – Oct 21) and submit via the dashboard.",
+      desc: "Build your project over 2 months (Jan 1 – Mar 1, 2027) and submit via the dashboard.",
     },
     {
       num: "04",

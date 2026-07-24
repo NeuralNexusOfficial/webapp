@@ -104,8 +104,8 @@ const GENERAL_RESOURCES = [
 ];
 
 const RULES = [
-  'All code must be written during the hackathon window (Aug 21 – Oct 21, 2026). Using open-source libraries, APIs, and frameworks is allowed.',
-  'Teams can have 1–4 members. Solo participation is permitted in all domains.',
+  'All code must be written during the hackathon window (Jan 1 – Mar 1, 2027). Using open-source libraries, APIs, and frameworks is allowed.',
+  'Teams can have 1–3 members. Solo participation is permitted in all domains.',
   'Each team may only submit one project. The last saved draft before the deadline counts.',
   'Projects must be original work and must not infringe on third-party IP.',
   'The project must target one of the five domains: AI, SaaS, Gaming, Storytelling, or Animation.',

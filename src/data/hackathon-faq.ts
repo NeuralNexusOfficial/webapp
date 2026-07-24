@@ -90,8 +90,8 @@ University Promotions:
 - Universities, student communities, innovation clubs, coding cells, media departments, and creator communities participate in large-scale awareness campaigns.
 
 Official Hackathon:
-- Start: August 21, 2026
-- End: October 21, 2026
+- Start: January 1, 2027
+- End: March 1, 2027
 - Duration: Approximately 2 months
 - Includes: Registrations, team formations, submission rounds, evaluations, final presentations, winner announcements.
 
@@ -99,7 +99,7 @@ Official Hackathon:
 
 TEAM SIZE:
 - Minimum 1 member (individual participation allowed in all domains)
-- Maximum 4 members per team (Storytelling is Solo only)
+- Maximum 3 members per team (Storytelling is Solo only)
 
 ---
 
@@ -125,8 +125,8 @@ JUDGING CRITERIA:
 
 RULES:
 - No plagiarism — all work must be original
-- Projects must be built during the hackathon period (Aug 21 – Oct 21, 2026)
-- Teams exceeding 4 members are not allowed
+- Projects must be built during the hackathon period (Jan 1 – Mar 1, 2027)
+- Teams exceeding 3 members are not allowed
 - Use of open-source libraries and APIs is encouraged but core logic must be original
 - A working prototype, repository link, and demo video are required for valid submission
 - Cross-domain projects allowed but must declare a primary domain for judging
@@ -150,7 +150,7 @@ Q: Who can participate?
 A: Anyone in India with a passion for building — developers, designers, writers, animators, innovators.
 
 Q: Can I participate alone?
-A: Yes! All domains allow individual participation. Team sizes range from 1–4 members (except Storytelling which is Solo only).
+A: Yes! All domains allow individual participation. Team sizes range from 1–3 members (except Storytelling which is Solo only).
 
 Q: How much does it cost?
 A: Registration fees are uniform across all domains: ₹500 for Solo and ₹1,200 for Team entry. Storytelling is Solo only (₹500).
@@ -159,7 +159,7 @@ Q: What if my team leader pays?
 A: If one member (usually the leader) pays the registration fee, it covers the entire team.
 
 Q: When does the hackathon start and end?
-A: The hackathon runs from August 21, 2026 to October 21, 2026 (approximately 2 months).
+A: The hackathon runs from January 1, 2027 to March 1, 2027 (approximately 2 months).
 
 Q: When are university promotions?
 A: University promotional campaigns run from June 20 to August 20, 2026.

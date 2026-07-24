@@ -10,7 +10,7 @@ export default function DashboardPage() {
   const [timeLeft, setTimeLeft] = useState("00:00:00:00");
 
   useEffect(() => {
-    const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE || "2026-10-21T18:00:00+05:30";
+    const deadlineStr = process.env.NEXT_PUBLIC_SUBMISSION_DEADLINE || "2027-03-01T18:00:00+05:30";
     const deadline = new Date(deadlineStr).getTime();
     
     const interval = setInterval(() => {
